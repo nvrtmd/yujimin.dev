@@ -1,0 +1,79 @@
+# ===========================
+# Dependencies
+# ===========================
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ===========================
+# Build Outputs
+# ===========================
+/.next/
+/out/
+/build
+/.open-next
+
+# ===========================
+# Testing
+# ===========================
+/coverage
+/playwright-report/
+/test-results/
+/playwright/.cache/
+
+# ===========================
+# Environment & Secrets
+# ===========================
+.env*
+!.env.example
+.dev.vars*
+!.dev.vars.example
+/secrets/*
+
+# ===========================
+# Logs
+# ===========================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ===========================
+# TypeScript
+# ===========================
+*.tsbuildinfo
+next-env.d.ts
+
+# ===========================
+# Velite (Generated Content)
+# ===========================
+.velite
+/public/static
+
+# ===========================
+# Cloudflare / Wrangler
+# ===========================
+.wrangler
+cloudflare-env.d.ts
+
+# ===========================
+# Vercel
+# ===========================
+.vercel
+
+# ===========================
+# OS / Misc
+# ===========================
+.DS_Store
+*.pem
+
+# ===========================
+# Local Directories
+# ===========================
+/docs/*
+/scripts/*

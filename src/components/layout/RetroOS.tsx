@@ -1,0 +1,151 @@
+'use client';
+
+import { ReactNode, useCallback } from 'react';
+import { Window } from '@/components/common';
+import { useWindowManager } from '@/hooks';
+import { Taskbar, TASKBAR_HEIGHT } from '@/components/layout';
+import { DesktopIcon } from '@/components/layout';
+import { APP_LIST } from '@/libs/contentProvider';
+import { useDoubleClick } from '@/hooks';
+import { AppId } from '@/models';
+import { useIconDrag } from '@/hooks/useIconDrag';
+import { useMobile } from '@/hooks/useMobile';
+import { useTrackVisit } from '@/hooks/analytics/useTrackVisit';
+
+export function RetroOS({ children }: { children: ReactNode }) {
+  const isMobile = useMobile();
+  useTrackVisit();
+
+  const {
+    windowList,
+    ssgWindowList,
+    csrWindowList,
+    minimizeWindow,
+    toggleMaximizeWindow,
+    isPreviousPathHome,
+    handleOpenWindow,
+    handleCloseWindow,
+    toggleWindowFromTaskbar,
+    frontmostOpenWindow,
+    handleWindowDragMouseDown,
+    handleResizeMouseDown,
+    bringToFront,
+  } = useWindowManager();
+
+  const { clickedIdentifier, handleDoubleClick, clearSelection } =
+    useDoubleClick<AppId>();
+
+  const { iconPositions, handleIconMouseDown, isDragged, isRenderReady } =
+    useIconDrag(isMobile);
+
+  const closeAllWindows = useCallback(() => {
+    windowList.forEach((window) => {
+      handleCloseWindow(window);
+    });
+  }, [windowList, handleCloseWindow]);
+
+  const handleAppActivate = useCallback(
+    (appId: string) => {
+      const app = APP_LIST.find((a) => a.id === appId);
+      if (!app) return;
+
+      const window = windowList.find((w) => w.id === appId);
+
+      if (!window) {
+        handleOpenWindow(app);
+        return;
+      }
+
+      if (frontmostOpenWindow?.id === appId) return;
+
+      // bringToFront also unminimizes the window
+      bringToFront(window);
+    },
+    [windowList, frontmostOpenWindow, bringToFront, handleOpenWindow],
+  );
+
+  return (
+    <div
+      className='relative w-full h-svh flex flex-col overflow-hidden bg-retro-desktop'
+      style={{
+        paddingBottom: `calc(${TASKBAR_HEIGHT}px + env(safe-area-inset-bottom))`,
+      }}
+    >
+      <div
+        className='flex-grow w-full h-full pt-safe-top overflow-hidden relative'
+        onClick={clearSelection}
+      >
+        {APP_LIST.map((app) => (
+          <DesktopIcon
+            key={app.id}
+            id={app.id}
+            iconSrc={app.iconSrc}
+            title={app.title}
+            isSelected={clickedIdentifier === app.id}
+            position={iconPositions[app.id]}
+            className={`absolute transition-opacity duration-150 ${
+              isRenderReady ? 'opacity-100' : 'opacity-0'
+            }`}
+            onMouseDown={(e) => handleIconMouseDown(e, app.id)}
+            onClick={(e) => {
+              if (!isDragged) {
+                if (isMobile) {
+                  e.stopPropagation();
+                  handleOpenWindow(app);
+                } else {
+                  handleDoubleClick(e, app.id, () => handleOpenWindow(app));
+                }
+              }
+            }}
+          />
+        ))}
+
+        {ssgWindowList?.map((window) => (
+          <Window
+            isMobile={isMobile}
+            isActive={frontmostOpenWindow?.id === window.id}
+            isPreviousPathHome={isPreviousPathHome}
+            key={window.id}
+            window={window}
+            onBringToFront={() => bringToFront(window)}
+            onClose={() => handleCloseWindow(window)}
+            onMinimize={() => minimizeWindow(window)}
+            onToggleMaximize={() => toggleMaximizeWindow(window)}
+            onDragMouseDown={(e) => handleWindowDragMouseDown(e, window)}
+            onResizeMouseDown={(e, direction) =>
+              handleResizeMouseDown(e, window, direction)
+            }
+          >
+            {children}
+          </Window>
+        ))}
+
+        {csrWindowList?.map((window) => (
+          <Window
+            isMobile={isMobile}
+            isActive={frontmostOpenWindow?.id === window.id}
+            isPreviousPathHome={isPreviousPathHome}
+            key={window.id}
+            window={window}
+            onBringToFront={() => bringToFront(window)}
+            onClose={() => handleCloseWindow(window)}
+            onMinimize={() => minimizeWindow(window)}
+            onToggleMaximize={() => toggleMaximizeWindow(window)}
+            onDragMouseDown={(e) => handleWindowDragMouseDown(e, window)}
+            onResizeMouseDown={(e, direction) =>
+              handleResizeMouseDown(e, window, direction)
+            }
+          />
+        ))}
+      </div>
+
+      <Taskbar
+        windowList={windowList}
+        frontmostOpenWindow={frontmostOpenWindow}
+        onTaskbarButtonClick={(app) => toggleWindowFromTaskbar(app)}
+        onCloseAllWindows={closeAllWindows}
+        onAppActivate={handleAppActivate}
+      />
+    </div>
+  );
+}

@@ -1,0 +1,18 @@
+# wrangler.toml
+name = "yujimin-dev"
+main = ".open-next/worker.js"
+compatibility_date = "2025-10-20"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "yujimin-dev-db"
+database_id = "644edefb-ec4d-4143-ad0b-93f885d7ac1c"
+migrations_dir = "./drizzle"
+
+[triggers]
+crons = ["*/5 * * * *"]

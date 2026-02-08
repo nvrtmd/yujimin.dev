@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1760951670710,
+      "tag": "0000_parched_the_enforcers",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1761229276948,
+      "tag": "0001_zippy_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1768530101189,
+      "tag": "0002_brainy_sheva_callister",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1770299790315,
+      "tag": "0003_known_shape",
+      "breakpoints": true
+    }
+  ]
+}

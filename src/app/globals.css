@@ -1,0 +1,268 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+
+:root {
+  --color-desktop: #008080;
+  --color-taskbar: #c0c0c0;
+  --color-window-bg: #c0c0c0;
+  --color-window-title-active: #000080;
+  --color-window-title-active-end: #0000aa;
+  --color-window-title-inactive: #808080;
+  --color-window-title-inactive-dark: #82807e;
+  --color-border-light: #fefefe;
+  --color-border-dark: #808080;
+  --color-border-darker: #000000;
+  --color-border-medium: #8e8e8e;
+  --color-scrollbar-bg: #c3c7cb;
+  --color-scrollbar-border-light: #dfdfdf;
+  --color-scrollbar-border-dark: #868a8e;
+
+  /* Additional Colors */
+  --color-white: #ffffff;
+  --color-link: #0000ff;
+  --color-button-dark: #404040;
+  --color-selection-overlay: #000080cc;
+  --color-terminal-text: #4af626;
+  --color-terminal-border: #4af626;
+  --color-terminal-bg: #0a200a;
+  --color-folder-open: #ffcf00;
+  --color-folder-closed: #c6a200;
+  --color-accent-blue: #00008c;
+
+  --shadow-inset: inset 2px 2px 0 #808080, inset -2px -2px 0 #dfdfdf;
+  --shadow-outset: inset 2px 2px 0 #dfdfdf, inset -2px -2px 0 #808080;
+  --shadow-outset-large: inset 3px 3px 0 #dfdfdf, inset -3px -3px 0 #808080;
+  --shadow-inset-large: inset 3px 3px 0 #020215, inset -3px -3px 0 #dfdfdf;
+  --shadow-inset-large-disabled:
+    inset 3px 3px 0 #808080, inset -3px -3px 0 #dfdfdf;
+  --shadow-inset-deep: inset 2px 2px 0 #020215, inset -2px -2px 0 #dfdfdf;
+  --shadow-inset-window: inset 2px 2px 0 #808080, inset -2px -2px 0 #fff;
+  --shadow-start-menu: inset -1.5px -1.5px 0px #000, inset 1.5px 1.5px 0px #fff;
+  --shadow-blog-panel: inset 1px 1px 0 #000;
+  --shadow-blog-status: inset 0 1px 0 white;
+
+  /* Viewport Heights - 모바일 브라우저 호환성
+     - svh: 최소 뷰포트 높이 (주소창 표시 상태)
+     - dvh: 동적 뷰포트 높이 (실시간 반영)
+     - lvh: 최대 뷰포트 높이 (주소창 숨김 상태)
+  */
+  --vh-small: 100svh;
+  --vh-dynamic: 100dvh;
+  --vh-large: 100lvh;
+
+  /* Safe Area Insets - iOS 노치/홈 인디케이터 대응 */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+
+  /* Component Sizes */
+  --taskbar-height: 38px;
+  --taskbar-height-with-safe: calc(
+    var(--taskbar-height) + var(--safe-area-bottom)
+  );
+}
+
+/* ============================================
+   Base Styles
+   ============================================ */
+html {
+  cursor: url('/images/cursor.png'), auto;
+  /* 모바일에서 safe-area를 body까지 확장 */
+  height: 100%;
+}
+
+body {
+  /* 
+   * 모바일 브라우저 컨트롤바 색상 대응:
+   * - background-color: 하단 컨트롤바 색상 (Android/iOS가 이 값을 참조)
+   * - background-image: 실제 화면에 보이는 그라데이션 (상단 #008080 → 하단 #c0c0c0)
+   */
+  background-color: var(--color-taskbar);
+  background-image: linear-gradient(
+    to bottom,
+    var(--color-desktop) 0%,
+    var(--color-desktop) calc(100% - var(--taskbar-height-with-safe)),
+    var(--color-taskbar) calc(100% - var(--taskbar-height-with-safe)),
+    var(--color-taskbar) 100%
+  );
+  margin: 0;
+  min-height: var(--vh-dynamic);
+  padding-bottom: var(--safe-area-bottom);
+  box-sizing: border-box;
+}
+
+.prose mark,
+.prose .mark {
+  background-color: rgba(158, 172, 157, 0.3);
+  padding: 0.1em 0.2em;
+  color: inherit;
+  border-radius: 0.1em;
+}
+
+.prose :not(pre) > code {
+  background-color: #f3f4f6;
+  color: #db2777;
+  font-size: 0.9em;
+  padding: 0.2em 0.4em;
+  border-radius: 0.3em;
+  font-weight: 600;
+}
+
+.prose blockquote {
+  border-left: 4px solid #d1d5db;
+  padding: 0.2rem 1rem;
+  font-style: italic;
+  color: #4b5563;
+  margin: 0;
+}
+
+a,
+button,
+[role='button'],
+[onclick] {
+  cursor: url('/images/cursor.png'), auto;
+}
+
+details[open] > summary svg {
+  transform: rotate(90deg);
+}
+
+details > summary svg {
+  transition: transform 0.2s;
+}
+
+@layer components {
+  .btn-outset {
+    border-style: solid;
+    border-width: 2px;
+    border-top-color: '#ffffff';
+    border-left-color: '#ffffff';
+    border-right-color: '#808080';
+    border-bottom-color: '#808080';
+  }
+
+  .btn-inset {
+    border-style: solid;
+    border-width: 2px;
+    border-top-color: '#808080';
+    border-left-color: '#808080';
+    border-right-color: '#ffffff';
+    border-bottom-color: '#ffffff';
+  }
+
+  /* Retro Shadow Utilities */
+  .shadow-menu-hover:hover {
+    box-shadow: var(--shadow-outset);
+  }
+
+  .shadow-inset {
+    box-shadow: var(--shadow-inset);
+  }
+
+  .shadow-outset {
+    box-shadow: var(--shadow-outset);
+  }
+
+  .shadow-inset-deep {
+    box-shadow: var(--shadow-inset-deep);
+  }
+
+  .shadow-inset-window {
+    box-shadow: var(--shadow-inset-window);
+  }
+
+  .shadow-start-menu {
+    box-shadow: var(--shadow-start-menu);
+  }
+
+  .shadow-clock {
+    box-shadow: var(--shadow-inset);
+  }
+
+  .shadow-blog-panel {
+    box-shadow: var(--shadow-blog-panel);
+  }
+
+  .shadow-blog-status {
+    box-shadow: var(--shadow-blog-status);
+  }
+
+  /* Retro Cursor Utility */
+  .cursor-retro {
+    cursor:
+      url('https://user-images.githubusercontent.com/67324487/215311257-3abd7f34-8b4f-450c-a527-ed2e72801fbb.png'),
+      auto;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  image-rendering: optimizeSpeed;
+  image-rendering: pixelated;
+  image-rendering: optimize-contrast;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAyIDIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyI+CjxtZXRhZGF0YT5NYWRlIHdpdGggUGl4ZWxzIHRvIFN2ZyBodHRwczovL2NvZGVwZW4uaW8vc2hzaGF3L3Blbi9YYnh2Tmo8L21ldGFkYXRhPgo8cGF0aCBzdHJva2U9IiNjMGMwYzAiIGQ9Ik0wIDBoMU0xIDFoMSIgLz4KPC9zdmc+');
+  background-position: 0 0;
+  background-repeat: repeat;
+  background-size: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-scrollbar-bg);
+  border: 1px solid;
+  border-color: var(--color-scrollbar-border-light)
+    var(--color-scrollbar-border-dark) var(--color-scrollbar-border-dark)
+    var(--color-scrollbar-border-light);
+  box-shadow:
+    inset 1px 1px 0 0 white,
+    inset -1px -1px 0 0 var(--color-border-darker);
+}
+
+::-webkit-scrollbar-button {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: var(--color-scrollbar-bg);
+  border: 1px solid;
+  border-color: var(--color-scrollbar-border-light) var(--color-border-darker)
+    var(--color-border-darker) var(--color-scrollbar-border-light);
+  box-shadow: inset 1px 1px 0 0 white;
+  image-rendering: pixelated;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+::-webkit-scrollbar-button:active {
+  background-position: 2px 2px;
+  border-color: var(--color-border-darker) var(--color-scrollbar-border-light)
+    var(--color-scrollbar-border-light) var(--color-border-darker);
+  box-shadow: inset 1px 1px 0 0 var(--color-scrollbar-border-dark);
+}
+
+::-webkit-scrollbar-button:vertical:decrement {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTcgNWgxTTYgNmgzTTUgN2g1TTQgOGg3IiAvPgo8L3N2Zz4=');
+}
+::-webkit-scrollbar-button:vertical:increment {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTQgNWg3TTUgNmg1TTYgN2gzTTcgOGgxIiAvPgo8L3N2Zz4=');
+}
+::-webkit-scrollbar-button:horizontal:decrement {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTggM2gxTTcgNGgyTTYgNWgzTTUgNmg0TTYgN2gzTTcgOGgyTTggOWgxIiAvPgo8L3N2Zz4=');
+}
+::-webkit-scrollbar-button:horizontal:increment {
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgLTAuNSAxNiAxNiIgc2hhcGUtcmVuZGVyaW5nPSJjcmlzcEVkZ2VzIj4KPG1ldGFkYXRhPk1hZGUgd2l0aCBQaXhlbHMgdG8gU3ZnIGh0dHBzOi8vY29kZXBlbi5pby9zaHNoYXcvcGVuL1hieHZOajwvbWV0YWRhdGE+CjxwYXRoIHN0cm9rZT0iIzAwMDAwMCIgZD0iTTYgM2gxTTYgNGgyTTYgNWgzTTYgNmg0TTYgN2gzTTYgOGgyTTYgOWgxIiAvPgo8L3N2Zz4=');
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #c3c7cb;
+}
+
+::-webkit-scrollbar-button:vertical:increment:start,
+::-webkit-scrollbar-button:vertical:decrement:end,
+::-webkit-scrollbar-button:horizontal:increment:start,
+::-webkit-scrollbar-button:horizontal:decrement:end {
+  display: none;
+}
