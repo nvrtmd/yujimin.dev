@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { RefObject } from 'react';
 import { TASKBAR_HEIGHT } from './Taskbar';
 
-const GITHUB_URL = 'https://github.com/yujimin-dev';
+const GITHUB_URL = 'https://github.com/nvrtmd/yujimin.dev';
 const MENU_ITEM_CLASS =
   'p-3 flex items-center border border-black hover:bg-[var(--color-window-title-active-end)] hover:text-white';
 const MENU_ICON_CLASS = 'mr-4 w-6 h-6';
