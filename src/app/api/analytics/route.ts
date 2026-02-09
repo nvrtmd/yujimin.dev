@@ -36,11 +36,18 @@ export async function POST(request: NextRequest) {
     const validatedData = parseWithZod(inputData, postRequestSchema);
     const { db, ctx } = getDbInstance();
 
+    // Get country from Cloudflare headers
+    // CF-IPCountry header is set by Cloudflare automatically
+    const country =
+      request.headers.get('cf-ipcountry') ||
+      (request.cf?.country as string | undefined) ||
+      DEFAULTS.COUNTRY;
+
     const analyticsData = {
       path: validatedData.path,
       userAgent: request.headers.get('user-agent'),
       referer: validatedData.referrer || DEFAULTS.REFERER,
-      country: (request.cf?.country as string | undefined) ?? DEFAULTS.COUNTRY,
+      country,
     };
 
     ctx.waitUntil(
