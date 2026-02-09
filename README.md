@@ -48,18 +48,20 @@ Real-time site statistics: page views, visitor countries, and more.
 
 #### 📄 Resume
 
-Professional resume dynamically fetched and parsed from Google Docs.
+Professional resume dynamically fetched and parsed from Google Docs, with automatic caching for instant loading.
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (React 19)
+- **Framework**: Next.js 15.5 (React 19.1)
 - **Styling**: Tailwind CSS v4 with custom retro theme
-- **Content**: MDX blog posts with Velite
+- **Content**: MDX blog posts with Velite (compile-time)
 - **Database**: Drizzle ORM + Cloudflare D1 (SQLite)
-- **Deployment**: Cloudflare Workers via OpenNext
-- **Testing**: Vitest + React Testing Library, Playwright (E2E)
+- **Deployment**: Cloudflare Workers via OpenNext adapter
+- **Cron Jobs**: Cloudflare Cron Triggers (resume cache refresh)
+- **Testing**: Vitest + React Testing Library (unit/integration), Playwright (E2E)
+- **Code Quality**: ESLint, Prettier, Husky, lint-staged
 
-For detailed technical documentation, see [CLAUDE.md](./CLAUDE.md).
+For detailed technical documentation, architecture, and coding guidelines, see [CLAUDE.md](./CLAUDE.md).
 
 ---
 
@@ -90,24 +92,19 @@ npm install
 Create a `.env.local` file in the project root:
 
 ```env
-# Cloudflare Configuration
-CLOUDFLARE_D1_TOKEN=your-cloudflare-d1-token
-CLOUDFLARE_ACCOUNT_ID=your-cloudflare-account-id
-
-# Cron Job Authentication
+# Cron Job Authentication (Required)
 CRON_SECRET=your-random-secret-key
 
 # Resume Feature (optional — see "Resume Feature" section below)
 # GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account",...}
 # GOOGLE_DOC_ID=your-google-doc-id
-# NEXT_PUBLIC_API_URL=/api/resume
 ```
 
-**How to get your Cloudflare credentials:**
+**How to generate credentials:**
 
-1. **Account ID**: Visit [Cloudflare Dashboard](https://dash.cloudflare.com/) → copy Account ID from the right sidebar
-2. **D1 Token**: Dashboard → My Profile → API Tokens → Create Token → "Edit Cloudflare Workers" template → add "Account.D1" permission
-3. **CRON_SECRET**: Generate with `openssl rand -hex 32`
+- **CRON_SECRET**: Generate with `openssl rand -base64 32` or `openssl rand -hex 32`
+
+> ℹ️ **Note:** Cloudflare D1 Token and Account ID are only needed for production deployment, not for local development. The local D1 database is automatically managed by Wrangler.
 
 ### 4. Initialize Database
 
@@ -125,7 +122,7 @@ This creates `.wrangler/state/v3/d1/` with a SQLite database containing:
 
 #### Update Personal Information
 
-Edit `src/components/about/AboutApp.tsx` to update the `CONTACT_LINKS` array and your bio text directly in the component.
+Edit `src/components/about/AboutApp.tsx` to update the `CONTACT_LINKS` array and your bio text. The component includes email, GitHub, and LinkedIn links by default.
 
 #### Write Your First Blog Post
 
@@ -158,7 +155,14 @@ Visit [http://localhost:3000](http://localhost:3000) to see your site!
 
 ## 📄 Resume Feature (Optional)
 
-The Resume app fetches data from Google Docs using [`@yuji-min/google-docs-parser`](https://www.npmjs.com/package/@yuji-min/google-docs-parser).
+The Resume app fetches data from Google Docs using [`@yuji-min/google-docs-parser`](https://www.npmjs.com/package/@yuji-min/google-docs-parser) and caches it in Cloudflare D1 for fast responses.
+
+### How It Works
+
+- **Cloudflare Cron Trigger** automatically refreshes the resume cache every 5 minutes from Google Docs
+- **First request** may take 1-2 seconds (if cache is empty), subsequent requests are instant (~10-50ms)
+- **D1 Database** stores the parsed resume data, eliminating repeated Google API calls
+- **Background updates** ensure users always see fresh data without waiting
 
 ### Option A: Use Resume Feature
 
@@ -183,26 +187,43 @@ Add to `.env.local`:
 ```env
 GOOGLE_APPLICATION_CREDENTIALS={"type":"service_account","project_id":"...","private_key":"-----BEGIN PRIVATE KEY-----\n...","client_email":"...@....iam.gserviceaccount.com",...}
 GOOGLE_DOC_ID=your-google-doc-id
-NEXT_PUBLIC_API_URL=/api/resume
 ```
 
 **Get your Google Doc ID:** Open your Google Doc → copy the ID from the URL: `https://docs.google.com/document/d/YOUR_DOC_ID_HERE/edit`
 
 #### 3. Format Your Google Doc
 
-The parser expects:
+The parser expects specific heading styles. Check `src/app/api/resume/schema.ts` for the exact schema:
 
-- **Heading 1** for main sections (e.g., "Experience", "Education")
-- **Heading 2** for subsections (e.g., job titles, company names)
-- **Bullet points** for details
+- **Heading 2** for main sections (e.g., "Skills", "Experience", "Education")
+- **Heading 3** for subsections (e.g., job titles with format: `role | company | period`)
+- **Bullet lists** for details
 
-See [`@yuji-min/google-docs-parser` docs](https://www.npmjs.com/package/@yuji-min/google-docs-parser) for details.
+See [`@yuji-min/google-docs-parser` docs](https://www.npmjs.com/package/@yuji-min/google-docs-parser) for more details.
+
+#### 4. Adjust Cron Schedule (Optional)
+
+The default is every 5 minutes (`*/5 * * * *`) for quick testing. For production, consider changing to every hour to reduce API calls:
+
+```toml
+[triggers]
+crons = ["0 * * * *"]  # Every hour (recommended for production)
+```
+
+Other options:
+
+- `*/15 * * * *` - Every 15 minutes
+- `*/30 * * * *` - Every 30 minutes
+- `0 */6 * * *` - Every 6 hours
 
 ### Option B: Remove Resume Feature
 
 1. Remove `RESUME_APP` from `APP_LIST` and the `'resume'` case from `getContent()` in `src/libs/contentProvider.tsx`
-2. Delete `src/components/resume/`, `src/app/api/resume/`, `src/libs/resume/`, `src/components/icons/resume/`
+2. Delete `src/components/resume/` and `src/app/api/resume/`
 3. Remove `@yuji-min/google-docs-parser` and `googleapis` from `package.json`
+4. Remove the `[triggers]` section from `wrangler.toml`
+5. Change `main = "./worker-wrapper.js"` back to `main = ".open-next/worker.js"` in `wrangler.toml`
+6. Delete `worker-wrapper.js` from the root directory
 
 ---
 
@@ -265,8 +286,6 @@ npm run db:migrate:prod
 ### 3. Set Production Secrets
 
 ```bash
-wrangler secret put CLOUDFLARE_D1_TOKEN
-wrangler secret put CLOUDFLARE_ACCOUNT_ID
 wrangler secret put CRON_SECRET
 
 # If using Resume feature:
@@ -274,15 +293,46 @@ wrangler secret put GOOGLE_APPLICATION_CREDENTIALS
 wrangler secret put GOOGLE_DOC_ID
 ```
 
+> ℹ️ **Note:** After deployment, manually trigger the first resume cache creation:
+>
+> ```bash
+> curl -X POST https://your-site.com/api/resume/refresh \
+>   -H "Authorization: Bearer YOUR_CRON_SECRET"
+> ```
+
 ### 4. Deploy
 
 ```bash
 npm run deploy
 ```
 
+This command will:
+
+1. Clean previous builds
+2. Build Velite content (MDX blog posts)
+3. Build with OpenNext for Cloudflare Workers
+4. Copy static assets
+5. Deploy to Cloudflare (uses `worker-wrapper.js` from `wrangler.toml`)
+
 Your site will be live at `https://your-project.workers.dev`.
 
-### 5. Add Custom Domain (Optional)
+### 5. Verify Cron Trigger (If Using Resume Feature)
+
+Check that the Cron Trigger is working:
+
+```bash
+# View real-time logs
+wrangler tail --format=pretty
+
+# Expected output every 5 minutes:
+# [Cron] Resume cache refresh triggered at: 2026-02-09T02:40:32.000Z
+# [Cron] ✅ Resume cache refreshed successfully: { duration: 1231, ... }
+
+# Or check in Dashboard:
+# Workers & Pages → your-worker → Triggers → Cron Triggers
+```
+
+### 6. Add Custom Domain (Optional)
 
 ```bash
 wrangler domains add yourdomain.com
@@ -296,8 +346,9 @@ Or via Dashboard: Workers & Pages → Your Worker → Settings → Domains & Rou
 
 ```bash
 # Development
-npm run dev              # Start dev server
+npm run dev              # Start dev server (includes typegen, db:generate, velite build)
 npm run dev:cf           # Dev with Cloudflare Workers runtime
+npm run preview          # Same as dev:cf
 
 # Database
 npm run db:generate      # Generate migrations
@@ -307,18 +358,28 @@ npm run db:studio        # Open Drizzle Studio
 
 # Build & Deploy
 npm run build:deploy     # Full production build
-npm run deploy           # Build and deploy to Workers
+npm run deploy           # Build and deploy to Workers (deploys worker-wrapper.js)
 
 # Testing
 npm run test             # Run unit/integration tests (Vitest)
 npm run test:watch       # Run tests in watch mode
+npm run test:ui          # Run Vitest with UI
 npm run test:e2e         # Run E2E tests (Playwright)
+npm run test:e2e:ui      # Run Playwright with UI
 npm run test:coverage    # Generate coverage report
 
 # Code Quality
 npm run lint             # Run ESLint
 npm run lint:fix         # Fix linting issues
 npm run typecheck        # TypeScript type checking
+
+# Utilities
+npm run cf-typegen       # Generate Cloudflare Worker types
+npm run wrangler         # Run Wrangler CLI
+
+# Debugging
+wrangler tail            # View real-time Worker logs
+wrangler tail --format=pretty  # Pretty formatted logs
 ```
 
 ---
@@ -328,21 +389,30 @@ npm run typecheck        # TypeScript type checking
 ```
 src/
 ├── app/              # Next.js App Router (pages, API routes)
+│   ├── api/          # API routes (resume, guestbook, analytics)
+│   ├── blog/         # Blog pages (SSG)
+│   └── [...rest]/    # Catch-all for desktop apps
 ├── components/       # React components
-│   ├── layout/       # RetroOS shell, Taskbar, Desktop
+│   ├── layout/       # RetroOS shell, Taskbar, Desktop, StartMenu
 │   ├── common/       # Shared components (Window, Button)
 │   ├── blog/         # Blog app
 │   ├── about/        # About Me app
 │   ├── guestbook/    # Guestbook app
 │   ├── analytics/    # Analytics app
-│   └── resume/       # Resume app (optional)
+│   ├── resume/       # Resume app (with D1 caching)
+│   ├── icons/        # Icon components
+│   └── mdx/          # MDX components
 ├── hooks/            # Custom React hooks
+│   ├── window/       # Window management hooks
+│   └── ...           # Other hooks
 ├── libs/             # Utilities and helpers
 ├── models/           # TypeScript types and Zod schemas
-├── db/               # Database schema
+├── config/           # Personal configuration
+├── db/               # Drizzle ORM schema
 ├── posts/            # MDX blog posts
 └── __tests__/        # Test utilities and mocks
 e2e/                  # Playwright E2E tests
+worker-wrapper.js     # Cloudflare Worker with Cron support
 ```
 
 ---
