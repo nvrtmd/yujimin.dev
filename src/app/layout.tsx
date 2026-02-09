@@ -21,8 +21,60 @@ const dunggeunmo = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'yujimin.dev',
-  description: 'Dev Blog by Yuji Min',
+  metadataBase: new URL('https://yujimin.dev'),
+  title: {
+    default: 'yujimin.dev',
+    template: '%s | yujimin.dev',
+  },
+  description:
+    'Dev Blog by Yuji Min - Frontend Developer sharing knowledge about React, Next.js, TypeScript, and Web Development',
+  keywords: [
+    'Yuji Min',
+    'Frontend Developer',
+    'React',
+    'Next.js',
+    'TypeScript',
+    'Web Development',
+    'Dev Blog',
+    'Software Engineering',
+    'JavaScript',
+  ],
+  authors: [{ name: 'Yuji Min', url: 'https://yujimin.dev' }],
+  creator: 'Yuji Min',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://yujimin.dev',
+    title: 'yujimin.dev',
+    description:
+      'Dev Blog by Yuji Min - Frontend Developer sharing knowledge about React, Next.js, and Web Development',
+    siteName: 'yujimin.dev',
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'yujimin.dev - Dev Blog by Yuji Min',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'yujimin.dev',
+    description: 'Dev Blog by Yuji Min - Frontend Developer',
+    images: ['/images/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 // viewportFit 'cover' extends layout into safe-area on mobile notch devices

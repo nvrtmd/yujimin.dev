@@ -9,6 +9,14 @@ const PATH_NEXT_PREFIX = '/_next';
 const PATH_API_PREFIX = '/api';
 const PATH_STATIC_PREFIX = '/static';
 
+// Next.js metadata files (automatically generated routes)
+const NEXTJS_METADATA_ROUTES = [
+  '/opengraph-image',
+  '/sitemap.xml',
+  '/robots.txt',
+  '/favicon.ico',
+];
+
 /**
  * Middleware: Redirects invalid paths to home
  * Valid paths: /, /blog, /blog/[existing-slug]
@@ -22,6 +30,11 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(PATH_NEXT_PREFIX) ||
     pathname.startsWith(PATH_API_PREFIX)
   ) {
+    return NextResponse.next();
+  }
+
+  // Skip Next.js metadata files (opengraph-image, sitemap, robots, etc.)
+  if (NEXTJS_METADATA_ROUTES.some((route) => pathname.startsWith(route))) {
     return NextResponse.next();
   }
 

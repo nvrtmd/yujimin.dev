@@ -25,9 +25,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = getPostBySlug(slug);
 
   if (!post) return {};
+
+  const postUrl = `https://yujimin.dev/blog/${slug}`;
+  const ogImage = '/images/og-image.png';
+
   return {
     title: post.title,
     description: post.summary,
+    authors: [{ name: AUTHOR_NAME }],
+    openGraph: {
+      type: 'article',
+      url: postUrl,
+      title: post.title,
+      description: post.summary,
+      publishedTime: post.date,
+      authors: [AUTHOR_NAME],
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.summary,
+      images: [ogImage],
+    },
   };
 }
 
