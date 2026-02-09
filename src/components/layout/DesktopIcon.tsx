@@ -32,10 +32,10 @@ export function DesktopIcon({
       data-testid={`desktop-icon-${id}`}
       onClick={onClick}
       onMouseDown={onMouseDown}
-      className={`${className} flex flex-col items-center w-28 p-2 select-none group`}
+      className={`${className} flex flex-col items-center w-22 p-2 select-none group`}
       style={position ? { left: position.x, top: position.y } : undefined}
     >
-      <div className='relative mb-1 w-14 h-14'>
+      <div className='relative mb-1 w-11 h-11'>
         {isSelected && (
           <div
             className='absolute inset-0 bg-[var(--color-selection-overlay)]'
@@ -56,7 +56,7 @@ export function DesktopIcon({
           alt={title}
           fill
           className={`object-contain ${selectedStyle.imageTint}`}
-          sizes='64px'
+          sizes='44px'
           priority
           draggable={false}
         />
@@ -64,9 +64,9 @@ export function DesktopIcon({
 
       <div
         className={`
-          text-center text-lg p-0.5 border 
-          ${selectedStyle.container} 
-          ${!isSelected ? 'text-white drop-shadow-md' : ''} 
+          text-center text-base p-0.5 border
+          ${selectedStyle.container}
+          ${!isSelected ? 'text-white drop-shadow-md' : ''}
         `}
       >
         <span className='line-clamp-2 leading-tight'>{title}</span>

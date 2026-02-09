@@ -7,6 +7,12 @@ vi.mock('@/libs/contentProvider', () => ({
     { id: 'blog', title: 'Blog', iconSrc: '/blog.png', renderType: 'ssg' },
     { id: 'about', title: 'About', iconSrc: '/about.png', renderType: 'csr' },
     {
+      id: 'resume',
+      title: 'Resume',
+      iconSrc: '/resume.png',
+      renderType: 'csr',
+    },
+    {
       id: 'guestbook',
       title: 'Guestbook',
       iconSrc: '/guestbook.png',
@@ -16,12 +22,6 @@ vi.mock('@/libs/contentProvider', () => ({
       id: 'analytics',
       title: 'Analytics',
       iconSrc: '/analytics.png',
-      renderType: 'csr',
-    },
-    {
-      id: 'resume',
-      title: 'Resume',
-      iconSrc: '/resume.png',
       renderType: 'csr',
     },
   ],
@@ -69,10 +69,10 @@ describe('useIconDrag', () => {
     expect(result.current.isDragged).toBe(false);
     expect(result.current.iconPositions).toEqual({
       blog: { x: 16, y: 16 },
-      about: { x: 16, y: 136 },
-      guestbook: { x: 16, y: 256 },
-      analytics: { x: 16, y: 376 },
-      resume: { x: 16, y: 496 },
+      about: { x: 16, y: 122 },
+      resume: { x: 16, y: 228 },
+      guestbook: { x: 16, y: 334 },
+      analytics: { x: 16, y: 440 },
     });
   });
 
@@ -349,6 +349,6 @@ describe('useIconDrag', () => {
 
     // Assert
     expect(result.current.iconPositions.blog).toEqual(blogInitialPos);
-    expect(result.current.iconPositions.about).toEqual({ x: 66, y: 186 });
+    expect(result.current.iconPositions.about).toEqual({ x: 66, y: 172 });
   });
 });

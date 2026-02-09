@@ -55,9 +55,9 @@ export const RESUME_APP: App = {
 export const APP_LIST: App[] = [
   BLOG_APP,
   ABOUT_APP,
+  RESUME_APP,
   GUESTBOOK_APP,
   ANALYTICS_APP,
-  RESUME_APP,
 ];
 
 export const SSG_APP_LIST = APP_LIST.filter((app) => app.renderType === 'ssg');

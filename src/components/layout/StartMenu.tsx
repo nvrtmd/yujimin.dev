@@ -68,7 +68,7 @@ export function StartMenu({
           className={`${MENU_ITEM_CLASS} cursor-pointer`}
         >
           <Image
-            src='/images/icons/internet_img.png'
+            src='/images/icons/blog_img.png'
             alt='Blog'
             width={24}
             height={24}

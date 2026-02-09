@@ -3,9 +3,9 @@ import type { Position } from '@/models';
 export const TASKBAR_HEIGHT = 38;
 
 export const ICON_LAYOUT = {
-  ICON_WIDTH: 96,
-  ICON_HEIGHT: 96,
-  ICON_GAP: 24,
+  ICON_WIDTH: 88,
+  ICON_HEIGHT: 88,
+  ICON_GAP: 18,
   PADDING: 16,
   TASKBAR_HEIGHT,
   DEFAULT_VIEWPORT_HEIGHT: 1080,

@@ -16,11 +16,11 @@ describe('calculateInitialIconPositions', () => {
 
       expect(positions).toEqual({
         blog: { x: 16, y: 16 },
-        about: { x: 16, y: 136 },
-        guestbook: { x: 16, y: 256 },
-        analytics: { x: 16, y: 376 },
-        resume: { x: 16, y: 496 },
-        etc: { x: 16, y: 616 },
+        about: { x: 16, y: 122 },
+        guestbook: { x: 16, y: 228 },
+        analytics: { x: 16, y: 334 },
+        resume: { x: 16, y: 440 },
+        etc: { x: 16, y: 546 },
       });
     });
 
@@ -28,11 +28,11 @@ describe('calculateInitialIconPositions', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 768);
 
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.about).toEqual({ x: 16, y: 136 });
-      expect(positions.guestbook).toEqual({ x: 16, y: 256 });
-      expect(positions.analytics).toEqual({ x: 16, y: 376 });
-      expect(positions.resume).toEqual({ x: 16, y: 496 });
-      expect(positions.etc).toEqual({ x: 16, y: 616 });
+      expect(positions.about).toEqual({ x: 16, y: 122 });
+      expect(positions.guestbook).toEqual({ x: 16, y: 228 });
+      expect(positions.analytics).toEqual({ x: 16, y: 334 });
+      expect(positions.resume).toEqual({ x: 16, y: 440 });
+      expect(positions.etc).toEqual({ x: 16, y: 546 });
     });
   });
 
@@ -41,11 +41,11 @@ describe('calculateInitialIconPositions', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 1080);
 
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.about).toEqual({ x: 16, y: 136 });
-      expect(positions.guestbook).toEqual({ x: 16, y: 256 });
-      expect(positions.analytics).toEqual({ x: 16, y: 376 });
-      expect(positions.resume).toEqual({ x: 16, y: 496 });
-      expect(positions.etc).toEqual({ x: 16, y: 616 });
+      expect(positions.about).toEqual({ x: 16, y: 122 });
+      expect(positions.guestbook).toEqual({ x: 16, y: 228 });
+      expect(positions.analytics).toEqual({ x: 16, y: 334 });
+      expect(positions.resume).toEqual({ x: 16, y: 440 });
+      expect(positions.etc).toEqual({ x: 16, y: 546 });
     });
   });
 
@@ -54,7 +54,7 @@ describe('calculateInitialIconPositions', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 1440);
 
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.etc).toEqual({ x: 16, y: 616 });
+      expect(positions.etc).toEqual({ x: 16, y: 546 });
     });
   });
 
@@ -62,24 +62,25 @@ describe('calculateInitialIconPositions', () => {
     it('should wrap to second column when viewport is too short', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 400);
 
+      // With ICON_WIDTH=88, ICON_GAP=18, iconsPerColumn=3 at 400px viewport
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.about).toEqual({ x: 16, y: 136 });
+      expect(positions.about).toEqual({ x: 16, y: 122 });
+      expect(positions.guestbook).toEqual({ x: 16, y: 228 });
 
-      expect(positions.guestbook).toEqual({ x: 136, y: 16 });
-      expect(positions.analytics).toEqual({ x: 136, y: 136 });
-      expect(positions.resume).toEqual({ x: 256, y: 16 });
-      expect(positions.etc).toEqual({ x: 256, y: 136 });
+      expect(positions.analytics).toEqual({ x: 122, y: 16 });
+      expect(positions.resume).toEqual({ x: 122, y: 122 });
+      expect(positions.etc).toEqual({ x: 122, y: 228 });
     });
 
     it('should wrap to multiple columns with very small viewport', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 250);
 
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.about).toEqual({ x: 136, y: 16 });
-      expect(positions.guestbook).toEqual({ x: 256, y: 16 });
-      expect(positions.analytics).toEqual({ x: 376, y: 16 });
-      expect(positions.resume).toEqual({ x: 496, y: 16 });
-      expect(positions.etc).toEqual({ x: 616, y: 16 });
+      expect(positions.about).toEqual({ x: 122, y: 16 });
+      expect(positions.guestbook).toEqual({ x: 228, y: 16 });
+      expect(positions.analytics).toEqual({ x: 334, y: 16 });
+      expect(positions.resume).toEqual({ x: 440, y: 16 });
+      expect(positions.etc).toEqual({ x: 546, y: 16 });
     });
   });
 
@@ -116,15 +117,15 @@ describe('calculateInitialIconPositions', () => {
       const positions = calculateInitialIconPositions(mockAppIds, 100);
 
       expect(positions.blog).toEqual({ x: 16, y: 16 });
-      expect(positions.about).toEqual({ x: 136, y: 16 });
+      expect(positions.about).toEqual({ x: 122, y: 16 });
     });
   });
 
   describe('exported constants', () => {
     it('should export ICON_LAYOUT with correct values', () => {
-      expect(ICON_LAYOUT.ICON_WIDTH).toBe(96);
-      expect(ICON_LAYOUT.ICON_HEIGHT).toBe(96);
-      expect(ICON_LAYOUT.ICON_GAP).toBe(24);
+      expect(ICON_LAYOUT.ICON_WIDTH).toBe(88);
+      expect(ICON_LAYOUT.ICON_HEIGHT).toBe(88);
+      expect(ICON_LAYOUT.ICON_GAP).toBe(18);
       expect(ICON_LAYOUT.PADDING).toBe(16);
       expect(ICON_LAYOUT.TASKBAR_HEIGHT).toBe(38);
       expect(ICON_LAYOUT.DEFAULT_VIEWPORT_HEIGHT).toBe(1080);

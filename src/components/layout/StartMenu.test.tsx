@@ -170,7 +170,7 @@ describe('StartMenu', () => {
     expect(screen.getByText('Blog')).toBeInTheDocument();
     expect(screen.getByAltText('Blog')).toHaveAttribute(
       'src',
-      '/images/icons/internet_img.png',
+      '/images/icons/blog_img.png',
     );
 
     expect(screen.getByText('Source Code')).toBeInTheDocument();
