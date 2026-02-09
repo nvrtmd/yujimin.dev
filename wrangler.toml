@@ -1,6 +1,6 @@
 # wrangler.toml
 name = "yujimin-dev"
-main = ".open-next/worker.js"
+main = "./worker-wrapper.js"
 compatibility_date = "2025-10-20"
 compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 
