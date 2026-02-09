@@ -10,7 +10,7 @@ import { AboutApp } from '@/components/about';
 
 describe('contentProvider', () => {
   describe('getContent', () => {
-    it('유효한 id로 해당 컴포넌트를 반환해야 함', () => {
+    it('[valid] should return the corresponding component for valid id', () => {
       const content = getContent('about');
 
       expect(content).not.toBeNull();
@@ -21,14 +21,14 @@ describe('contentProvider', () => {
       }
     });
 
-    it('미구현 id로 null을 반환해야 함', () => {
+    it('[invalid] should return null for unimplemented id', () => {
       const content = getContent('etc');
       expect(content).toBeNull();
     });
   });
 
   describe('Data Integrity', () => {
-    it('SSG_APP_LIST와 CSR_APP_LIST는 중복이 없어야 함', () => {
+    it('[integrity] should have no duplicates between SSG_APP_LIST and CSR_APP_LIST', () => {
       const ssgIds = SSG_APP_LIST.map((app) => app.id);
       const csrIds = CSR_APP_LIST.map((app) => app.id);
 
@@ -36,7 +36,7 @@ describe('contentProvider', () => {
       expect(intersection).toHaveLength(0);
     });
 
-    it('모든 앱 ID는 고유해야 함', () => {
+    it('[integrity] should have unique IDs for all apps', () => {
       const ids = APP_LIST.map((app) => app.id);
       const uniqueIds = new Set(ids);
 

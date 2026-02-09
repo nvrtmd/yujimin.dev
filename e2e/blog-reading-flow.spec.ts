@@ -59,13 +59,13 @@ test.describe('Blog Desktop Flow', () => {
     const galleryViewBtn = page.getByTestId('view-gallery-button');
     const listViewBtn = page.getByTestId('view-list-button');
 
-    // Act & Assert - Gallery View (이미지 표시)
+    // Act & Assert - Gallery View (shows images)
     await galleryViewBtn.click();
     await expect(
       page.locator('[data-testid^="post-item-"] img').first(),
     ).toBeVisible();
 
-    // Act & Assert - List View (테이블 헤더 표시)
+    // Act & Assert - List View (shows table headers)
     await listViewBtn.click();
     await expect(page.getByText('Title')).toBeVisible();
     await expect(page.getByText('Date')).toBeVisible();

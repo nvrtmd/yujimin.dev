@@ -41,16 +41,16 @@
   --shadow-blog-panel: inset 1px 1px 0 #000;
   --shadow-blog-status: inset 0 1px 0 white;
 
-  /* Viewport Heights - 모바일 브라우저 호환성
-     - svh: 최소 뷰포트 높이 (주소창 표시 상태)
-     - dvh: 동적 뷰포트 높이 (실시간 반영)
-     - lvh: 최대 뷰포트 높이 (주소창 숨김 상태)
+  /* Viewport Heights - Mobile browser compatibility
+     - svh: Small viewport height (with address bar visible)
+     - dvh: Dynamic viewport height (real-time reflection)
+     - lvh: Large viewport height (with address bar hidden)
   */
   --vh-small: 100svh;
   --vh-dynamic: 100dvh;
   --vh-large: 100lvh;
 
-  /* Safe Area Insets - iOS 노치/홈 인디케이터 대응 */
+  /* Safe Area Insets - iOS notch/home indicator support */
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-right: env(safe-area-inset-right, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
@@ -68,15 +68,15 @@
    ============================================ */
 html {
   cursor: url('/images/cursor.png'), auto;
-  /* 모바일에서 safe-area를 body까지 확장 */
+  /* Extend safe-area to body on mobile */
   height: 100%;
 }
 
 body {
   /* 
-   * 모바일 브라우저 컨트롤바 색상 대응:
-   * - background-color: 하단 컨트롤바 색상 (Android/iOS가 이 값을 참조)
-   * - background-image: 실제 화면에 보이는 그라데이션 (상단 #008080 → 하단 #c0c0c0)
+   * Mobile browser control bar color mapping:
+   * - background-color: Bottom control bar color (referenced by Android/iOS)
+   * - background-image: Actual gradient visible on screen (top #008080 → bottom #c0c0c0)
    */
   background-color: var(--color-taskbar);
   background-image: linear-gradient(

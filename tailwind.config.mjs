@@ -14,9 +14,9 @@ const config = {
         retro: ['var(--font-dunggeunmo)', 'sans-serif'],
       },
       /**
-       * Retro OS 테마 색상
-       * ⚠️ Single Source of Truth: globals.css의 CSS 변수를 참조합니다.
-       *    색상 변경 시 globals.css의 :root만 수정하면 됩니다.
+       * Retro OS theme colors
+       * ⚠️ Single Source of Truth: References CSS variables in globals.css.
+       *    To change colors, only modify :root in globals.css.
        */
       colors: {
         retro: {
@@ -32,8 +32,8 @@ const config = {
         },
       },
       /**
-       * 안전 영역을 고려한 간격
-       * - 모바일 기기의 노치/홈 인디케이터 대응
+       * Spacing with safe area consideration
+       * - For mobile device notch/home indicator support
        */
       spacing: {
         'safe-top': 'env(safe-area-inset-top, 0px)',
@@ -42,10 +42,10 @@ const config = {
         'safe-left': 'env(safe-area-inset-left, 0px)',
       },
       /**
-       * 뷰포트 높이 유틸리티
-       * - svh: 작은 뷰포트 (주소창 표시 상태, 안정적)
-       * - dvh: 동적 뷰포트 (실시간 반영)
-       * - lvh: 큰 뷰포트 (주소창 숨김 상태)
+       * Viewport height utilities
+       * - svh: Small viewport height (with address bar visible, stable)
+       * - dvh: Dynamic viewport height (real-time reflection)
+       * - lvh: Large viewport height (with address bar hidden)
        */
       height: {
         svh: '100svh',

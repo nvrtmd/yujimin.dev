@@ -2,7 +2,7 @@ type DateFormatOptions = {
   includeTime?: boolean;
 };
 
-// Output: "24. 01. 15." or with time "24. 01. 15. 오전 10:30"
+// Output: "24. 01. 15." or with time "24. 01. 15. AM 10:30"
 export const formatPostDate = (
   dateString: string,
   options: DateFormatOptions = {},

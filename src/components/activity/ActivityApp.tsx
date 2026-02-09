@@ -13,8 +13,9 @@ export function ActivityApp() {
       <h1 className='text-3xl font-bold'>Yuji Min</h1>
       <p className='text-lg text-gray-600 mt-2'>Frontend Developer</p>
       <p className='mt-6 max-w-md mx-auto'>
-        안녕하세요! 제 블로그에 오신 것을 환영합니다.
-        <br />이 곳은 기술과 경험을 공유하는 공간입니다.
+        Hello! Welcome to my blog.
+        <br />
+        This is a space to share technology and experiences.
       </p>
     </div>
   );

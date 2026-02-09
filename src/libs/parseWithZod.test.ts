@@ -81,19 +81,19 @@ describe('parseWithZod', () => {
   });
 
   it('[valid] should return transformed data, not just original input', () => {
-    // 1. 변환 로직이 포함된 스키마 (String -> Number)
+    // Schema with transformation logic (String -> Number)
     const transformSchema = z.object({
       id: z.string().transform((val) => Number(val)),
     });
 
-    // 2. 입력은 문자열
+    // Input is a string
     const input = { id: '42' };
 
-    // 3. 실행
+    // Execution
     const result = parseWithZod(input, transformSchema);
 
-    // 4. 검증: 반환값이 숫자 42여야 함.
-    // 만약 원본 객체를 그대로 반환하는 버그가 있다면 문자열 '42'가 되어 테스트 실패함.
+    // Validation: return value should be the number 42.
+    // If there's a bug returning the original object, it would be the string '42' and the test would fail.
     expect(result.id).toBe(42);
     expect(typeof result.id).toBe('number');
   });
