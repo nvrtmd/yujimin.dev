@@ -31,8 +31,8 @@ export function CodeBlock({ children, ...props }: CodeBlockProps) {
   };
 
   return (
-    <div className='relative my-6 font-mono text-sm group'>
-      <div className='bg-[var(--color-window-bg)] border-t-2 border-l-2 border-white border-r-2 border-r-[var(--color-border-dark)] px-2 py-1 flex justify-between items-center'>
+    <div className='relative my-6 font-mono text-sm group code-block-wrapper not-prose'>
+      <div className='bg-[var(--color-window-bg)] border-t-2 border-l-2 border-white border-r-2 border-r-[var(--color-border-dark)] border-b-2 border-b-[var(--color-border-dark)] px-2 py-1 flex justify-between items-center'>
         <span className='text-xs text-black'>Source Code</span>
 
         <button
@@ -52,7 +52,7 @@ export function CodeBlock({ children, ...props }: CodeBlockProps) {
       <pre
         ref={preRef}
         {...props}
-        className='bg-white text-black p-4 border-2 border-[var(--color-border-dark)] border-r-white border-b-white overflow-x-auto'
+        className='!bg-[#1e1e1e] !text-[#d4d4d4] p-4 !border-2 !border-[var(--color-border-dark)] !border-t-[var(--color-border-dark)] !border-l-[var(--color-border-dark)] !border-r-white !border-b-white overflow-x-auto !m-0 !rounded-none'
       >
         {children}
       </pre>

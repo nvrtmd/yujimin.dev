@@ -1,6 +1,6 @@
 import { defineConfig, s } from 'velite';
 import rehypeSlug from 'rehype-slug';
-import rehypePrettyCode from 'rehype-pretty-code';
+import rehypePrism from 'rehype-prism-plus';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import remarkBreaks from 'remark-breaks';
 
@@ -18,7 +18,7 @@ export default defineConfig({
           summary: s.string(),
           category: s.string(),
           thumbnail: s.string().optional(),
-          body: s.mdx(),
+          body: s.markdown(),
         })
         .transform((data) => ({
           ...data,
@@ -26,12 +26,13 @@ export default defineConfig({
         })),
     },
   },
-  mdx: {
+  markdown: {
     remarkPlugins: [remarkBreaks],
     rehypePlugins: [
       rehypeSlug,
       rehypeAutolinkHeadings,
-      [rehypePrettyCode, { theme: 'github-dark' }],
+      // @ts-expect-error - Unified type version mismatch between velite and rehype plugins
+      [rehypePrism, { showLineNumbers: true }],
     ],
   },
 });
