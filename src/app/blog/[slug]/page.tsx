@@ -27,7 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!post) return {};
 
   const postUrl = `https://yujimin.dev/blog/${slug}`;
-  const ogImage = '/images/og-image.png';
+  const ogImage =
+    post.ogImage ??
+    post.thumbnail ??
+    '/images/thumbnails/blog_thumbnail_img.png';
 
   return {
     title: post.title,

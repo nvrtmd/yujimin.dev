@@ -727,41 +727,25 @@ describe('BlogApp', () => {
   // ==========================================================================
 
   describe('Icon Rendering', () => {
-    it('[icon] should render FolderIcon with closed color for unselected categories', () => {
+    it('[icon] should render folder images for category items', () => {
       render(<BlogApp posts={mockPosts} initialCategories={mockCategories} />);
 
-      // When no category is selected (all mode), folder icons should be "closed" color
-      const folderIcons = document.querySelectorAll(
-        'svg.text-\\[var\\(--color-folder-closed\\)\\]',
+      // Each category TreeItem uses folder_img.png
+      const folderImgs = document.querySelectorAll(
+        'img[src="/images/icons/folder_img.png"]',
       );
-      expect(folderIcons.length).toBeGreaterThan(0);
+      expect(folderImgs.length).toBeGreaterThan(0);
     });
 
-    it('[icon] should render FolderIcon with open color for selected category', () => {
-      mockSearchParams = new URLSearchParams('category=react');
+    it('[icon] should render folder image for Blog root node', () => {
       render(<BlogApp posts={mockPosts} initialCategories={mockCategories} />);
 
-      // React category is selected, so its FolderIcon should have open color
-      const openFolderIcons = document.querySelectorAll(
-        'svg.text-\\[var\\(--color-folder-open\\)\\]',
+      // Blog root TreeItem uses folder_img.png
+      const folderImgs = document.querySelectorAll(
+        'img[src="/images/icons/folder_img.png"]',
       );
-      expect(openFolderIcons.length).toBe(1);
-
-      // TypeScript folder should be closed
-      const closedFolderIcons = document.querySelectorAll(
-        'svg.text-\\[var\\(--color-folder-closed\\)\\]',
-      );
-      expect(closedFolderIcons.length).toBe(1);
-    });
-
-    it('[icon] should render DriveIcon for Blog root node', () => {
-      render(<BlogApp posts={mockPosts} initialCategories={mockCategories} />);
-
-      // DriveIcon has specific path data
-      const driveIconPath = document.querySelector(
-        'svg path[d="M2 6h20v12H2z"]',
-      );
-      expect(driveIconPath).toBeInTheDocument();
+      // Blog root + each category all use the same folder image
+      expect(folderImgs.length).toBeGreaterThanOrEqual(1);
     });
 
     it('[icon] should render SVG icons in view toggle buttons', () => {

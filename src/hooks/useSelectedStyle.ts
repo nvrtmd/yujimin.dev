@@ -8,11 +8,7 @@ export const useSelectedStyle = (isSelected: boolean) => {
         ? 'bg-[var(--color-window-title-active)] text-white border-gray-200 border-dotted'
         : 'text-black border-transparent border-dotted',
 
-      thumbnailWrapper: `relative w-full aspect-video mb-2 border overflow-hidden shadow-sm ${
-        isSelected
-          ? 'border-[var(--color-window-title-active)] bg-[var(--color-selection-overlay)]'
-          : 'border-gray-400 bg-gray-200'
-      }`,
+      thumbnailWrapper: 'relative w-full aspect-square mb-2 bg-white',
 
       // hard-light blend mode tints the image with the blue selection background
       imageTint: isSelected ? 'opacity-90 mix-blend-hard-light' : '',

@@ -58,18 +58,36 @@ export function PostItem({
       onDoubleClick={(e) => onItemDoubleClick(e, post.slug)}
       className='group flex flex-col cursor-default p-2 rounded-sm w-full max-w-[180px] mx-auto'
     >
-      <div className={selectedStyle.thumbnailWrapper}>
-        <Image
-          src={post.thumbnail || POST_LIST_CONFIG.DEFAULT_THUMBNAIL_PATH}
-          alt={post.title}
-          fill
-          className={`object-cover ${selectedStyle.imageTint}`}
-          sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-        />
+      <div className='w-3/4 mx-auto'>
+        <div className={selectedStyle.thumbnailWrapper}>
+          {isSelected && (
+            <div
+              data-testid='thumbnail-selection-overlay'
+              className='absolute inset-0 z-10 bg-[var(--color-selection-overlay)]'
+              style={{
+                maskImage: `url(${post.thumbnail || POST_LIST_CONFIG.DEFAULT_THUMBNAIL_PATH})`,
+                maskSize: 'contain',
+                maskRepeat: 'no-repeat',
+                maskPosition: 'center',
+                WebkitMaskImage: `url(${post.thumbnail || POST_LIST_CONFIG.DEFAULT_THUMBNAIL_PATH})`,
+                WebkitMaskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+              }}
+            />
+          )}
+          <Image
+            src={post.thumbnail || POST_LIST_CONFIG.DEFAULT_THUMBNAIL_PATH}
+            alt={post.title}
+            fill
+            className='object-contain'
+            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+          />
+        </div>
       </div>
       <div className='flex flex-col items-center text-center'>
         <h3
-          className={`text-sm font-bold line-clamp-2 w-auto inline-block px-1 border ${selectedStyle.container}`}
+          className={`text-base font-bold line-clamp-2 w-auto inline-block px-1 border ${selectedStyle.container}`}
         >
           {post.title}
         </h3>

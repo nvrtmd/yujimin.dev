@@ -6,12 +6,8 @@ import { useMemo, useRef } from 'react';
 import { PushLockButton } from '../common/PushLockButton';
 import { useMobile } from '@/hooks/useMobile';
 import { useBlogState } from '@/hooks/blog/useBlogState';
-import {
-  FolderIcon,
-  DriveIcon,
-  ListViewIcon,
-  GalleryViewIcon,
-} from '../icons/blog';
+import { FolderIcon, ListViewIcon, GalleryViewIcon } from '../icons/blog';
+import Image from 'next/image';
 import { TreeItem } from './tree';
 import {
   DEFAULT_CATEGORY,
@@ -122,7 +118,15 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
             <div className='min-w-full inline-block align-top'>
               <TreeItem
                 label='Blog'
-                icon={<DriveIcon />}
+                icon={
+                  <Image
+                    src='/images/icons/folder_img.png'
+                    alt='folder'
+                    width={16}
+                    height={16}
+                    className='mr-1 inline-block shrink-0'
+                  />
+                }
                 isSelected={selectedCategoryValue === DEFAULT_CATEGORY}
                 onClick={() => handleCategorySelect(DEFAULT_CATEGORY)}
                 hasChildren={true}
@@ -140,8 +144,12 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
                       key={category.value}
                       label={`${category.name} (${category.count})`}
                       icon={
-                        <FolderIcon
-                          isOpen={selectedCategoryValue === category.value}
+                        <Image
+                          src='/images/icons/folder_img.png'
+                          alt='folder'
+                          width={16}
+                          height={16}
+                          className='mr-1 inline-block shrink-0'
                         />
                       }
                       isSelected={selectedCategoryValue === category.value}

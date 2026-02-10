@@ -361,7 +361,10 @@ describe('PostList', () => {
       );
 
       const img = screen.getByAltText('Post Without Thumbnail');
-      expect(img).toHaveAttribute('src', '/images/icons/window_page_img.png');
+      expect(img).toHaveAttribute(
+        'src',
+        '/images/thumbnails/blog_thumbnail_img.png',
+      );
     });
 
     it('[gallery-view] should not show summary or category', () => {
@@ -1094,7 +1097,7 @@ describe('PostList', () => {
   // ==========================================================================
 
   describe('Image Rendering', () => {
-    it('[image] should apply image tint effect when gallery item is selected', async () => {
+    it('[image] should show mask overlay when gallery item is selected', async () => {
       const user = userEvent.setup();
 
       render(
@@ -1106,17 +1109,19 @@ describe('PostList', () => {
         />,
       );
 
-      // Before: no tint
-      const imgBefore = screen.getByAltText('Post With Thumbnail');
-      expect(imgBefore).not.toHaveClass('opacity-90');
+      // Arrange: before click, no mask overlay
+      expect(
+        screen.queryByTestId('thumbnail-selection-overlay'),
+      ).not.toBeInTheDocument();
 
-      // Click to select
+      // Act: click to select
       await user.click(screen.getByTestId('post-item-with-thumbnail'));
 
-      // After: has tint (re-query because inline component remounts DOM)
+      // Assert: mask overlay appears after selection
       await waitFor(() => {
-        const imgAfter = screen.getByAltText('Post With Thumbnail');
-        expect(imgAfter).toHaveClass('opacity-90', 'mix-blend-hard-light');
+        expect(
+          screen.getByTestId('thumbnail-selection-overlay'),
+        ).toBeInTheDocument();
       });
     });
 

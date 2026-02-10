@@ -43,7 +43,7 @@ export const TreeItem = ({
         <TreeToggle isOpen={isExpanded || false} onClick={onToggle} />
       )}
       {icon}
-      <span className='font-bold ml-1 truncate'>{label}</span>
+      <span className='text-base font-bold ml-1 truncate'>{label}</span>
     </div>
   );
 };

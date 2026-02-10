@@ -18,6 +18,7 @@ export default defineConfig({
           summary: s.string(),
           category: s.string(),
           thumbnail: s.string().optional(),
+          ogImage: s.string().optional(),
           body: s.markdown(),
         })
         .transform((data) => ({

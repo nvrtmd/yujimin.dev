@@ -5,4 +5,5 @@ export interface Post {
   summary: string;
   category: string;
   thumbnail?: string;
+  ogImage?: string;
 }
