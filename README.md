@@ -92,7 +92,8 @@ npm install
 Create a `.env.local` file in the project root:
 
 ```env
-# Cron Job Authentication (Required)
+# Cron Job Authentication (Required only if using Resume feature)
+# Authenticates periodic cache refresh from Google Docs via @yuji-min/google-docs-parser
 CRON_SECRET=your-random-secret-key
 
 # Resume Feature (optional — see "Resume Feature" section below)
@@ -103,6 +104,9 @@ CRON_SECRET=your-random-secret-key
 **How to generate credentials:**
 
 - **CRON_SECRET**: Generate with `openssl rand -base64 32` or `openssl rand -hex 32`
+  - Used to authenticate the cron job that periodically fetches resume data from Google Docs
+  - **Only required if you're using the Resume feature** with Google Docs integration (see below)
+  - If you remove the Resume feature or use a different implementation, this is not needed
 
 > ℹ️ **Note:** Cloudflare D1 Token and Account ID are only needed for production deployment, not for local development. The local D1 database is automatically managed by Wrangler.
 
@@ -155,14 +159,24 @@ Visit [http://localhost:3000](http://localhost:3000) to see your site!
 
 ## 📄 Resume Feature (Optional)
 
-The Resume app fetches data from Google Docs using [`@yuji-min/google-docs-parser`](https://www.npmjs.com/package/@yuji-min/google-docs-parser) and caches it in Cloudflare D1 for fast responses.
+> ⚠️ **This feature is entirely optional.** If you don't need it or want to implement your own resume page, skip to [Option B: Remove Resume Feature](#option-b-remove-resume-feature).
+
+### Why This Setup?
+
+This project uses a unique approach for the Resume app:
+
+- Fetches structured data from **Google Docs** using [`@yuji-min/google-docs-parser`](https://www.npmjs.com/package/@yuji-min/google-docs-parser)
+- **Problem**: Direct Google API calls take 3-5 seconds per request
+- **Solution**: Cloudflare Cron Trigger + D1 caching strategy
 
 ### How It Works
 
-- **Cloudflare Cron Trigger** automatically refreshes the resume cache every 5 minutes from Google Docs
-- **First request** may take 1-2 seconds (if cache is empty), subsequent requests are instant (~10-50ms)
-- **D1 Database** stores the parsed resume data, eliminating repeated Google API calls
-- **Background updates** ensure users always see fresh data without waiting
+1. **Cron Job** (every 5 min) refreshes the cache by fetching from Google Docs
+2. **D1 Database** stores the parsed resume data
+3. **API Route** serves cached data instantly (~10-50ms)
+4. **Background updates** keep data fresh without user-facing delays
+
+**If you're building your own resume implementation or don't need this feature**, you can safely remove all resume-related components (cron job, database cache, Google Docs parser). See Option B below.
 
 ### Option A: Use Resume Feature
 
@@ -218,12 +232,17 @@ Other options:
 
 ### Option B: Remove Resume Feature
 
-1. Remove `RESUME_APP` from `APP_LIST` and the `'resume'` case from `getContent()` in `src/libs/contentProvider.tsx`
-2. Delete `src/components/resume/` and `src/app/api/resume/`
-3. Remove `@yuji-min/google-docs-parser` and `googleapis` from `package.json`
-4. Remove the `[triggers]` section from `wrangler.toml`
-5. Change `main = "./worker-wrapper.js"` back to `main = ".open-next/worker.js"` in `wrangler.toml`
-6. Delete `worker-wrapper.js` from the root directory
+If you don't need the Resume app or want to implement your own solution:
+
+1. **Remove from app list**: Delete `RESUME_APP` from `APP_LIST` and the `'resume'` case from `getContent()` in `src/libs/contentProvider.tsx`
+2. **Delete components**: Remove `src/components/resume/` and `src/app/api/resume/`
+3. **Remove dependencies**: Uninstall `@yuji-min/google-docs-parser` and `googleapis` from `package.json`
+4. **Remove cron trigger**: Delete the `[triggers]` section from `wrangler.toml`
+5. **Revert worker config**: Change `main = "./worker-wrapper.js"` back to `main = ".open-next/worker.js"` in `wrangler.toml`
+6. **Delete wrapper**: Remove `worker-wrapper.js` from the root directory
+7. **Skip CRON_SECRET**: No need to set `CRON_SECRET` in `.env.local` or production secrets
+
+After these changes, you won't need Google Docs credentials, cron jobs, or the resume cache table. Build your own resume component however you like!
 
 ---
 
