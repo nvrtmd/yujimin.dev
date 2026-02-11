@@ -1,17 +1,12 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { App, WindowState } from '@/models';
 import { useWindowState } from './useWindowState';
 import { useWindowDrag } from './useWindowDrag';
 import { useWindowResize } from './useWindowResize';
 import { useUrlNavigation } from '../useUrlNavigation';
-
-const filterByRenderType = (
-  windows: WindowState[],
-  renderType: 'ssg' | 'csr',
-) => windows.filter((window) => window.renderType === renderType);
 
 const findFrontmostWindow = (windows: WindowState[]): WindowState | null => {
   const openWindows = windows.filter((w) => !w.isMinimized);
@@ -25,6 +20,7 @@ const findFrontmostWindow = (windows: WindowState[]): WindowState | null => {
 
 export const useWindowManager = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const {
     windowList,
     setWindowList,
@@ -51,16 +47,6 @@ export const useWindowManager = () => {
     bringToFront,
   );
 
-  const ssgWindowList = useMemo(
-    () => filterByRenderType(windowList, 'ssg'),
-    [windowList],
-  );
-
-  const csrWindowList = useMemo(
-    () => filterByRenderType(windowList, 'csr'),
-    [windowList],
-  );
-
   const frontmostOpenWindow = useMemo(
     () => findFrontmostWindow(windowList),
     [windowList],
@@ -81,10 +67,7 @@ export const useWindowManager = () => {
 
   const handleOpenWindow = useCallback(
     (app: App) => {
-      if (app.renderType === 'ssg') {
-        router.push(`/${app.id}`);
-      }
-
+      router.push(`/${app.id}`);
       openWindow(app, app.size, app.position);
     },
     [router, openWindow],
@@ -92,19 +75,18 @@ export const useWindowManager = () => {
 
   const handleCloseWindow = useCallback(
     (window: WindowState) => {
-      if (window.renderType === 'ssg') {
+      const isActiveWindow = pathname.startsWith(`/${window.id}`);
+      if (isActiveWindow) {
         router.push('/');
       }
 
       closeWindow(window);
     },
-    [router, closeWindow],
+    [router, pathname, closeWindow],
   );
 
   return {
     windowList,
-    ssgWindowList,
-    csrWindowList,
     frontmostOpenWindow,
     isPreviousPathHome,
     handleOpenWindow,

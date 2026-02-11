@@ -56,7 +56,7 @@ const createDefaultWindow = (
   zIndex: 1,
   isMinimized: false,
   isMaximized: false,
-  renderType: 'csr',
+  showAddressBar: false,
   canMinimize: true,
   canMaximize: true,
   ...overrides,
@@ -280,9 +280,9 @@ describe('Window', () => {
   // ==========================================================================
 
   describe('[address] AddressBar Conditional Rendering', () => {
-    it('should show AddressBar for SSG windows', () => {
+    it('should show AddressBar for windows with showAddressBar=true', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ renderType: 'ssg' }),
+        window: createDefaultWindow({ showAddressBar: true }),
       });
       render(<Window {...props} />);
 
@@ -290,9 +290,9 @@ describe('Window', () => {
       expect(screen.getByRole('img', { name: 'forward' })).toBeInTheDocument();
     });
 
-    it('should NOT show AddressBar for CSR windows', () => {
+    it('should NOT show AddressBar for windows with showAddressBar=false', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ renderType: 'csr' }),
+        window: createDefaultWindow({ showAddressBar: false }),
       });
       render(<Window {...props} />);
 
@@ -306,7 +306,7 @@ describe('Window', () => {
 
     it('should disable back button when isPreviousPathHome is true', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ renderType: 'ssg' }),
+        window: createDefaultWindow({ showAddressBar: true }),
         isPreviousPathHome: true,
       });
       render(<Window {...props} />);
@@ -319,7 +319,7 @@ describe('Window', () => {
 
     it('should enable back button when isPreviousPathHome is false', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ renderType: 'ssg' }),
+        window: createDefaultWindow({ showAddressBar: true }),
         isPreviousPathHome: false,
       });
       render(<Window {...props} />);
@@ -332,12 +332,12 @@ describe('Window', () => {
 
     it('should display the page icon in address bar', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ renderType: 'ssg' }),
+        window: createDefaultWindow({ showAddressBar: true }),
       });
       render(<Window {...props} />);
 
       // Both TitleBar and AddressBar have a "window page icon" img
-      // For SSG windows, there should be exactly 2 instances
+      // For windows with showAddressBar=true, there should be exactly 2 instances
       const pageIcons = screen.getAllByRole('img', {
         name: 'window page icon',
       });

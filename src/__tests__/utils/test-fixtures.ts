@@ -1,7 +1,7 @@
 import type { App, WindowState } from '@/models';
 
 /**
- * Creates a mock CSR WindowState for testing
+ * Creates a mock WindowState for testing (formerly CSR window)
  */
 export const createMockCsrWindow = (
   overrides: Partial<WindowState> = {},
@@ -9,7 +9,7 @@ export const createMockCsrWindow = (
   id: 'about',
   title: 'About',
   iconSrc: '/test.png',
-  renderType: 'csr',
+  showAddressBar: false,
   position: { x: 100, y: 100 },
   size: { width: 400, height: 300 },
   zIndex: 1,
@@ -19,7 +19,7 @@ export const createMockCsrWindow = (
 });
 
 /**
- * Creates a mock SSG WindowState for testing
+ * Creates a mock WindowState with address bar (formerly SSG window)
  */
 export const createMockSsgWindow = (
   overrides: Partial<WindowState> = {},
@@ -27,7 +27,7 @@ export const createMockSsgWindow = (
   id: 'blog',
   title: 'Blog',
   iconSrc: '/test.png',
-  renderType: 'ssg',
+  showAddressBar: true,
   position: { x: 100, y: 100 },
   size: { width: 400, height: 300 },
   zIndex: 1,
@@ -37,23 +37,23 @@ export const createMockSsgWindow = (
 });
 
 /**
- * Creates a mock CSR App for testing
+ * Creates a mock App without address bar (formerly CSR app)
  */
 export const createMockCsrApp = (overrides: Partial<App> = {}): App => ({
   id: 'about',
   title: 'About',
   iconSrc: '/test.png',
-  renderType: 'csr',
+  showAddressBar: false,
   ...overrides,
 });
 
 /**
- * Creates a mock SSG App for testing
+ * Creates a mock App with address bar (formerly SSG app)
  */
 export const createMockSsgApp = (overrides: Partial<App> = {}): App => ({
   id: 'blog',
   title: 'Blog',
   iconSrc: '/test.png',
-  renderType: 'ssg',
+  showAddressBar: true,
   ...overrides,
 });

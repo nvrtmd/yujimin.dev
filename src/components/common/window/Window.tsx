@@ -18,7 +18,6 @@ interface WindowProps {
   onDragMouseDown: (e: React.MouseEvent) => void;
   onResizeMouseDown: (e: React.MouseEvent, direction: string) => void;
   children?: ReactNode;
-  renderType?: WindowState['renderType'];
   isPreviousPathHome: boolean;
   isActive: boolean;
   isMobile?: boolean;
@@ -48,6 +47,7 @@ export const Window: React.FC<WindowProps> = ({
     isMinimized,
     canMinimize = true,
     canMaximize = true,
+    showAddressBar = true,
   } = windowState as WindowState;
 
   if (isMinimized) {
@@ -110,8 +110,11 @@ export const Window: React.FC<WindowProps> = ({
 
       <MenuBar />
 
-      {windowState.renderType === 'ssg' && (
-        <AddressBar isPreviousPathHome={isPreviousPathHome} />
+      {showAddressBar && (
+        <AddressBar
+          isPreviousPathHome={isPreviousPathHome}
+          windowAppId={windowState.id}
+        />
       )}
 
       <div className='relative flex-grow min-h-0'>

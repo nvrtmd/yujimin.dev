@@ -9,6 +9,8 @@ const PATH_NEXT_PREFIX = '/_next';
 const PATH_API_PREFIX = '/api';
 const PATH_STATIC_PREFIX = '/static';
 
+const SSG_APP_PATHS = ['/about', '/resume', '/guestbook', '/analytics'];
+
 // Next.js metadata files (automatically generated routes)
 const NEXTJS_METADATA_ROUTES = [
   '/opengraph-image',
@@ -47,6 +49,7 @@ export function middleware(request: NextRequest) {
   const isValidPath =
     pathname === PATH_ROOT ||
     pathname === PATH_BLOG ||
+    SSG_APP_PATHS.includes(pathname) ||
     (pathname.startsWith(PATH_BLOG_PREFIX) &&
       blogPosts.some((post) => pathname === `${PATH_BLOG_PREFIX}${post.slug}`));
 

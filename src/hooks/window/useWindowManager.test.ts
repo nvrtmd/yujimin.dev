@@ -10,8 +10,10 @@ import { useWindowManager } from './useWindowManager';
 import type { WindowState } from '@/models';
 
 const mockPush = vi.fn();
+const mockPathname = vi.fn(() => '/');
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
+  usePathname: () => mockPathname(),
 }));
 
 const mockOpenWindow = vi.fn();
@@ -49,23 +51,7 @@ describe('useWindowManager', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockWindowList = [];
-  });
-
-  it('[filter] should separate SSG and CSR windows by renderType', () => {
-    // Arrange
-    mockWindowList = [
-      createMockSsgWindow({ id: 'blog', zIndex: 1 }),
-      createMockCsrWindow({ id: 'about', zIndex: 2 }),
-      createMockCsrWindow({ id: 'guestbook', zIndex: 3 }),
-    ];
-
-    // Act
-    const { result } = renderHook(() => useWindowManager());
-
-    // Assert
-    expect(result.current.ssgWindowList).toHaveLength(1);
-    expect(result.current.ssgWindowList[0].id).toBe('blog');
-    expect(result.current.csrWindowList).toHaveLength(2);
+    mockPathname.mockReturnValue('/');
   });
 
   it('[frontmost] should return highest zIndex window as frontmost', () => {
@@ -142,11 +128,11 @@ describe('useWindowManager', () => {
     expect(mockMinimizeWindow).not.toHaveBeenCalled();
   });
 
-  it('[open] should push route for SSG app and skip for CSR app', () => {
+  it('[open] should always push route for all apps', () => {
     // Arrange
     const { result } = renderHook(() => useWindowManager());
 
-    // Act - Open SSG app
+    // Act - Open app with address bar
     act(() => {
       result.current.handleOpenWindow(createMockSsgApp({ id: 'blog' }));
     });
@@ -157,41 +143,59 @@ describe('useWindowManager', () => {
 
     vi.clearAllMocks();
 
-    // Act - Open CSR app
+    // Act - Open app without address bar
     act(() => {
-      result.current.handleOpenWindow(createMockCsrApp({ id: 'about' }));
+      result.current.handleOpenWindow(createMockCsrApp({ id: 'analytics' }));
     });
 
-    // Assert - Should NOT push route
-    expect(mockPush).not.toHaveBeenCalled();
+    // Assert - Should also push route
+    expect(mockPush).toHaveBeenCalledWith('/analytics');
     expect(mockOpenWindow).toHaveBeenCalled();
   });
 
-  it('[close] should push "/" for SSG window and skip for CSR window', () => {
+  it('[close] should push "/" for active window and skip for inactive window', () => {
     // Arrange
-    const ssgWindow = createMockSsgWindow({ id: 'blog' });
-    const csrWindow = createMockCsrWindow({ id: 'about' });
-    mockWindowList = [ssgWindow, csrWindow];
+    const window1 = createMockSsgWindow({ id: 'blog' });
+    const window2 = createMockCsrWindow({ id: 'analytics' });
+    mockWindowList = [window1, window2];
+    mockPathname.mockReturnValue('/blog');
     const { result } = renderHook(() => useWindowManager());
 
-    // Act - Close SSG window
+    // Act - Close active window (pathname matches)
     act(() => {
-      result.current.handleCloseWindow(ssgWindow);
+      result.current.handleCloseWindow(window1);
     });
 
     // Assert - Should push "/"
     expect(mockPush).toHaveBeenCalledWith('/');
-    expect(mockCloseWindow).toHaveBeenCalledWith(ssgWindow);
+    expect(mockCloseWindow).toHaveBeenCalledWith(window1);
 
     vi.clearAllMocks();
 
-    // Act - Close CSR window
+    // Act - Close inactive window
     act(() => {
-      result.current.handleCloseWindow(csrWindow);
+      result.current.handleCloseWindow(window2);
     });
 
     // Assert - Should NOT push route
     expect(mockPush).not.toHaveBeenCalled();
-    expect(mockCloseWindow).toHaveBeenCalledWith(csrWindow);
+    expect(mockCloseWindow).toHaveBeenCalledWith(window2);
+  });
+
+  it('[close] should not navigate when closing inactive window', () => {
+    // Arrange
+    const window = createMockSsgWindow({ id: 'about' });
+    mockWindowList = [window];
+    mockPathname.mockReturnValue('/blog');
+    const { result } = renderHook(() => useWindowManager());
+
+    // Act - Close window that does NOT match current URL
+    act(() => {
+      result.current.handleCloseWindow(window);
+    });
+
+    // Assert - Should NOT push route (window is not active)
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockCloseWindow).toHaveBeenCalledWith(window);
   });
 });

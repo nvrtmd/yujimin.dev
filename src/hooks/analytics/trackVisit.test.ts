@@ -69,7 +69,9 @@ describe('trackVisit', () => {
     global.fetch = mockFetch as typeof fetch;
 
     mockConsoleError = vi.fn();
-    vi.spyOn(console, 'error').mockImplementation(mockConsoleError);
+    vi.spyOn(console, 'error').mockImplementation(
+      mockConsoleError as unknown as typeof console.error,
+    );
 
     setupWindow({ localStorage: mockLocalStorage });
 
@@ -216,7 +218,6 @@ describe('trackVisit', () => {
         expected: 'boolean',
         path: ['success'],
         message: 'Expected boolean',
-        received: 'string',
       },
     ]);
     const schemaError = new SchemaParseError(zodError);

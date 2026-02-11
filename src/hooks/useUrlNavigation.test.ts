@@ -12,18 +12,22 @@ vi.mock('next/navigation', () => ({
 }));
 
 vi.mock('@/libs/contentProvider', () => ({
-  SSG_APP_LIST: [
+  APP_LIST: [
     {
       id: 'blog',
       title: 'Blog',
       iconSrc: '/images/icons/internet_img.png',
-      renderType: 'ssg',
+      showAddressBar: true,
     },
   ],
 }));
 
 describe('useUrlNavigation', () => {
-  let mockOpenWindow: (app: App) => void;
+  let mockOpenWindow: (
+    app: App,
+    size?: App['size'],
+    position?: App['position'],
+  ) => void;
   let mockBringToFront: (app: App) => void;
   let windowList: WindowState[];
 
@@ -113,7 +117,7 @@ describe('useUrlNavigation', () => {
     });
   });
 
-  it('[window] should open SSG window on SSG path and ignore non-SSG', async () => {
+  it('[window] should open window on app path and ignore non-app paths', async () => {
     // Arrange
     const { rerender } = renderHook(() =>
       useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
@@ -122,21 +126,23 @@ describe('useUrlNavigation', () => {
     // Assert - Root path should not open window
     expect(mockOpenWindow).not.toHaveBeenCalled();
 
-    // Act - Navigate to SSG path
+    // Act - Navigate to app path
     mockPathname.mockReturnValue('/blog');
     rerender();
 
-    // Assert - Should open SSG window
+    // Assert - Should open window with size and position
     await waitFor(() => {
       expect(mockOpenWindow).toHaveBeenCalledTimes(1);
       expect(mockOpenWindow).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'blog', renderType: 'ssg' }),
+        expect.objectContaining({ id: 'blog', showAddressBar: true }),
+        undefined,
+        undefined,
       );
     });
 
     vi.clearAllMocks();
 
-    // Act - Navigate to non-SSG path
+    // Act - Navigate to non-app path
     mockPathname.mockReturnValue('/about');
     rerender();
 
@@ -147,9 +153,12 @@ describe('useUrlNavigation', () => {
     });
   });
 
-  it('[window] should bring existing SSG window to front instead of opening', async () => {
+  it('[window] should bring existing window to front instead of opening', async () => {
     // Arrange
-    const blogWindow = createMockSsgWindow({ id: 'blog', renderType: 'ssg' });
+    const blogWindow = createMockSsgWindow({
+      id: 'blog',
+      showAddressBar: true,
+    });
     windowList = [blogWindow];
     const { rerender } = renderHook(() =>
       useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
@@ -184,7 +193,10 @@ describe('useUrlNavigation', () => {
     vi.clearAllMocks();
 
     // Act - Change only windowList (pathname stays same)
-    const blogWindow = createMockSsgWindow({ id: 'blog', renderType: 'ssg' });
+    const blogWindow = createMockSsgWindow({
+      id: 'blog',
+      showAddressBar: true,
+    });
     rerender({ list: [blogWindow] });
 
     // Assert - Should not trigger again

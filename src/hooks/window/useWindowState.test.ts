@@ -36,7 +36,7 @@ describe('useWindowState', () => {
     id: 'about',
     title: 'About',
     iconSrc: '/test.png',
-    renderType: 'csr',
+    showAddressBar: false,
   };
 
   it('[init] should initialize with empty windowList and zIndex 0', () => {

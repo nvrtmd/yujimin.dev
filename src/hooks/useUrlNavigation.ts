@@ -3,11 +3,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { App, WindowState } from '@/models';
-import { SSG_APP_LIST } from '@/libs/contentProvider';
+import { APP_LIST } from '@/libs/contentProvider';
 
 export const useUrlNavigation = (
   windowList: WindowState[],
-  openWindow: (app: App) => void,
+  openWindow: (
+    app: App,
+    size?: App['size'],
+    position?: App['position'],
+  ) => void,
   bringToFront: (app: App) => void,
 ) => {
   const pathname = usePathname();
@@ -21,19 +25,22 @@ export const useUrlNavigation = (
 
     prevPathRef.current = pathname;
     const currentPathnameWindowId = pathname.split('/')[1] || '';
-    const currentPathnameSsgApp = SSG_APP_LIST.find(
+    const currentPathnameApp = APP_LIST.find(
       (app) => app.id === currentPathnameWindowId,
     );
-    const currentPathnameSsgWindow = windowList.find(
-      (window) =>
-        window.renderType === 'ssg' && window.id === currentPathnameWindowId,
+    const currentPathnameWindow = windowList.find(
+      (window) => window.id === currentPathnameWindowId,
     );
 
-    if (currentPathnameSsgApp) {
-      if (currentPathnameSsgWindow) {
-        bringToFront(currentPathnameSsgWindow);
+    if (currentPathnameApp) {
+      if (currentPathnameWindow) {
+        bringToFront(currentPathnameWindow);
       } else {
-        openWindow(currentPathnameSsgApp);
+        openWindow(
+          currentPathnameApp,
+          currentPathnameApp.size,
+          currentPathnameApp.position,
+        );
       }
     }
   }, [pathname, windowList, bringToFront, openWindow]);

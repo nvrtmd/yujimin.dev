@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Window } from '@/components/common';
 import { useWindowManager } from '@/hooks';
 import { Taskbar, TASKBAR_HEIGHT } from '@/components/layout';
@@ -14,12 +15,12 @@ import { useTrackVisit } from '@/hooks/analytics/useTrackVisit';
 
 export function RetroOS({ children }: { children: ReactNode }) {
   const isMobile = useMobile();
+  const pathname = usePathname();
+  const activeAppId = pathname.split('/')[1] || '';
   useTrackVisit();
 
   const {
     windowList,
-    ssgWindowList,
-    csrWindowList,
     minimizeWindow,
     toggleMaximizeWindow,
     isPreviousPathHome,
@@ -100,7 +101,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
           />
         ))}
 
-        {ssgWindowList?.map((window) => (
+        {windowList?.map((window) => (
           <Window
             isMobile={isMobile}
             isActive={frontmostOpenWindow?.id === window.id}
@@ -116,26 +117,8 @@ export function RetroOS({ children }: { children: ReactNode }) {
               handleResizeMouseDown(e, window, direction)
             }
           >
-            {children}
+            {window.id === activeAppId ? children : undefined}
           </Window>
-        ))}
-
-        {csrWindowList?.map((window) => (
-          <Window
-            isMobile={isMobile}
-            isActive={frontmostOpenWindow?.id === window.id}
-            isPreviousPathHome={isPreviousPathHome}
-            key={window.id}
-            window={window}
-            onBringToFront={() => bringToFront(window)}
-            onClose={() => handleCloseWindow(window)}
-            onMinimize={() => minimizeWindow(window)}
-            onToggleMaximize={() => toggleMaximizeWindow(window)}
-            onDragMouseDown={(e) => handleWindowDragMouseDown(e, window)}
-            onResizeMouseDown={(e, direction) =>
-              handleResizeMouseDown(e, window, direction)
-            }
-          />
         ))}
       </div>
 

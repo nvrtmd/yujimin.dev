@@ -47,7 +47,7 @@ describe('StartMenu', () => {
   const mockCloseMenu = vi.fn();
   const mockOnCloseAllWindows = vi.fn();
   const mockOnAppActivate = vi.fn();
-  const mockMenuRef: RefObject<HTMLDivElement> = createRef();
+  const mockMenuRef: RefObject<HTMLDivElement | null> = createRef();
 
   const defaultProps = {
     menuRef: mockMenuRef,
@@ -123,7 +123,7 @@ describe('StartMenu', () => {
       .closest('a') as HTMLAnchorElement;
     expect(sourceCodeLink).toHaveAttribute(
       'href',
-      'https://github.com/yujimin-dev',
+      'https://github.com/nvrtmd/yujimin.dev',
     );
     expect(sourceCodeLink).toHaveAttribute('target', '_blank');
     expect(sourceCodeLink).toHaveAttribute('rel', 'noopener noreferrer');
