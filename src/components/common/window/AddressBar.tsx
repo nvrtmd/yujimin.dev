@@ -2,7 +2,7 @@
 
 import { useState, useEffect, memo } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/common/Button';
 
 interface AddressBarProps {
@@ -13,13 +13,18 @@ interface AddressBarProps {
 export const AddressBar = memo(
   ({ isPreviousPathHome, windowAppId }: AddressBarProps) => {
     const router = useRouter();
+    const pathname = usePathname();
 
-    const [currentUrl, setCurrentUrl] = useState(`/${windowAppId}`);
+    const displayPath = pathname.startsWith(`/${windowAppId}`)
+      ? pathname
+      : `/${windowAppId}`;
+
+    const [currentUrl, setCurrentUrl] = useState(displayPath);
 
     useEffect(() => {
       const origin = window.location.origin;
-      setCurrentUrl(`${origin}/${windowAppId}`);
-    }, [windowAppId]);
+      setCurrentUrl(`${origin}${displayPath}`);
+    }, [displayPath]);
 
     return (
       <div className='border border-[var(--color-border-medium)] font-sans text-base p-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>

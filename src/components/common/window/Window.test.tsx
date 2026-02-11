@@ -18,9 +18,10 @@ vi.mock('@/hooks', () => ({
 // Mock next/navigation
 const mockRouterBack = vi.fn();
 const mockRouterForward = vi.fn();
+let mockPathname = '/blog';
 vi.mock('next/navigation', () => ({
   useRouter: () => ({ back: mockRouterBack, forward: mockRouterForward }),
-  usePathname: () => '/blog',
+  usePathname: () => mockPathname,
   useSearchParams: () => new URLSearchParams(),
 }));
 
@@ -83,6 +84,7 @@ const createDefaultProps = (overrides = {}) => ({
 describe('Window', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockPathname = '/blog';
   });
 
   // ==========================================================================
@@ -328,6 +330,28 @@ describe('Window', () => {
         .getByRole('img', { name: 'back' })
         .closest('button') as HTMLButtonElement;
       expect(backButton).not.toBeDisabled();
+    });
+
+    it('should display sub-path when pathname is under the window app', () => {
+      mockPathname = '/blog/react-hooks';
+      const props = createDefaultProps({
+        window: createDefaultWindow({ id: 'blog', showAddressBar: true }),
+      });
+      render(<Window {...props} />);
+
+      expect(screen.getByText(/\/blog\/react-hooks/)).toBeInTheDocument();
+    });
+
+    it('should fall back to app root path when pathname is not under the window app', () => {
+      mockPathname = '/about';
+      const props = createDefaultProps({
+        window: createDefaultWindow({ id: 'blog', showAddressBar: true }),
+      });
+      render(<Window {...props} />);
+
+      // Address bar should show /blog, not /about
+      const addressTexts = screen.getAllByText(/\/blog/);
+      expect(addressTexts.length).toBeGreaterThan(0);
     });
 
     it('should display the page icon in address bar', () => {
