@@ -26,18 +26,17 @@ export const metadata: Metadata = {
     default: 'yujimin.dev',
     template: '%s | yujimin.dev',
   },
-  description:
-    'Dev Blog by Yuji Min - Frontend Developer sharing knowledge about React, Next.js, TypeScript, and Web Development',
+  description: 'Dev Blog by Yuji Min',
   keywords: [
     'Yuji Min',
+    'Software Engineer',
     'Frontend Developer',
     'React',
-    'Next.js',
     'TypeScript',
+    'JavaScript',
     'Web Development',
     'Dev Blog',
     'Software Engineering',
-    'JavaScript',
   ],
   authors: [{ name: 'Yuji Min', url: 'https://yujimin.dev' }],
   creator: 'Yuji Min',
@@ -46,8 +45,7 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://yujimin.dev',
     title: 'yujimin.dev',
-    description:
-      'Dev Blog by Yuji Min - Frontend Developer sharing knowledge about React, Next.js, and Web Development',
+    description: 'Dev Blog by Yuji Min',
     siteName: 'yujimin.dev',
     images: [
       {
@@ -61,7 +59,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'yujimin.dev',
-    description: 'Dev Blog by Yuji Min - Frontend Developer',
+    description: 'Dev Blog by Yuji Min',
     images: ['/images/ogImages/default_og_img.png'],
   },
   robots: {
