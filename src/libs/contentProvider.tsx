@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import type { App, AppId } from '@/models/app';
-import { BlogApp } from '@/components/blog/BlogApp';
+import dynamic from 'next/dynamic';
 import { GuestbookApp } from '@/components/guestbook/GuestbookApp';
 import { AboutApp } from '@/components/about';
 import { AnalyticsApp } from '@/components/analytics/AnalyticsApp';
 import { ResumeApp } from '@/components/resume';
-import { getPostList, getAllCategories } from '@/libs/posts';
+
 import {
   WINDOW_MIN_WIDTH,
   WINDOW_MIN_HEIGHT,
@@ -13,6 +13,19 @@ import {
   WINDOW_MEDIUM_HEIGHT,
   WINDOW_DEFAULT_WIDTH,
 } from '@/hooks/window/useWindowResize';
+
+const DynamicBlogContent = dynamic(() =>
+  Promise.all([
+    import('@/components/blog/BlogApp'),
+    import('@/libs/posts'),
+  ]).then(([{ BlogApp }, { getPostList, getAllCategories }]) => ({
+    default: function BlogWindowContent() {
+      return (
+        <BlogApp posts={getPostList()} initialCategories={getAllCategories()} />
+      );
+    },
+  })),
+);
 
 export const BLOG_APP: App = {
   id: 'blog',
@@ -69,9 +82,7 @@ export const APP_LIST: App[] = [
 export function getContent(id: AppId): ReactNode {
   switch (id) {
     case 'blog':
-      return (
-        <BlogApp posts={getPostList()} initialCategories={getAllCategories()} />
-      );
+      return <DynamicBlogContent />;
     case 'about':
       return <AboutApp />;
     case 'guestbook':
