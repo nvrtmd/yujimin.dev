@@ -2,6 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import { WindowState } from '@/models';
+import type { BlogNavigation } from '@/hooks/useBlogNavigation';
 import { TASKBAR_HEIGHT } from '@/components/layout/Taskbar';
 import { TitleBar } from './TitleBar';
 import { MenuBar } from './MenuBar';
@@ -18,7 +19,7 @@ interface WindowProps {
   onDragMouseDown: (e: React.MouseEvent) => void;
   onResizeMouseDown: (e: React.MouseEvent, direction: string) => void;
   children?: ReactNode;
-  isPreviousPathHome: boolean;
+  blogNavigation: BlogNavigation;
   isActive: boolean;
   isMobile?: boolean;
 }
@@ -32,7 +33,7 @@ export const Window: React.FC<WindowProps> = ({
   onDragMouseDown,
   onResizeMouseDown,
   children,
-  isPreviousPathHome,
+  blogNavigation,
   isActive,
   isMobile = false,
 }) => {
@@ -48,6 +49,7 @@ export const Window: React.FC<WindowProps> = ({
     canMinimize = true,
     canMaximize = true,
     showAddressBar = true,
+    showNavigationButtons = false,
   } = windowState as WindowState;
 
   if (isMinimized) {
@@ -112,8 +114,9 @@ export const Window: React.FC<WindowProps> = ({
 
       {showAddressBar && (
         <AddressBar
-          isPreviousPathHome={isPreviousPathHome}
           windowAppId={windowState.id}
+          showNavigationButtons={showNavigationButtons}
+          blogNavigation={blogNavigation}
         />
       )}
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { App, WindowState } from '@/models';
 import { APP_LIST } from '@/libs/contentProvider';
@@ -15,7 +15,6 @@ export const useUrlNavigation = (
   bringToFront: (app: App) => void,
 ) => {
   const pathname = usePathname();
-  const [history, setHistory] = useState<string[]>(['/']);
   const prevPathRef = useRef<string>('');
 
   useEffect(() => {
@@ -44,26 +43,4 @@ export const useUrlNavigation = (
       }
     }
   }, [pathname, windowList, bringToFront, openWindow]);
-
-  useEffect(() => {
-    setHistory((prevHistory) => {
-      if (pathname === prevHistory.at(-2)) {
-        return prevHistory.slice(0, -1);
-      }
-      if (pathname === prevHistory.at(-1)) {
-        return prevHistory;
-      }
-      return [...prevHistory, pathname];
-    });
-  }, [pathname]);
-
-  const currentPath = history.at(-1) ?? null;
-  const previousPath = history.at(-2) ?? null;
-  const isPreviousPathHome = previousPath === '/';
-
-  return {
-    currentPath,
-    previousPath,
-    isPreviousPathHome,
-  };
 };

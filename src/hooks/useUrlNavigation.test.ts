@@ -38,83 +38,15 @@ describe('useUrlNavigation', () => {
     mockPathname.mockReturnValue('/');
   });
 
-  it('[init] should initialize with root path and no previous path', () => {
+  it('[init] should not open window on initial render', () => {
     // Arrange & Act
-    const { result } = renderHook(() =>
+    renderHook(() =>
       useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
     );
 
     // Assert
-    expect(result.current.currentPath).toBe('/');
-    expect(result.current.previousPath).toBeNull();
-    expect(result.current.isPreviousPathHome).toBe(false);
     expect(mockOpenWindow).not.toHaveBeenCalled();
     expect(mockBringToFront).not.toHaveBeenCalled();
-  });
-
-  it('[history] should track navigation and calculate isPreviousPathHome', async () => {
-    // Arrange
-    const { result, rerender } = renderHook(() =>
-      useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
-    );
-
-    // Act & Assert - Navigate: / -> /blog (previousPath is home)
-    mockPathname.mockReturnValue('/blog');
-    rerender();
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/blog');
-      expect(result.current.previousPath).toBe('/');
-      expect(result.current.isPreviousPathHome).toBe(true);
-    });
-
-    // Act & Assert - Same path should not duplicate
-    mockPathname.mockReturnValue('/blog');
-    rerender();
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/blog');
-      expect(result.current.previousPath).toBe('/');
-    });
-
-    // Act & Assert - Navigate: /blog -> /blog/first-post (previousPath is not home)
-    mockPathname.mockReturnValue('/blog/first-post');
-    rerender();
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/blog/first-post');
-      expect(result.current.previousPath).toBe('/blog');
-      expect(result.current.isPreviousPathHome).toBe(false);
-    });
-  });
-
-  it('[history] should detect backward navigation and pop from history', async () => {
-    // Arrange
-    const { result, rerender } = renderHook(() =>
-      useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
-    );
-
-    // Act - Forward: / -> /blog -> /about
-    mockPathname.mockReturnValue('/blog');
-    rerender();
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/blog');
-    });
-
-    mockPathname.mockReturnValue('/about');
-    rerender();
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/about');
-      expect(result.current.previousPath).toBe('/blog');
-    });
-
-    // Act - Backward: /about -> /blog
-    mockPathname.mockReturnValue('/blog');
-    rerender();
-
-    // Assert - /about should be removed from history
-    await waitFor(() => {
-      expect(result.current.currentPath).toBe('/blog');
-      expect(result.current.previousPath).toBe('/');
-      expect(result.current.isPreviousPathHome).toBe(true);
-    });
   });
 
   it('[window] should open window on app path and ignore non-app paths', async () => {

@@ -2,17 +2,18 @@
 
 import { useState, useEffect, memo } from 'react';
 import Image from 'next/image';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/common/Button';
+import type { BlogNavigation } from '@/hooks/useBlogNavigation';
 
 interface AddressBarProps {
-  isPreviousPathHome: boolean;
   windowAppId: string;
+  showNavigationButtons: boolean;
+  blogNavigation: BlogNavigation;
 }
 
 export const AddressBar = memo(
-  ({ isPreviousPathHome, windowAppId }: AddressBarProps) => {
-    const router = useRouter();
+  ({ windowAppId, showNavigationButtons, blogNavigation }: AddressBarProps) => {
     const pathname = usePathname();
 
     const displayPath = pathname.startsWith(`/${windowAppId}`)
@@ -28,33 +29,36 @@ export const AddressBar = memo(
 
     return (
       <div className='border border-[var(--color-border-medium)] font-sans text-base p-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>
-        <div className='flex shrink-0'>
-          <Button
-            onClick={() => router.back()}
-            type='button'
-            className='p-1'
-            disabled={isPreviousPathHome}
-          >
-            <Image
-              src='/images/icons/left_pointer.png'
-              alt='back'
-              width={28}
-              height={28}
-            />
-          </Button>
-          <Button
-            onClick={() => router.forward()}
-            type='button'
-            className='p-1'
-          >
-            <Image
-              src='/images/icons/right_pointer.png'
-              alt='forward'
-              width={28}
-              height={28}
-            />
-          </Button>
-        </div>
+        {showNavigationButtons && (
+          <div className='flex shrink-0'>
+            <Button
+              onClick={blogNavigation.goBack}
+              type='button'
+              className='p-1'
+              disabled={!blogNavigation.canGoBack}
+            >
+              <Image
+                src='/images/icons/left_pointer.png'
+                alt='back'
+                width={28}
+                height={28}
+              />
+            </Button>
+            <Button
+              onClick={blogNavigation.goForward}
+              type='button'
+              className='p-1'
+              disabled={!blogNavigation.canGoForward}
+            >
+              <Image
+                src='/images/icons/right_pointer.png'
+                alt='forward'
+                width={28}
+                height={28}
+              />
+            </Button>
+          </div>
+        )}
         <div className='bg-white shadow-inset-deep border-none p-1 flex items-center w-full min-w-0 ml-1'>
           <Image
             src='/images/icons/window_page_img.png'

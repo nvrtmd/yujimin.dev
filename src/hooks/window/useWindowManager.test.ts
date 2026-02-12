@@ -44,7 +44,16 @@ vi.mock('./useWindowResize', () => ({
 }));
 
 vi.mock('../useUrlNavigation', () => ({
-  useUrlNavigation: () => ({ isPreviousPathHome: false }),
+  useUrlNavigation: vi.fn(),
+}));
+
+vi.mock('../useBlogNavigation', () => ({
+  useBlogNavigation: () => ({
+    canGoBack: false,
+    canGoForward: false,
+    goBack: vi.fn(),
+    goForward: vi.fn(),
+  }),
 }));
 
 describe('useWindowManager', () => {
@@ -128,40 +137,67 @@ describe('useWindowManager', () => {
     expect(mockMinimizeWindow).not.toHaveBeenCalled();
   });
 
-  it('[open] should push route and delegate new window creation to useUrlNavigation', () => {
+  it('[open] should push route for URL-synced apps and directly open for other apps', () => {
     // Arrange
     const { result } = renderHook(() => useWindowManager());
 
-    // Act - Open new app (no existing window)
+    // Act - Open URL-synced app (Blog with syncWithUrl: true)
     act(() => {
-      result.current.handleOpenWindow(createMockSsgApp({ id: 'blog' }));
+      result.current.handleOpenWindow(
+        createMockSsgApp({ id: 'blog', syncWithUrl: true }),
+      );
     });
 
-    // Assert - Should push route but NOT call openWindow directly
+    // Assert - Should push route for URL-synced app
     expect(mockPush).toHaveBeenCalledWith('/blog');
     expect(mockOpenWindow).not.toHaveBeenCalled();
 
     vi.clearAllMocks();
 
-    // Act - Open another new app
+    // Act - Open non-URL-synced SSG app (About, no syncWithUrl)
+    act(() => {
+      result.current.handleOpenWindow(createMockSsgApp({ id: 'about' }));
+    });
+
+    // Assert - Should directly open window without URL change
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockOpenWindow).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'about' }),
+      undefined,
+      undefined,
+    );
+
+    vi.clearAllMocks();
+
+    // Act - Open CSR app (Analytics with showAddressBar: false)
     act(() => {
       result.current.handleOpenWindow(createMockCsrApp({ id: 'analytics' }));
     });
 
-    // Assert - Should also push route without calling openWindow
-    expect(mockPush).toHaveBeenCalledWith('/analytics');
-    expect(mockOpenWindow).not.toHaveBeenCalled();
+    // Assert - Should directly open window without URL change
+    expect(mockPush).not.toHaveBeenCalled();
+    expect(mockOpenWindow).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'analytics' }),
+      undefined,
+      undefined,
+    );
   });
 
   it('[open] should bring existing window to front immediately', () => {
     // Arrange
-    const existingWindow = createMockSsgWindow({ id: 'blog', zIndex: 1 });
+    const existingWindow = createMockSsgWindow({
+      id: 'blog',
+      zIndex: 1,
+      syncWithUrl: true,
+    });
     mockWindowList = [existingWindow];
     const { result } = renderHook(() => useWindowManager());
 
     // Act - Open app that already has a window
     act(() => {
-      result.current.handleOpenWindow(createMockSsgApp({ id: 'blog' }));
+      result.current.handleOpenWindow(
+        createMockSsgApp({ id: 'blog', syncWithUrl: true }),
+      );
     });
 
     // Assert - Should bring to front and push route
@@ -170,38 +206,41 @@ describe('useWindowManager', () => {
     expect(mockOpenWindow).not.toHaveBeenCalled();
   });
 
-  it('[close] should push "/" for active window and skip for inactive window', () => {
+  it('[close] should push "/" for active URL-synced window and skip for other windows', () => {
     // Arrange
-    const window1 = createMockSsgWindow({ id: 'blog' });
-    const window2 = createMockCsrWindow({ id: 'analytics' });
-    mockWindowList = [window1, window2];
+    const urlSyncedWindow = createMockSsgWindow({
+      id: 'blog',
+      syncWithUrl: true,
+    });
+    const nonSyncedWindow = createMockCsrWindow({ id: 'analytics' });
+    mockWindowList = [urlSyncedWindow, nonSyncedWindow];
     mockPathname.mockReturnValue('/blog');
     const { result } = renderHook(() => useWindowManager());
 
-    // Act - Close active window (pathname matches)
+    // Act - Close active URL-synced window (pathname matches)
     act(() => {
-      result.current.handleCloseWindow(window1);
+      result.current.handleCloseWindow(urlSyncedWindow);
     });
 
-    // Assert - Should push "/"
+    // Assert - Should push "/" for URL-synced window
     expect(mockPush).toHaveBeenCalledWith('/');
-    expect(mockCloseWindow).toHaveBeenCalledWith(window1);
+    expect(mockCloseWindow).toHaveBeenCalledWith(urlSyncedWindow);
 
     vi.clearAllMocks();
 
-    // Act - Close inactive window
+    // Act - Close non-URL-synced window
     act(() => {
-      result.current.handleCloseWindow(window2);
+      result.current.handleCloseWindow(nonSyncedWindow);
     });
 
-    // Assert - Should NOT push route
+    // Assert - Should NOT push route for non-URL-synced window
     expect(mockPush).not.toHaveBeenCalled();
-    expect(mockCloseWindow).toHaveBeenCalledWith(window2);
+    expect(mockCloseWindow).toHaveBeenCalledWith(nonSyncedWindow);
   });
 
-  it('[close] should not navigate when closing inactive window', () => {
+  it('[close] should not navigate when closing inactive URL-synced window', () => {
     // Arrange
-    const window = createMockSsgWindow({ id: 'about' });
+    const window = createMockSsgWindow({ id: 'about' }); // No syncWithUrl
     mockWindowList = [window];
     mockPathname.mockReturnValue('/blog');
     const { result } = renderHook(() => useWindowManager());
@@ -211,7 +250,7 @@ describe('useWindowManager', () => {
       result.current.handleCloseWindow(window);
     });
 
-    // Assert - Should NOT push route (window is not active)
+    // Assert - Should NOT push route (window is not URL-synced)
     expect(mockPush).not.toHaveBeenCalled();
     expect(mockCloseWindow).toHaveBeenCalledWith(window);
   });

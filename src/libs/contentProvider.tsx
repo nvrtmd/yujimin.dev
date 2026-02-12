@@ -19,6 +19,8 @@ export const BLOG_APP: App = {
   title: 'Blog',
   iconSrc: '/images/icons/blog_img.png',
   showAddressBar: true,
+  showNavigationButtons: true,
+  syncWithUrl: true,
 };
 
 export const ABOUT_APP: App = {

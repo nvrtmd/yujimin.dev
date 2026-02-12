@@ -23,7 +23,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
     windowList,
     minimizeWindow,
     toggleMaximizeWindow,
-    isPreviousPathHome,
+    blogNavigation,
     handleOpenWindow,
     handleCloseWindow,
     toggleWindowFromTaskbar,
@@ -105,7 +105,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
           <Window
             isMobile={isMobile}
             isActive={frontmostOpenWindow?.id === window.id}
-            isPreviousPathHome={isPreviousPathHome}
+            blogNavigation={blogNavigation}
             key={window.id}
             window={window}
             onBringToFront={() => bringToFront(window)}

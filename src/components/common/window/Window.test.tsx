@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from '@/__tests__/utils/test-utils';
 import { Window } from './Window';
 import type { WindowState } from '@/models';
+import type { BlogNavigation } from '@/hooks/useBlogNavigation';
 
 // =============================================================================
 // Mocks
@@ -71,7 +72,12 @@ const createDefaultProps = (overrides = {}) => ({
   onToggleMaximize: vi.fn(),
   onDragMouseDown: vi.fn(),
   onResizeMouseDown: vi.fn(),
-  isPreviousPathHome: false,
+  blogNavigation: {
+    canGoBack: false,
+    canGoForward: false,
+    goBack: vi.fn(),
+    goForward: vi.fn(),
+  } as BlogNavigation,
   isActive: true,
   isMobile: false,
   ...overrides,
@@ -282,14 +288,34 @@ describe('Window', () => {
   // ==========================================================================
 
   describe('[address] AddressBar Conditional Rendering', () => {
-    it('should show AddressBar for windows with showAddressBar=true', () => {
+    it('should show AddressBar with navigation buttons for windows with showNavigationButtons=true', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ showAddressBar: true }),
+        window: createDefaultWindow({
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
       });
       render(<Window {...props} />);
 
       expect(screen.getByRole('img', { name: 'back' })).toBeInTheDocument();
       expect(screen.getByRole('img', { name: 'forward' })).toBeInTheDocument();
+    });
+
+    it('should show AddressBar without navigation buttons for windows with showNavigationButtons=false', () => {
+      const props = createDefaultProps({
+        window: createDefaultWindow({
+          showAddressBar: true,
+          showNavigationButtons: false,
+        }),
+      });
+      render(<Window {...props} />);
+
+      expect(
+        screen.queryByRole('img', { name: 'back' }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('img', { name: 'forward' }),
+      ).not.toBeInTheDocument();
     });
 
     it('should NOT show AddressBar for windows with showAddressBar=false', () => {
@@ -306,10 +332,18 @@ describe('Window', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('should disable back button when isPreviousPathHome is true', () => {
+    it('should disable back button when blogNavigation.canGoBack is false', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ showAddressBar: true }),
-        isPreviousPathHome: true,
+        window: createDefaultWindow({
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
+        blogNavigation: {
+          canGoBack: false,
+          canGoForward: true,
+          goBack: vi.fn(),
+          goForward: vi.fn(),
+        },
       });
       render(<Window {...props} />);
 
@@ -319,10 +353,18 @@ describe('Window', () => {
       expect(backButton).toBeDisabled();
     });
 
-    it('should enable back button when isPreviousPathHome is false', () => {
+    it('should enable back button when blogNavigation.canGoBack is true', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ showAddressBar: true }),
-        isPreviousPathHome: false,
+        window: createDefaultWindow({
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
+        blogNavigation: {
+          canGoBack: true,
+          canGoForward: false,
+          goBack: vi.fn(),
+          goForward: vi.fn(),
+        },
       });
       render(<Window {...props} />);
 
@@ -335,7 +377,11 @@ describe('Window', () => {
     it('should display sub-path when pathname is under the window app', () => {
       mockPathname = '/blog/react-hooks';
       const props = createDefaultProps({
-        window: createDefaultWindow({ id: 'blog', showAddressBar: true }),
+        window: createDefaultWindow({
+          id: 'blog',
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
       });
       render(<Window {...props} />);
 
@@ -345,7 +391,11 @@ describe('Window', () => {
     it('should fall back to app root path when pathname is not under the window app', () => {
       mockPathname = '/about';
       const props = createDefaultProps({
-        window: createDefaultWindow({ id: 'blog', showAddressBar: true }),
+        window: createDefaultWindow({
+          id: 'blog',
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
       });
       render(<Window {...props} />);
 
@@ -356,7 +406,10 @@ describe('Window', () => {
 
     it('should display the page icon in address bar', () => {
       const props = createDefaultProps({
-        window: createDefaultWindow({ showAddressBar: true }),
+        window: createDefaultWindow({
+          showAddressBar: true,
+          showNavigationButtons: true,
+        }),
       });
       render(<Window {...props} />);
 
