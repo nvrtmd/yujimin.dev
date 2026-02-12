@@ -18,7 +18,7 @@ export interface App {
   position?: Position;
   canMinimize?: boolean;
   canMaximize?: boolean;
-  showAddressBar?: boolean;
+  showAddressBar: boolean;
   showNavigationButtons?: boolean;
   syncWithUrl?: boolean; // If true, opening/closing this app updates the browser URL
 }

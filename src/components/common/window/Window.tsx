@@ -48,7 +48,7 @@ export const Window: React.FC<WindowProps> = ({
     isMinimized,
     canMinimize = true,
     canMaximize = true,
-    showAddressBar = true,
+    showAddressBar = false,
     showNavigationButtons = false,
   } = windowState as WindowState;
 
