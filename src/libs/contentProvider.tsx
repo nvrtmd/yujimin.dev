@@ -11,6 +11,7 @@ import {
   WINDOW_MIN_HEIGHT,
   WINDOW_MEDIUM_WIDTH,
   WINDOW_MEDIUM_HEIGHT,
+  WINDOW_DEFAULT_WIDTH,
 } from '@/hooks/window/useWindowResize';
 
 export const BLOG_APP: App = {
@@ -35,6 +36,7 @@ export const GUESTBOOK_APP: App = {
   title: 'Guestbook',
   iconSrc: '/images/icons/guestbook_img.png',
   showAddressBar: true,
+  size: { width: WINDOW_DEFAULT_WIDTH, height: 650 },
 };
 
 export const ANALYTICS_APP: App = {

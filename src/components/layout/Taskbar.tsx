@@ -104,8 +104,7 @@ export function Taskbar({
                       alt={window.title}
                       width={20}
                       height={20}
-                      className='flex-shrink-0 sm:mr-2'
-                      style={{ height: 'auto' }}
+                      className='flex-shrink-0 w-5 h-5 sm:mr-2'
                     />
                     <span className='truncate hidden sm:block'>
                       {window.title}
