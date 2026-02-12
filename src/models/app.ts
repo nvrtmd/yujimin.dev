@@ -1,5 +1,14 @@
 import type { Position, Size } from './common';
-export type AppId = 'blog' | 'about' | 'guestbook' | 'analytics' | 'resume';
+
+export const APP_IDS = [
+  'blog',
+  'about',
+  'guestbook',
+  'analytics',
+  'resume',
+] as const;
+
+export type AppId = (typeof APP_IDS)[number];
 
 export interface App {
   id: AppId;

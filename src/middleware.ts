@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { blogPosts } from '#site/content';
+import { APP_IDS } from '@/models/app';
 
 const PATH_ROOT = '/';
 const PATH_BLOG = '/blog';
@@ -9,7 +10,11 @@ const PATH_NEXT_PREFIX = '/_next';
 const PATH_API_PREFIX = '/api';
 const PATH_STATIC_PREFIX = '/static';
 
-const SSG_APP_PATHS = ['/about', '/resume', '/guestbook', '/analytics'];
+// Derive valid paths from the single source of truth, excluding blog which
+// is handled separately due to its sub-path structure (/blog/[slug]).
+const SSG_APP_PATHS = APP_IDS.filter((id) => id !== 'blog').map(
+  (id) => `/${id}`,
+);
 
 // Next.js metadata files (automatically generated routes)
 const NEXTJS_METADATA_ROUTES = [
