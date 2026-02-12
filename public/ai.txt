@@ -1,0 +1,15 @@
+# AI Training Opt-Out Declaration
+# This file indicates that content on this site should not be used for AI training
+
+# Spawning AI's ai.txt protocol
+ai-content-declaration: no-train
+
+# Human-readable explanation
+# This website's content is not licensed for use in training AI models.
+# Please respect the author's wishes and do not use this content for:
+# - Training large language models
+# - Training image generation models  
+# - Building AI datasets
+# - Any other AI/ML training purposes
+
+# Contact: https://yujimin.dev
