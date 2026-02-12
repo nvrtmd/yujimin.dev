@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     title: 'About Me | yujimin.dev',
     description:
       'About Yuji Min - Frontend Developer specializing in React, Next.js, and TypeScript',
-    images: ['/images/ogImages/about_og_img.png'],
+    images: ['/images/ogImages/about_og_img.jpg'],
   },
 };
 

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Guestbook | yujimin.dev',
     description: "Leave a message on Yuji Min's guestbook",
-    images: ['/images/ogImages/guestbook_og_img.png'],
+    images: ['/images/ogImages/guestbook_og_img.jpg'],
   },
 };
 

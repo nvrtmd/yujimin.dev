@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     siteName: 'yujimin.dev',
     images: [
       {
-        url: '/images/ogImages/default_og_img.png',
+        url: '/images/ogImages/default_og_img.jpg',
         width: 1200,
         height: 630,
         alt: 'yujimin.dev - Dev Blog by Yuji Min',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'yujimin.dev',
     description: 'Dev Blog by Yuji Min',
-    images: ['/images/ogImages/default_og_img.png'],
+    images: ['/images/ogImages/default_og_img.jpg'],
   },
   robots: {
     index: true,

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     title: 'Resume | yujimin.dev',
     description:
       'Resume of Yuji Min - Software Engineer with experience in React, Next.js, and TypeScript',
-    images: ['/images/ogImages/resume_og_img.png'],
+    images: ['/images/ogImages/resume_og_img.jpg'],
   },
 };
 

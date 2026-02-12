@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Analytics | yujimin.dev',
     description: 'Site analytics for yujimin.dev',
-    images: ['/images/ogImages/default_og_img.png'],
+    images: ['/images/ogImages/default_og_img.jpg'],
   },
 };
 
