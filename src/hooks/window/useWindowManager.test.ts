@@ -128,29 +128,46 @@ describe('useWindowManager', () => {
     expect(mockMinimizeWindow).not.toHaveBeenCalled();
   });
 
-  it('[open] should always push route for all apps', () => {
+  it('[open] should push route and delegate new window creation to useUrlNavigation', () => {
     // Arrange
     const { result } = renderHook(() => useWindowManager());
 
-    // Act - Open app with address bar
+    // Act - Open new app (no existing window)
     act(() => {
       result.current.handleOpenWindow(createMockSsgApp({ id: 'blog' }));
     });
 
-    // Assert - Should push route
+    // Assert - Should push route but NOT call openWindow directly
     expect(mockPush).toHaveBeenCalledWith('/blog');
-    expect(mockOpenWindow).toHaveBeenCalled();
+    expect(mockOpenWindow).not.toHaveBeenCalled();
 
     vi.clearAllMocks();
 
-    // Act - Open app without address bar
+    // Act - Open another new app
     act(() => {
       result.current.handleOpenWindow(createMockCsrApp({ id: 'analytics' }));
     });
 
-    // Assert - Should also push route
+    // Assert - Should also push route without calling openWindow
     expect(mockPush).toHaveBeenCalledWith('/analytics');
-    expect(mockOpenWindow).toHaveBeenCalled();
+    expect(mockOpenWindow).not.toHaveBeenCalled();
+  });
+
+  it('[open] should bring existing window to front immediately', () => {
+    // Arrange
+    const existingWindow = createMockSsgWindow({ id: 'blog', zIndex: 1 });
+    mockWindowList = [existingWindow];
+    const { result } = renderHook(() => useWindowManager());
+
+    // Act - Open app that already has a window
+    act(() => {
+      result.current.handleOpenWindow(createMockSsgApp({ id: 'blog' }));
+    });
+
+    // Assert - Should bring to front and push route
+    expect(mockBringToFront).toHaveBeenCalledWith(existingWindow);
+    expect(mockPush).toHaveBeenCalledWith('/blog');
+    expect(mockOpenWindow).not.toHaveBeenCalled();
   });
 
   it('[close] should push "/" for active window and skip for inactive window', () => {

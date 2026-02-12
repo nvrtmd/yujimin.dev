@@ -67,10 +67,13 @@ export const useWindowManager = () => {
 
   const handleOpenWindow = useCallback(
     (app: App) => {
+      const existingWindow = windowList.find((w) => w.id === app.id);
+      if (existingWindow) {
+        bringToFront(existingWindow);
+      }
       router.push(`/${app.id}`);
-      openWindow(app, app.size, app.position);
     },
-    [router, openWindow],
+    [router, windowList, bringToFront],
   );
 
   const handleCloseWindow = useCallback(

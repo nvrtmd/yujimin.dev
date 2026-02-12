@@ -1,13 +1,18 @@
-import { renderHook, act, waitFor } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import { useWindowManager } from './useWindowManager';
 import { APP_LIST } from '@/libs/contentProvider';
+import { App } from '@/models';
 import { vi } from 'vitest';
 
 // =============================================================================
 // Mocks
 // =============================================================================
 
-const mockPush = vi.fn();
+let currentPathname = '/';
+
+const mockPush = vi.fn((path: string) => {
+  currentPathname = path;
+});
 const mockReplace = vi.fn();
 
 vi.mock('next/navigation', () => ({
@@ -15,9 +20,32 @@ vi.mock('next/navigation', () => ({
     push: mockPush,
     replace: mockReplace,
   }),
-  usePathname: () => '/',
+  usePathname: () => currentPathname,
   useSearchParams: () => new URLSearchParams(),
 }));
+
+// =============================================================================
+// Helpers
+// =============================================================================
+
+/**
+ * Simulates the full window-open flow:
+ * 1. handleOpenWindow calls router.push (updates currentPathname via mock)
+ * 2. Re-render triggers useUrlNavigation to detect the route change
+ * 3. useUrlNavigation calls openWindow to create the window
+ */
+const openWindowViaNavigation = (
+  result: { current: ReturnType<typeof useWindowManager> },
+  rerender: () => void,
+  app: App,
+) => {
+  act(() => {
+    result.current.handleOpenWindow(app);
+  });
+  act(() => {
+    rerender();
+  });
+};
 
 // =============================================================================
 // Tests
@@ -30,6 +58,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    currentPathname = '/';
   });
 
   // ===========================================================================
@@ -38,12 +67,10 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-1] should do nothing when blog is already frontmost', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     // Open Blog window
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
 
     const blogWindow = result.current.windowList.find((w) => w.id === 'blog');
     expect(blogWindow).toBeDefined();
@@ -67,17 +94,13 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-2] should bring blog to front when it is behind another window', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     // Open Blog first
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
 
     // Open About on top of Blog
-    act(() => {
-      result.current.handleOpenWindow(aboutApp);
-    });
+    openWindowViaNavigation(result, rerender, aboutApp);
 
     expect(result.current.frontmostOpenWindow?.id).toBe('about');
     expect(result.current.windowList).toHaveLength(2);
@@ -110,15 +133,11 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-3] should restore and bring blog to front when it is minimized', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     // Open Blog and Guestbook
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
-    act(() => {
-      result.current.handleOpenWindow(guestbookApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
+    openWindowViaNavigation(result, rerender, guestbookApp);
 
     // Minimize Blog
     const blogWindow = result.current.windowList.find((w) => w.id === 'blog')!;
@@ -151,14 +170,12 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-4] should open new blog window when it is not open', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     expect(result.current.windowList).toHaveLength(0);
 
     // Act - Open Blog
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
 
     // Assert - Blog should be opened and frontmost
     expect(result.current.windowList).toHaveLength(1);
@@ -174,18 +191,12 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-complex] should correctly handle blog activation with multiple windows', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     // Open Blog, About, Guestbook in sequence
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
-    act(() => {
-      result.current.handleOpenWindow(aboutApp);
-    });
-    act(() => {
-      result.current.handleOpenWindow(guestbookApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
+    openWindowViaNavigation(result, rerender, aboutApp);
+    openWindowViaNavigation(result, rerender, guestbookApp);
 
     expect(result.current.windowList).toHaveLength(3);
     expect(result.current.frontmostOpenWindow?.id).toBe('guestbook');
@@ -221,12 +232,10 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[edge-case] should bring maximized blog to front when it is in background', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager());
 
     // Open Blog
-    act(() => {
-      result.current.handleOpenWindow(blogApp);
-    });
+    openWindowViaNavigation(result, rerender, blogApp);
 
     const blogWindow = result.current.windowList.find((w) => w.id === 'blog')!;
 
@@ -241,9 +250,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
     expect(maximizedBlog.isMaximized).toBe(true);
 
     // Open About on top
-    act(() => {
-      result.current.handleOpenWindow(aboutApp);
-    });
+    openWindowViaNavigation(result, rerender, aboutApp);
 
     expect(result.current.frontmostOpenWindow?.id).toBe('about');
 
