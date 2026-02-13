@@ -15,7 +15,7 @@ const roboto = Roboto({
 });
 
 const dunggeunmo = localFont({
-  src: './styles/fonts/DungGeunMo.ttf',
+  src: './styles/fonts/DungGeunMo.woff2',
   display: 'swap',
   variable: '--font-dunggeunmo',
 });
