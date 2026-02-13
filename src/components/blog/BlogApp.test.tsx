@@ -732,7 +732,7 @@ describe('BlogApp', () => {
 
       // Each category TreeItem uses folder_img.png
       const folderImgs = document.querySelectorAll(
-        'img[src="/images/icons/folder_img.png"]',
+        'img[src="/images/icons/folder_img.webp"]',
       );
       expect(folderImgs.length).toBeGreaterThan(0);
     });
@@ -742,7 +742,7 @@ describe('BlogApp', () => {
 
       // Blog root TreeItem uses folder_img.png
       const folderImgs = document.querySelectorAll(
-        'img[src="/images/icons/folder_img.png"]',
+        'img[src="/images/icons/folder_img.webp"]',
       );
       // Blog root + each category all use the same folder image
       expect(folderImgs.length).toBeGreaterThanOrEqual(1);

@@ -73,7 +73,7 @@ export function Taskbar({
             className='shrink-0'
           >
             <Image
-              src='/images/icons/start_img.png'
+              src='/images/icons/start_img.webp'
               alt='start icon'
               width={24}
               height={24}

@@ -54,7 +54,7 @@ export function StartMenu({
         <Link href='/' onClick={handleHomeClick}>
           <div className={MENU_ITEM_CLASS}>
             <Image
-              src='/images/icons/home_img.png'
+              src='/images/icons/home_img.webp'
               alt='Home'
               width={24}
               height={24}
@@ -68,7 +68,7 @@ export function StartMenu({
           className={`${MENU_ITEM_CLASS} cursor-pointer`}
         >
           <Image
-            src='/images/icons/blog_img.png'
+            src='/images/icons/blog_img.webp'
             alt='Blog'
             width={24}
             height={24}
@@ -79,7 +79,7 @@ export function StartMenu({
         <a href={GITHUB_URL} target='_blank' rel='noopener noreferrer'>
           <div className={MENU_ITEM_CLASS}>
             <Image
-              src='/images/icons/source_code_img.png'
+              src='/images/icons/source_code_img.webp'
               alt='Source Code'
               width={24}
               height={24}
@@ -93,7 +93,7 @@ export function StartMenu({
           className={`${MENU_ITEM_CLASS} cursor-pointer`}
         >
           <Image
-            src='/images/icons/power_img.png'
+            src='/images/icons/power_img.webp'
             alt='Shut Down'
             width={24}
             height={24}

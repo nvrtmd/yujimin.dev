@@ -30,7 +30,7 @@ const DynamicBlogContent = dynamic(() =>
 export const BLOG_APP: App = {
   id: 'blog',
   title: 'Blog',
-  iconSrc: '/images/icons/blog_img.png',
+  iconSrc: '/images/icons/blog_img.webp',
   showAddressBar: true,
   showNavigationButtons: true,
   syncWithUrl: true,
@@ -39,7 +39,7 @@ export const BLOG_APP: App = {
 export const ABOUT_APP: App = {
   id: 'about',
   title: 'About Me',
-  iconSrc: '/images/icons/about_me_img.png',
+  iconSrc: '/images/icons/about_me_img.webp',
   showAddressBar: true,
   size: { width: WINDOW_MEDIUM_WIDTH, height: WINDOW_MEDIUM_HEIGHT },
   canMaximize: false,
@@ -49,7 +49,7 @@ export const ABOUT_APP: App = {
 export const GUESTBOOK_APP: App = {
   id: 'guestbook',
   title: 'Guestbook',
-  iconSrc: '/images/icons/guestbook_img.png',
+  iconSrc: '/images/icons/guestbook_img.webp',
   showAddressBar: true,
   size: { width: WINDOW_DEFAULT_WIDTH, height: 650 },
 };
@@ -57,7 +57,7 @@ export const GUESTBOOK_APP: App = {
 export const ANALYTICS_APP: App = {
   id: 'analytics',
   title: 'Analytics',
-  iconSrc: '/images/icons/analytics_img.png',
+  iconSrc: '/images/icons/analytics_img.webp',
   showAddressBar: false,
   size: { width: WINDOW_MIN_WIDTH, height: WINDOW_MIN_HEIGHT },
   canMaximize: false,
@@ -67,7 +67,7 @@ export const ANALYTICS_APP: App = {
 export const RESUME_APP: App = {
   id: 'resume',
   title: 'Resume',
-  iconSrc: '/images/icons/resume_img.png',
+  iconSrc: '/images/icons/resume_img.webp',
   showAddressBar: true,
 };
 

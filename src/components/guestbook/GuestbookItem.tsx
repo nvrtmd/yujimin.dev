@@ -8,9 +8,9 @@ interface GuestbookItemProps {
   entry: GuestbookEntry;
 }
 
-const ICON_USER = '/images/icons/user.png';
-const ICON_LOCATION = '/images/icons/location.png';
-const ICON_EXTERNAL_LINK = '/images/icons/external_link.png';
+const ICON_USER = '/images/icons/user.webp';
+const ICON_LOCATION = '/images/icons/location.webp';
+const ICON_EXTERNAL_LINK = '/images/icons/external_link.webp';
 const ICON_SIZE = 10;
 
 function normalizeUrl(url: string): string {

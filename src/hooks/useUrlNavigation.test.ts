@@ -16,7 +16,7 @@ vi.mock('@/libs/contentProvider', () => ({
     {
       id: 'blog',
       title: 'Blog',
-      iconSrc: '/images/icons/internet_img.png',
+      iconSrc: '/images/icons/internet_img.webp',
       showAddressBar: true,
     },
   ],

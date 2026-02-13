@@ -120,7 +120,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
                 label='Blog'
                 icon={
                   <Image
-                    src='/images/icons/folder_img.png'
+                    src='/images/icons/folder_img.webp'
                     alt='folder'
                     width={16}
                     height={16}
@@ -145,7 +145,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
                       label={`${category.name} (${category.count})`}
                       icon={
                         <Image
-                          src='/images/icons/folder_img.png'
+                          src='/images/icons/folder_img.webp'
                           alt='folder'
                           width={16}
                           height={16}

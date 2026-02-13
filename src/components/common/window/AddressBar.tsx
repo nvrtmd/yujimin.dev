@@ -61,7 +61,7 @@ export const AddressBar = memo(
         )}
         <div className='bg-white shadow-inset-deep border-none p-1 flex items-center w-full min-w-0 ml-1'>
           <Image
-            src='/images/icons/window_page_img.png'
+            src='/images/icons/window_page_img.webp'
             alt='window page icon'
             width={16}
             height={16}

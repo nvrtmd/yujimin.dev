@@ -34,10 +34,10 @@ export function AboutApp() {
   return (
     <div className='w-full h-full overflow-y-auto bg-black'>
       <div className='flex flex-col min-h-full text-[var(--color-terminal-text)] p-6 gap-8'>
-        <div className='flex flex-col sm:flex-row items-center gap-6 sm:gap-4'>
+        <div className='flex flex-col sm:flex-row items-end gap-6 sm:gap-4'>
           <div className='order-1 sm:order-2 shrink-0'>
             <Image
-              src='/images/profile_img_1_nobg.png'
+              src='/images/profile_img_1_nobg.webp'
               alt='Profile Picture'
               width={PROFILE_IMAGE_SIZE}
               height={PROFILE_IMAGE_SIZE}
@@ -45,11 +45,11 @@ export function AboutApp() {
           </div>
 
           <div className='flex flex-col w-full order-2 sm:order-1 gap-3'>
-            <h2 className='text-2xl font-bold underline decoration-2 underline-offset-4'>
+            <h2 className='text-3xl font-bold underline decoration-2 underline-offset-4'>
               About Me
             </h2>
-            <div className='space-y-2 text-base leading-relaxed opacity-90'>
-              <p className='font-bold text-lg'>&quot;Hello, World!&quot;</p>
+            <div className='space-y-2 text-lg leading-relaxed opacity-90'>
+              <p className='font-bold text-xl'>&quot;Hello, World!&quot;</p>
               <p>
                 I&apos;m Yuji Min, a software developer currently focusing on
                 frontend development at work.
@@ -63,10 +63,10 @@ export function AboutApp() {
         </div>
 
         <div className='grid gap-3 border-2 border-[var(--color-terminal-border)] p-4 bg-[var(--color-terminal-bg)] sm:bg-transparent'>
-          <h3 className='text-lg font-bold underline decoration-dotted underline-offset-4 mb-1'>
+          <h3 className='text-xl font-bold underline decoration-dotted underline-offset-4 mb-1'>
             Links
           </h3>
-          <div className='grid gap-3 text-sm sm:text-base'>
+          <div className='grid gap-3 text-base sm:text-lg'>
             {CONTACT_LINKS.map((link) => {
               const content = (
                 <>

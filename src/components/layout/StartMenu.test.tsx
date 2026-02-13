@@ -164,25 +164,25 @@ describe('StartMenu', () => {
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByAltText('Home')).toHaveAttribute(
       'src',
-      '/images/icons/home_img.png',
+      '/images/icons/home_img.webp',
     );
 
     expect(screen.getByText('Blog')).toBeInTheDocument();
     expect(screen.getByAltText('Blog')).toHaveAttribute(
       'src',
-      '/images/icons/blog_img.png',
+      '/images/icons/blog_img.webp',
     );
 
     expect(screen.getByText('Source Code')).toBeInTheDocument();
     expect(screen.getByAltText('Source Code')).toHaveAttribute(
       'src',
-      '/images/icons/source_code_img.png',
+      '/images/icons/source_code_img.webp',
     );
 
     expect(screen.getByText('Shut Down')).toBeInTheDocument();
     expect(screen.getByAltText('Shut Down')).toHaveAttribute(
       'src',
-      '/images/icons/power_img.png',
+      '/images/icons/power_img.webp',
     );
   });
 

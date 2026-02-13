@@ -423,7 +423,7 @@ describe('Window', () => {
       // The second one is in the AddressBar
       expect(pageIcons[1]).toHaveAttribute(
         'src',
-        '/images/icons/window_page_img.png',
+        '/images/icons/window_page_img.webp',
       );
     });
   });
