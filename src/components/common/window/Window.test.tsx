@@ -412,7 +412,7 @@ describe('Window', () => {
       expect(addressTexts.length).toBeGreaterThan(0);
     });
 
-    it('should display the page icon in address bar', () => {
+    it('should display the page icon only in titlebar, not in address bar', () => {
       const props = createDefaultProps({
         window: createDefaultWindow({
           showAddressBar: true,
@@ -421,18 +421,11 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      // Both TitleBar and AddressBar have a "window page icon" img
-      // For windows with showAddressBar=true, there should be exactly 2 instances
+      // Only TitleBar has the "window page icon" img
       const pageIcons = screen.getAllByRole('img', {
         name: 'window page icon',
       });
-      expect(pageIcons).toHaveLength(2);
-
-      // The second one is in the AddressBar
-      expect(pageIcons[1]).toHaveAttribute(
-        'src',
-        '/images/icons/window_page_img.webp',
-      );
+      expect(pageIcons).toHaveLength(1);
     });
   });
 

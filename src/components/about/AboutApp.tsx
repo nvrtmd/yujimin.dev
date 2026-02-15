@@ -37,7 +37,7 @@ export function AboutApp() {
         <div className='flex flex-col sm:flex-row items-end gap-6 sm:gap-4'>
           <div className='order-1 sm:order-2 shrink-0'>
             <Image
-              src='/images/profile_img_1_nobg.webp'
+              src='/images/profile_img.webp'
               alt='Profile Picture'
               width={PROFILE_IMAGE_SIZE}
               height={PROFILE_IMAGE_SIZE}
