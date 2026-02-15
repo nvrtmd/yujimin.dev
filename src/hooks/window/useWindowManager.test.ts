@@ -73,7 +73,7 @@ describe('useWindowManager', () => {
 
     // Arrange - Normal case
     mockWindowList = [
-      createMockCsrWindow({ id: 'about', zIndex: 1 }),
+      createMockCsrWindow({ id: 'about-me', zIndex: 1 }),
       createMockCsrWindow({ id: 'guestbook', zIndex: 3 }),
       createMockCsrWindow({ id: 'blog', zIndex: 2 }),
     ];
@@ -88,7 +88,7 @@ describe('useWindowManager', () => {
   it('[frontmost] should exclude minimized windows from frontmost calculation', () => {
     // Arrange
     mockWindowList = [
-      createMockCsrWindow({ id: 'about', zIndex: 5, isMinimized: true }),
+      createMockCsrWindow({ id: 'about-me', zIndex: 5, isMinimized: true }),
       createMockCsrWindow({ id: 'guestbook', zIndex: 3, isMinimized: false }),
       createMockCsrWindow({ id: 'analytics', zIndex: 4, isMinimized: true }),
       createMockCsrWindow({ id: 'resume', zIndex: 2, isMinimized: false }),
@@ -104,7 +104,7 @@ describe('useWindowManager', () => {
   it('[taskbar-toggle] should minimize frontmost window and bring-to-front non-frontmost window', () => {
     // Arrange
     const frontWindow = createMockCsrWindow({
-      id: 'about',
+      id: 'about-me',
       zIndex: 2,
       isMinimized: false,
     });
@@ -156,13 +156,13 @@ describe('useWindowManager', () => {
 
     // Act - Open non-URL-synced SSG app (About, no syncWithUrl)
     act(() => {
-      result.current.handleOpenWindow(createMockSsgApp({ id: 'about' }));
+      result.current.handleOpenWindow(createMockSsgApp({ id: 'about-me' }));
     });
 
     // Assert - Should directly open window without URL change
     expect(mockPush).not.toHaveBeenCalled();
     expect(mockOpenWindow).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'about' }),
+      expect.objectContaining({ id: 'about-me' }),
       undefined,
       undefined,
     );
@@ -240,7 +240,7 @@ describe('useWindowManager', () => {
 
   it('[close] should not navigate when closing inactive URL-synced window', () => {
     // Arrange
-    const window = createMockSsgWindow({ id: 'about' }); // No syncWithUrl
+    const window = createMockSsgWindow({ id: 'about-me' }); // No syncWithUrl
     mockWindowList = [window];
     mockPathname.mockReturnValue('/blog');
     const { result } = renderHook(() => useWindowManager());

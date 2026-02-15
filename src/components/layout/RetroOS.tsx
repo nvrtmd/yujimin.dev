@@ -76,30 +76,46 @@ export function RetroOS({ children }: { children: ReactNode }) {
         className='flex-grow w-full h-full pt-safe-top overflow-hidden relative'
         onClick={clearSelection}
       >
-        {APP_LIST.map((app) => (
-          <DesktopIcon
-            key={app.id}
-            id={app.id}
-            iconSrc={app.iconSrc}
-            title={app.title}
-            isSelected={clickedIdentifier === app.id}
-            position={iconPositions[app.id]}
-            className={`absolute transition-opacity duration-150 ${
-              isRenderReady ? 'opacity-100' : 'opacity-0'
-            }`}
-            onMouseDown={(e) => handleIconMouseDown(e, app.id)}
-            onClick={(e) => {
-              if (!isDragged) {
-                if (isMobile) {
+        {isMobile ? (
+          <div className='flex flex-col flex-wrap items-start content-start gap-2 p-2 h-full'>
+            {APP_LIST.map((app) => (
+              <DesktopIcon
+                key={app.id}
+                id={app.id}
+                iconSrc={app.iconSrc}
+                title={app.title}
+                isSelected={clickedIdentifier === app.id}
+                position={undefined}
+                className='opacity-100'
+                onMouseDown={(e) => handleIconMouseDown(e, app.id)}
+                onClick={(e) => {
                   e.stopPropagation();
                   handleOpenWindow(app);
-                } else {
+                }}
+              />
+            ))}
+          </div>
+        ) : (
+          APP_LIST.map((app) => (
+            <DesktopIcon
+              key={app.id}
+              id={app.id}
+              iconSrc={app.iconSrc}
+              title={app.title}
+              isSelected={clickedIdentifier === app.id}
+              position={iconPositions[app.id]}
+              className={`absolute transition-opacity duration-150 ${
+                isRenderReady ? 'opacity-100' : 'opacity-0'
+              }`}
+              onMouseDown={(e) => handleIconMouseDown(e, app.id)}
+              onClick={(e) => {
+                if (!isDragged) {
                   handleDoubleClick(e, app.id, () => handleOpenWindow(app));
                 }
-              }
-            }}
-          />
-        ))}
+              }}
+            />
+          ))
+        )}
 
         {windowList?.map((window) => (
           <Window

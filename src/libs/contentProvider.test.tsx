@@ -6,7 +6,7 @@ import { AboutApp } from '@/components/about';
 describe('contentProvider', () => {
   describe('getContent', () => {
     it('[valid] should return the corresponding component for valid id', () => {
-      const content = getContent('about');
+      const content = getContent('about-me');
 
       expect(content).not.toBeNull();
       expect(isValidElement(content)).toBe(true);

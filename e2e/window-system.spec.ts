@@ -24,41 +24,41 @@ async function getZIndex(
 test.describe('Window System', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('desktop-icon-about')).toBeVisible();
+    await expect(page.getByTestId('desktop-icon-about-me')).toBeVisible();
   });
 
   test.describe('Opening Windows', () => {
-    test('[open] should open about window on desktop icon double-click', async ({
+    test('[open] should open about-me window on desktop icon double-click', async ({
       page,
     }) => {
       // Act
-      await openWindow(page, 'about');
+      await openWindow(page, 'about-me');
 
       // Assert
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
     });
 
-    test('[open] should show about window in taskbar when opened', async ({
+    test('[open] should show about-me window in taskbar when opened', async ({
       page,
     }) => {
       // Act
-      await openWindow(page, 'about');
+      await openWindow(page, 'about-me');
 
       // Assert
-      await expect(page.getByTestId('taskbar-button-about')).toBeVisible();
+      await expect(page.getByTestId('taskbar-button-about-me')).toBeVisible();
     });
 
-    test('[open] should not duplicate about window if already open', async ({
+    test('[open] should not duplicate about-me window if already open', async ({
       page,
     }) => {
       // Arrange
-      await openWindow(page, 'about');
+      await openWindow(page, 'about-me');
 
       // Act - Try to open again
-      await page.getByTestId('desktop-icon-about').dblclick();
+      await page.getByTestId('desktop-icon-about-me').dblclick();
 
       // Assert - Should only have one window
-      const windows = page.locator('[data-testid="window-about"]');
+      const windows = page.locator('[data-testid="window-about-me"]');
       await expect(windows).toHaveCount(1);
     });
 
@@ -66,11 +66,11 @@ test.describe('Window System', () => {
       page,
     }) => {
       // Act
-      await openWindow(page, 'about');
+      await openWindow(page, 'about-me');
       await openWindow(page, 'guestbook');
 
       // Assert
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
       await expect(page.getByTestId('window-guestbook')).toBeVisible();
     });
   });

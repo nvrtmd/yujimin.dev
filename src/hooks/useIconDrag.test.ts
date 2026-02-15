@@ -5,7 +5,12 @@ import { useIconDrag } from './useIconDrag';
 vi.mock('@/libs/contentProvider', () => ({
   APP_LIST: [
     { id: 'blog', title: 'Blog', iconSrc: '/blog.png', renderType: 'ssg' },
-    { id: 'about', title: 'About', iconSrc: '/about.png', renderType: 'csr' },
+    {
+      id: 'about-me',
+      title: 'About Me',
+      iconSrc: '/about.png',
+      renderType: 'csr',
+    },
     {
       id: 'resume',
       title: 'Resume',
@@ -69,7 +74,7 @@ describe('useIconDrag', () => {
     expect(result.current.isDragged).toBe(false);
     expect(result.current.iconPositions).toEqual({
       blog: { x: 16, y: 16 },
-      about: { x: 16, y: 122 },
+      'about-me': { x: 16, y: 122 },
       resume: { x: 16, y: 228 },
       guestbook: { x: 16, y: 334 },
       analytics: { x: 16, y: 440 },
@@ -174,7 +179,7 @@ describe('useIconDrag', () => {
       window.dispatchEvent(new MouseEvent('mouseup'));
     });
     act(() => {
-      result.current.handleIconMouseDown(createMockEvent(150, 250), 'about');
+      result.current.handleIconMouseDown(createMockEvent(150, 250), 'about-me');
     });
 
     // Assert - isDragged should reset
@@ -336,7 +341,7 @@ describe('useIconDrag', () => {
       result.current.handleIconMouseDown(createMockEvent(100, 200), 'blog');
     });
     act(() => {
-      result.current.handleIconMouseDown(createMockEvent(150, 250), 'about');
+      result.current.handleIconMouseDown(createMockEvent(150, 250), 'about-me');
     });
     const blogInitialPos = { ...result.current.iconPositions.blog };
 
@@ -349,6 +354,6 @@ describe('useIconDrag', () => {
 
     // Assert
     expect(result.current.iconPositions.blog).toEqual(blogInitialPos);
-    expect(result.current.iconPositions.about).toEqual({ x: 66, y: 172 });
+    expect(result.current.iconPositions['about-me']).toEqual({ x: 66, y: 172 });
   });
 });

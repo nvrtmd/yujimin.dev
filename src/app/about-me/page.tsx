@@ -14,6 +14,6 @@ export const metadata: Metadata = {
   },
 };
 
-export default function AboutPage() {
+export default function AboutMePage() {
   return <AboutApp />;
 }

@@ -36,15 +36,15 @@ test.describe('SSG URL Synchronization', () => {
       await expect(page.getByTestId('window-blog')).toBeVisible();
     });
 
-    test('[csr-open] should NOT change URL when opening about window (CSR)', async ({
+    test('[csr-open] should NOT change URL when opening about-me window (CSR)', async ({
       page,
     }) => {
       // Arrange & Act
-      await openWindowViaIcon(page, 'about');
+      await openWindowViaIcon(page, 'about-me');
 
       // Assert
       await expect(page).toHaveURL('/');
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
     });
   });
 
@@ -130,7 +130,7 @@ test.describe('SSG URL Synchronization', () => {
   });
 
   test.describe('Mixed CSR and SSG Windows', () => {
-    test('[mixed] should only update URL for blog window (SSG), not about window (CSR)', async ({
+    test('[mixed] should only update URL for blog window (SSG), not about-me window (CSR)', async ({
       page,
     }) => {
       // Arrange - Open SSG window
@@ -138,14 +138,14 @@ test.describe('SSG URL Synchronization', () => {
       await expect(page).toHaveURL('/blog');
 
       // Act - Open CSR window
-      await openWindowViaIcon(page, 'about');
+      await openWindowViaIcon(page, 'about-me');
 
       // Assert - URL should remain at /blog
       await expect(page).toHaveURL('/blog');
 
       // Act - Close CSR window
       await page.getByTestId('window-close-about').click();
-      await expect(page.getByTestId('window-about')).not.toBeVisible();
+      await expect(page.getByTestId('window-about-me')).not.toBeVisible();
 
       // Assert - URL still at /blog
       await expect(page).toHaveURL('/blog');

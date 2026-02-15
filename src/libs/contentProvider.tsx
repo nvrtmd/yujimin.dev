@@ -3,6 +3,7 @@ import type { App, AppId } from '@/models/app';
 import dynamic from 'next/dynamic';
 import { GuestbookApp } from '@/components/guestbook/GuestbookApp';
 import { AboutApp } from '@/components/about';
+import { ColophonApp } from '@/components/colophon/ColophonApp';
 import { AnalyticsApp } from '@/components/analytics/AnalyticsApp';
 import { ResumeApp } from '@/components/resume';
 
@@ -37,8 +38,18 @@ export const BLOG_APP: App = {
 };
 
 export const ABOUT_APP: App = {
-  id: 'about',
+  id: 'about-me',
   title: 'About Me',
+  iconSrc: '/images/icons/about_me_img.webp',
+  showAddressBar: true,
+  size: { width: WINDOW_MEDIUM_WIDTH, height: WINDOW_MEDIUM_HEIGHT },
+  canMaximize: false,
+  canMinimize: true,
+};
+
+export const COLOPHON_APP: App = {
+  id: 'colophon',
+  title: 'Colophon',
   iconSrc: '/images/icons/about_me_img.webp',
   showAddressBar: true,
   size: { width: WINDOW_MEDIUM_WIDTH, height: WINDOW_MEDIUM_HEIGHT },
@@ -74,6 +85,7 @@ export const RESUME_APP: App = {
 export const APP_LIST: App[] = [
   BLOG_APP,
   ABOUT_APP,
+  COLOPHON_APP,
   RESUME_APP,
   GUESTBOOK_APP,
   ANALYTICS_APP,
@@ -83,8 +95,10 @@ export function getContent(id: AppId): ReactNode {
   switch (id) {
     case 'blog':
       return <DynamicBlogContent />;
-    case 'about':
+    case 'about-me':
       return <AboutApp />;
+    case 'colophon':
+      return <ColophonApp />;
     case 'guestbook':
       return <GuestbookApp />;
     case 'analytics':

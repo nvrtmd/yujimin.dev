@@ -46,11 +46,11 @@ function DoubleClickTestComponent({
         className='shrink-0'
       />
       <DesktopIcon
-        id='about'
+        id='about-me'
         iconSrc='/about.png'
-        title='About'
-        isSelected={clickedIdentifier === 'about'}
-        onClick={(e) => handleClick(e, 'about')}
+        title='About Me'
+        isSelected={clickedIdentifier === 'about-me'}
+        onClick={(e) => handleClick(e, 'about-me')}
         className='shrink-0'
       />
     </div>
@@ -62,7 +62,7 @@ describe('useDoubleClick Integration', () => {
     // Arrange
     render(<DoubleClickTestComponent />);
     const blogIcon = screen.getByTestId('desktop-icon-blog');
-    const aboutIcon = screen.getByTestId('desktop-icon-about');
+    const aboutIcon = screen.getByTestId('desktop-icon-about-me');
 
     // Act & Assert - Select blog
     fireEvent.click(blogIcon);
@@ -143,7 +143,7 @@ describe('useDoubleClick Integration', () => {
       <DoubleClickTestComponent onDoubleClickAction={onDoubleClickAction} />,
     );
     const blogIcon = screen.getByTestId('desktop-icon-blog');
-    const aboutIcon = screen.getByTestId('desktop-icon-about');
+    const aboutIcon = screen.getByTestId('desktop-icon-about-me');
 
     // Act - A (blog)
     fireEvent.click(blogIcon);

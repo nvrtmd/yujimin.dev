@@ -75,8 +75,8 @@ export function Taskbar({
             <Image
               src='/images/icons/start_img.webp'
               alt='start icon'
-              width={24}
-              height={24}
+              width={20}
+              height={20}
               className='mr-1'
               style={{ height: 'auto' }}
             />

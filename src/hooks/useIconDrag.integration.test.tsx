@@ -25,7 +25,12 @@ vi.mock('@/hooks/useSelectedStyle', () => ({
 vi.mock('@/libs/contentProvider', () => ({
   APP_LIST: [
     { id: 'blog', title: 'Blog', iconSrc: '/blog.png', renderType: 'ssg' },
-    { id: 'about', title: 'About', iconSrc: '/about.png', renderType: 'csr' },
+    {
+      id: 'about-me',
+      title: 'About Me',
+      iconSrc: '/about.png',
+      renderType: 'csr',
+    },
     {
       id: 'guestbook',
       title: 'Guestbook',
@@ -69,16 +74,16 @@ function IconDragTestComponent({
         onClick={() => handleClick('blog')}
       />
       <DesktopIcon
-        id='about'
+        id='about-me'
         iconSrc='/about.png'
-        title='About'
+        title='About Me'
         isSelected={false}
-        position={iconPositions.about}
+        position={iconPositions['about-me']}
         className={`absolute transition-opacity duration-150 ${
           isRenderReady ? 'opacity-100' : 'opacity-0'
         }`}
-        onMouseDown={(e) => handleIconMouseDown(e, 'about')}
-        onClick={() => handleClick('about')}
+        onMouseDown={(e) => handleIconMouseDown(e, 'about-me')}
+        onClick={() => handleClick('about-me')}
       />
       <DesktopIcon
         id='guestbook'
@@ -164,7 +169,7 @@ describe('useIconDrag Integration', () => {
     // Arrange
     render(<IconDragTestComponent />);
     const blogIcon = screen.getByTestId('desktop-icon-blog');
-    const aboutIcon = screen.getByTestId('desktop-icon-about');
+    const aboutIcon = screen.getByTestId('desktop-icon-about-me');
     const aboutInitialLeft = aboutIcon.style.left;
     const aboutInitialTop = aboutIcon.style.top;
 

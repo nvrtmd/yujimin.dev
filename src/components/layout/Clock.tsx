@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
 const CLOCK_UPDATE_INTERVAL_MS = 1000;
-const CLOCK_ICON = '/images/icons/scheduler_img.webp';
+const CLOCK_ICON = '/images/icons/clock_img.webp';
 const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
   hour: '2-digit',
   minute: '2-digit',

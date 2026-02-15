@@ -181,12 +181,12 @@ describe('Taskbar', () => {
   it('[taskbar-click] should call onTaskbarButtonClick with corresponding window', async () => {
     // Arrange
     const user = userEvent.setup();
-    const window1 = createMockCsrWindow({ id: 'about', title: 'About' });
+    const window1 = createMockCsrWindow({ id: 'about-me', title: 'About Me' });
     const window2 = createMockSsgWindow({ id: 'blog', title: 'Blog' });
     render(<Taskbar {...defaultProps} windowList={[window1, window2]} />);
 
     // Act & Assert - Click about button
-    await user.click(screen.getByTestId('taskbar-button-about'));
+    await user.click(screen.getByTestId('taskbar-button-about-me'));
     expect(mockOnTaskbarButtonClick).toHaveBeenCalledWith(window1);
 
     // Act & Assert - Click blog button
@@ -196,7 +196,7 @@ describe('Taskbar', () => {
 
   it('[active-state] should highlight only the frontmost window button', () => {
     // Arrange
-    const window1 = createMockCsrWindow({ id: 'about', title: 'About' });
+    const window1 = createMockCsrWindow({ id: 'about-me', title: 'About Me' });
     const window2 = createMockSsgWindow({ id: 'blog', title: 'Blog' });
     const windowList = [window1, window2];
 
@@ -209,7 +209,7 @@ describe('Taskbar', () => {
     );
 
     // Assert - window1 is active
-    expect(screen.getByTestId('taskbar-button-about')).toHaveAttribute(
+    expect(screen.getByTestId('taskbar-button-about-me')).toHaveAttribute(
       'data-pushed',
       'true',
     );
@@ -228,7 +228,7 @@ describe('Taskbar', () => {
     );
 
     // Assert - window2 is now active
-    expect(screen.getByTestId('taskbar-button-about')).toHaveAttribute(
+    expect(screen.getByTestId('taskbar-button-about-me')).toHaveAttribute(
       'data-pushed',
       'false',
     );

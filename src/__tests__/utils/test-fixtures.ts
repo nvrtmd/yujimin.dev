@@ -6,8 +6,8 @@ import type { App, WindowState } from '@/models';
 export const createMockCsrWindow = (
   overrides: Partial<WindowState> = {},
 ): WindowState => ({
-  id: 'about',
-  title: 'About',
+  id: 'about-me',
+  title: 'About Me',
   iconSrc: '/test.png',
   showAddressBar: false,
   position: { x: 100, y: 100 },
@@ -40,8 +40,8 @@ export const createMockSsgWindow = (
  * Creates a mock App without address bar (formerly CSR app)
  */
 export const createMockCsrApp = (overrides: Partial<App> = {}): App => ({
-  id: 'about',
-  title: 'About',
+  id: 'about-me',
+  title: 'About Me',
   iconSrc: '/test.png',
   showAddressBar: false,
   ...overrides,

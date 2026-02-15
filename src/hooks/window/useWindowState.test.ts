@@ -33,7 +33,7 @@ describe('useWindowState', () => {
   });
 
   const mockApp: App = {
-    id: 'about',
+    id: 'about-me',
     title: 'About',
     iconSrc: '/test.png',
     showAddressBar: false,
@@ -61,7 +61,7 @@ describe('useWindowState', () => {
 
     // Assert
     expect(result.current.windowList).toHaveLength(1);
-    expect(result.current.windowList[0].id).toBe('about');
+    expect(result.current.windowList[0].id).toBe('about-me');
     expect(result.current.windowList[0].zIndex).toBe(1);
 
     // Act - Open second window

@@ -47,7 +47,7 @@ export function StartMenu({
       }}
     >
       <div className='bg-[var(--color-window-title-active-end)] text-white p-2.5 [writing-mode:vertical-rl] transform rotate-180 flex items-center'>
-        <span className='font-bold text-2xl'>Yuji Min</span>
+        <span className='font-bold text-2xl'>yujimin.dev</span>
       </div>
 
       <div>

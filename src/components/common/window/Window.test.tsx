@@ -49,7 +49,7 @@ vi.mock('next/image', () => ({
 const createDefaultWindow = (
   overrides: Partial<WindowState> = {},
 ): WindowState => ({
-  id: 'about',
+  id: 'about-me',
   title: 'Test Window',
   iconSrc: '/test-icon.png',
   content: null,
@@ -111,7 +111,7 @@ describe('Window', () => {
       const props = createDefaultProps();
       render(<Window {...props} />);
 
-      expect(screen.getByTestId('window-about')).toBeInTheDocument();
+      expect(screen.getByTestId('window-about-me')).toBeInTheDocument();
     });
 
     it('should display the window title text', () => {
@@ -180,7 +180,9 @@ describe('Window', () => {
       const props = createDefaultProps();
       render(<Window {...props} />);
 
-      expect(screen.getByTestId('window-minimize-about')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('window-minimize-about-me'),
+      ).toBeInTheDocument();
     });
 
     it('should hide minimize button when canMinimize is false', () => {
@@ -190,7 +192,7 @@ describe('Window', () => {
       render(<Window {...props} />);
 
       expect(
-        screen.queryByTestId('window-minimize-about'),
+        screen.queryByTestId('window-minimize-about-me'),
       ).not.toBeInTheDocument();
     });
 
@@ -198,7 +200,9 @@ describe('Window', () => {
       const props = createDefaultProps();
       render(<Window {...props} />);
 
-      expect(screen.getByTestId('window-maximize-about')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('window-maximize-about-me'),
+      ).toBeInTheDocument();
     });
 
     it('should hide maximize button when canMaximize is false', () => {
@@ -208,7 +212,7 @@ describe('Window', () => {
       render(<Window {...props} />);
 
       expect(
-        screen.queryByTestId('window-maximize-about'),
+        screen.queryByTestId('window-maximize-about-me'),
       ).not.toBeInTheDocument();
     });
 
@@ -221,16 +225,20 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      expect(screen.getByTestId('window-close-about')).toBeInTheDocument();
+      expect(screen.getByTestId('window-close-about-me')).toBeInTheDocument();
     });
 
     it('should show all three buttons when both canMinimize and canMaximize are true', () => {
       const props = createDefaultProps();
       render(<Window {...props} />);
 
-      expect(screen.getByTestId('window-minimize-about')).toBeInTheDocument();
-      expect(screen.getByTestId('window-maximize-about')).toBeInTheDocument();
-      expect(screen.getByTestId('window-close-about')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('window-minimize-about-me'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('window-maximize-about-me'),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('window-close-about-me')).toBeInTheDocument();
     });
   });
 
@@ -440,7 +448,7 @@ describe('Window', () => {
       const directions = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
       directions.forEach((direction) => {
         expect(
-          screen.getByTestId(`resize-handle-${direction}-about`),
+          screen.getByTestId(`resize-handle-${direction}-about-me`),
         ).toBeInTheDocument();
       });
     });
@@ -454,7 +462,7 @@ describe('Window', () => {
       const directions = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
       directions.forEach((direction) => {
         expect(
-          screen.queryByTestId(`resize-handle-${direction}-about`),
+          screen.queryByTestId(`resize-handle-${direction}-about-me`),
         ).not.toBeInTheDocument();
       });
     });
@@ -467,7 +475,7 @@ describe('Window', () => {
       const directions = ['nw', 'ne', 'sw', 'se', 'n', 's', 'w', 'e'];
       directions.forEach((direction, index) => {
         fireEvent.mouseDown(
-          screen.getByTestId(`resize-handle-${direction}-about`),
+          screen.getByTestId(`resize-handle-${direction}-about-me`),
         );
         expect(onResizeMouseDown).toHaveBeenCalledTimes(index + 1);
         expect(onResizeMouseDown).toHaveBeenLastCalledWith(
@@ -492,7 +500,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      const windowElement = screen.getByTestId('window-about');
+      const windowElement = screen.getByTestId('window-about-me');
       expect(windowElement).toHaveStyle({ position: 'absolute' });
       expect(windowElement).toHaveStyle({ left: '200px' });
       expect(windowElement).toHaveStyle({ top: '150px' });
@@ -507,7 +515,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      const windowElement = screen.getByTestId('window-about');
+      const windowElement = screen.getByTestId('window-about-me');
       expect(windowElement).toHaveStyle({ zIndex: 5 });
     });
 
@@ -518,7 +526,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      const windowElement = screen.getByTestId('window-about');
+      const windowElement = screen.getByTestId('window-about-me');
       expect(windowElement).toHaveStyle({ zIndex: 9003 });
     });
 
@@ -529,7 +537,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      const windowElement = screen.getByTestId('window-about');
+      const windowElement = screen.getByTestId('window-about-me');
       expect(windowElement).toHaveStyle({ position: 'fixed' });
       expect(windowElement).toHaveStyle({ top: '0px' });
       expect(windowElement).toHaveStyle({ left: '0px' });
@@ -545,7 +553,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      const windowElement = screen.getByTestId('window-about');
+      const windowElement = screen.getByTestId('window-about-me');
       expect(windowElement).toHaveStyle({ position: 'absolute' });
     });
 
@@ -553,7 +561,7 @@ describe('Window', () => {
       const props = createDefaultProps({ isActive: true });
       render(<Window {...props} />);
 
-      const titlebar = screen.getByTestId('window-titlebar-about');
+      const titlebar = screen.getByTestId('window-titlebar-about-me');
       expect(titlebar.className).toContain('window-title-active');
     });
 
@@ -561,7 +569,7 @@ describe('Window', () => {
       const props = createDefaultProps({ isActive: false });
       render(<Window {...props} />);
 
-      const titlebar = screen.getByTestId('window-titlebar-about');
+      const titlebar = screen.getByTestId('window-titlebar-about-me');
       expect(titlebar.className).toContain('window-title-inactive');
     });
   });
@@ -576,7 +584,7 @@ describe('Window', () => {
       const props = createDefaultProps({ onClose });
       render(<Window {...props} />);
 
-      fireEvent.click(screen.getByTestId('window-close-about'));
+      fireEvent.click(screen.getByTestId('window-close-about-me'));
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
@@ -585,7 +593,7 @@ describe('Window', () => {
       const props = createDefaultProps({ onMinimize });
       render(<Window {...props} />);
 
-      fireEvent.click(screen.getByTestId('window-minimize-about'));
+      fireEvent.click(screen.getByTestId('window-minimize-about-me'));
       expect(onMinimize).toHaveBeenCalledTimes(1);
     });
 
@@ -594,7 +602,7 @@ describe('Window', () => {
       const props = createDefaultProps({ onToggleMaximize });
       render(<Window {...props} />);
 
-      fireEvent.click(screen.getByTestId('window-maximize-about'));
+      fireEvent.click(screen.getByTestId('window-maximize-about-me'));
       expect(onToggleMaximize).toHaveBeenCalledTimes(1);
     });
 
@@ -603,7 +611,7 @@ describe('Window', () => {
       const props = createDefaultProps({ onBringToFront });
       render(<Window {...props} />);
 
-      fireEvent.mouseDown(screen.getByTestId('window-about'));
+      fireEvent.mouseDown(screen.getByTestId('window-about-me'));
       expect(onBringToFront).toHaveBeenCalledTimes(1);
     });
   });
@@ -618,7 +626,7 @@ describe('Window', () => {
       const props = createDefaultProps({ onDragMouseDown });
       render(<Window {...props} />);
 
-      fireEvent.mouseDown(screen.getByTestId('window-titlebar-about'));
+      fireEvent.mouseDown(screen.getByTestId('window-titlebar-about-me'));
       expect(onDragMouseDown).toHaveBeenCalledTimes(1);
     });
 
@@ -630,7 +638,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      fireEvent.mouseDown(screen.getByTestId('window-titlebar-about'));
+      fireEvent.mouseDown(screen.getByTestId('window-titlebar-about-me'));
       expect(onDragMouseDown).not.toHaveBeenCalled();
     });
   });
@@ -644,7 +652,7 @@ describe('Window', () => {
       const props = createDefaultProps();
       render(<Window {...props} />);
 
-      fireEvent.click(screen.getByTestId('window-titlebar-about'));
+      fireEvent.click(screen.getByTestId('window-titlebar-about-me'));
       expect(mockHandleDoubleClick).toHaveBeenCalledTimes(1);
       expect(mockHandleDoubleClick).toHaveBeenCalledWith(
         expect.any(Object),
@@ -659,7 +667,7 @@ describe('Window', () => {
       });
       render(<Window {...props} />);
 
-      fireEvent.click(screen.getByTestId('window-titlebar-about'));
+      fireEvent.click(screen.getByTestId('window-titlebar-about-me'));
       expect(mockHandleDoubleClick).not.toHaveBeenCalled();
     });
   });
@@ -676,7 +684,7 @@ describe('Window', () => {
 
       // mouseDown on control buttons container should stop propagation
       // so that drag does not start when clicking buttons
-      const closeButton = screen.getByTestId('window-close-about');
+      const closeButton = screen.getByTestId('window-close-about-me');
       const controlContainer = closeButton.parentElement as HTMLElement;
 
       const mouseDownEvent = new MouseEvent('mousedown', {

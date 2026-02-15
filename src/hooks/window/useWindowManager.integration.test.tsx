@@ -53,7 +53,7 @@ const openWindowViaNavigation = (
 
 describe('useWindowManager - App Activation Scenarios', () => {
   const blogApp = APP_LIST.find((app) => app.id === 'blog')!;
-  const aboutApp = APP_LIST.find((app) => app.id === 'about')!;
+  const aboutApp = APP_LIST.find((app) => app.id === 'about-me')!;
   const guestbookApp = APP_LIST.find((app) => app.id === 'guestbook')!;
 
   beforeEach(() => {
@@ -102,12 +102,12 @@ describe('useWindowManager - App Activation Scenarios', () => {
     // Open About on top of Blog
     openWindowViaNavigation(result, rerender, aboutApp);
 
-    expect(result.current.frontmostOpenWindow?.id).toBe('about');
+    expect(result.current.frontmostOpenWindow?.id).toBe('about-me');
     expect(result.current.windowList).toHaveLength(2);
 
     const blogWindow = result.current.windowList.find((w) => w.id === 'blog')!;
     const aboutWindow = result.current.windowList.find(
-      (w) => w.id === 'about',
+      (w) => w.id === 'about-me',
     )!;
     expect(blogWindow.zIndex).toBeLessThan(aboutWindow.zIndex);
 
@@ -122,7 +122,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
       (w) => w.id === 'blog',
     )!;
     const updatedAboutWindow = result.current.windowList.find(
-      (w) => w.id === 'about',
+      (w) => w.id === 'about-me',
     )!;
     expect(updatedBlogWindow.zIndex).toBeGreaterThan(updatedAboutWindow.zIndex);
   });
@@ -252,7 +252,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
     // Open About on top
     openWindowViaNavigation(result, rerender, aboutApp);
 
-    expect(result.current.frontmostOpenWindow?.id).toBe('about');
+    expect(result.current.frontmostOpenWindow?.id).toBe('about-me');
 
     // Act - Bring maximized Blog to front
     const backgroundBlog = result.current.windowList.find(

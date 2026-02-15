@@ -218,7 +218,7 @@ describe('useWindowDrag', () => {
   it('[isolation] should only update target window in list', () => {
     // Arrange
     const targetWindow = createMockCsrWindow({
-      id: 'about',
+      id: 'about-me',
       position: { x: 100, y: 100 },
     });
     const otherWindow = createMockCsrWindow({
@@ -256,7 +256,7 @@ describe('useWindowDrag', () => {
       updatedList.find((w: WindowState) => w.id === 'blog')?.position,
     ).toEqual({ x: 200, y: 200 });
     expect(
-      updatedList.find((w: WindowState) => w.id === 'about')?.position,
+      updatedList.find((w: WindowState) => w.id === 'about-me')?.position,
     ).toEqual({ x: 150, y: 150 });
   });
 

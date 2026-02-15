@@ -1,1 +1,0 @@
-export { ActivityApp } from './ActivityApp';

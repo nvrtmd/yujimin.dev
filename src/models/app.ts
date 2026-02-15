@@ -2,7 +2,8 @@ import type { Position, Size } from './common';
 
 export const APP_IDS = [
   'blog',
-  'about',
+  'about-me',
+  'colophon',
   'guestbook',
   'analytics',
   'resume',

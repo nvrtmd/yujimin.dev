@@ -211,7 +211,7 @@ describe('useWindowResize', () => {
   it('[immutability] should only update target window and preserve original object', () => {
     // Arrange
     const targetWindow = createMockCsrWindow({
-      id: 'about',
+      id: 'about-me',
       size: { width: 400, height: 300 },
     });
     const otherWindow = createMockCsrWindow({
@@ -251,7 +251,7 @@ describe('useWindowResize', () => {
 
     // Assert - Target window updated
     expect(
-      updatedList.find((w: WindowState) => w.id === 'about')?.size.width,
+      updatedList.find((w: WindowState) => w.id === 'about-me')?.size.width,
     ).toBe(450);
 
     // Assert - Other window unchanged
