@@ -50,10 +50,9 @@ export const ABOUT_APP: App = {
 export const COLOPHON_APP: App = {
   id: 'colophon',
   title: 'Colophon',
-  iconSrc: '/images/icons/about_me_img.webp',
+  iconSrc: '/images/icons/colophon_img.webp',
   showAddressBar: true,
   size: { width: WINDOW_MEDIUM_WIDTH, height: WINDOW_MEDIUM_HEIGHT },
-  canMaximize: false,
   canMinimize: true,
 };
 

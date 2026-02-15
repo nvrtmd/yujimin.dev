@@ -53,36 +53,54 @@ export function ColophonApp() {
   return (
     <div className='w-full h-full overflow-y-auto bg-white'>
       <div className='flex flex-col min-h-full text-black p-6 gap-10'>
-        <section className='space-y-2'>
-          <h2 className='text-2xl font-bold'>Colophon</h2>
-          <p className='text-base leading-relaxed text-gray-700'>
-            Welcome to <strong className='text-black'>yujimin.dev</strong>. Step
-            into a retro virtual desktop where my work lives in draggable
-            windows — a playful mix of classic interface and modern tech.
-          </p>
-        </section>
+        <div className='flex flex-col sm:flex-row items-end gap-6 sm:gap-4'>
+          <div className='order-1 sm:order-2 shrink-0'>
+            <Image
+              src='/images/icons/home_img.webp'
+              alt='Home'
+              width={120}
+              height={120}
+            />
+          </div>
 
-        <hr className='border-gray-200' />
-
-        <a
-          href={REPO_URL}
-          target='_blank'
-          rel='noopener noreferrer'
-          className='flex items-center gap-2 text-base text-gray-700 hover:text-black hover:underline transition-colors'
-        >
-          <Image
-            src='/images/icons/github-logo-black.svg'
-            alt='GitHub'
-            width={ICON_SIZE}
-            height={ICON_SIZE}
-          />
-          <span className='break-all'>{REPO_URL}</span>
-        </a>
+          <section className='space-y-2 order-2 sm:order-1 w-full'>
+            <h2 className='text-2xl font-bold'>Colophon</h2>
+            <p className='text-base leading-relaxed text-gray-700'>
+              Welcome to <strong className='text-black'>yujimin.dev</strong>.
+              Step into a retro virtual desktop where my work lives in draggable
+              windows — a playful mix of classic interface and modern tech.
+            </p>
+          </section>
+        </div>
 
         <hr className='border-gray-200' />
 
         <section className='space-y-3'>
-          <h3 className='text-lg font-bold'>What&apos;s Inside</h3>
+          <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
+            GitHub Repository
+          </h3>
+          <a
+            href={REPO_URL}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='inline-flex items-center gap-2 text-base text-gray-700 hover:text-black hover:underline transition-colors'
+          >
+            <Image
+              src='/images/icons/github-logo-black.svg'
+              alt='GitHub'
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+            />
+            <span className='break-all'>{REPO_URL}</span>
+          </a>
+        </section>
+
+        <hr className='border-gray-200' />
+
+        <section className='space-y-3'>
+          <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
+            What&apos;s Inside
+          </h3>
           <ul className='grid gap-2 text-base'>
             {FEATURES.map((feature) => (
               <li key={feature.title} className='leading-relaxed'>
@@ -96,7 +114,9 @@ export function ColophonApp() {
         <hr className='border-gray-200' />
 
         <section className='space-y-3'>
-          <h3 className='text-lg font-bold'>Built With</h3>
+          <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
+            Built With
+          </h3>
           <dl className='grid gap-1.5 text-base'>
             {TECH_STACK.map((item) => (
               <div key={item.label} className='flex gap-2'>

@@ -6,7 +6,7 @@
  */
 import worker from './.open-next/worker.js';
 
-export default {
+const workerWrapper = {
   /**
    * HTTP Request Handler (existing functionality)
    * Handles all incoming HTTP requests to the website
@@ -23,7 +23,7 @@ export default {
    * @param {Object} env - Environment bindings (DB, secrets, SITE_URL, etc.)
    * @param {Object} ctx - Worker execution context
    */
-  async scheduled(event, env, ctx) {
+  async scheduled(event, env, _ctx) {
     const scheduledTime = new Date(event.scheduledTime);
     console.log(
       '[Cron] Resume cache refresh triggered at:',
@@ -68,3 +68,5 @@ export default {
     }
   },
 };
+
+export default workerWrapper;

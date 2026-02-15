@@ -33,10 +33,6 @@ export function StartMenu({
     closeMenu();
   };
 
-  const handleLinkClick = () => {
-    closeMenu();
-  };
-
   return (
     <div
       ref={menuRef}
