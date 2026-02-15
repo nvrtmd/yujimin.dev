@@ -84,9 +84,9 @@ export const RESUME_APP: App = {
 export const APP_LIST: App[] = [
   BLOG_APP,
   ABOUT_APP,
-  COLOPHON_APP,
   RESUME_APP,
   GUESTBOOK_APP,
+  COLOPHON_APP,
   ANALYTICS_APP,
 ];
 

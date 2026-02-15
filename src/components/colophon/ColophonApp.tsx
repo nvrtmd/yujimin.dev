@@ -56,8 +56,8 @@ export function ColophonApp() {
         <div className='flex flex-col sm:flex-row items-end gap-6 sm:gap-4'>
           <div className='order-1 sm:order-2 shrink-0'>
             <Image
-              src='/images/icons/home_img.webp'
-              alt='Home'
+              src='/images/icons/computer_img.webp'
+              alt='Computer'
               width={120}
               height={120}
             />
