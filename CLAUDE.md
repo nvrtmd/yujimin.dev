@@ -101,6 +101,18 @@ e2e/               # Playwright E2E tests
 - Prettier: single quotes, JSX single quotes, trailing commas, 2-space tabs
 - Strict TypeScript with Zod validation for API inputs
 
+## Code Quality Principles (MANDATORY)
+
+All code changes must prioritize the following qualities:
+
+- **Readability:** Code should be self-explanatory. Prefer explicit names and simple structures over clever one-liners.
+- **High Cohesion:** Related logic stays together. Co-locate constants, helpers, and types with their consumers.
+- **Maintainability:** Write code that is easy to modify and extend. Favor small, focused functions with single responsibilities.
+- **Stability & Safety:** Preserve existing behavior. Changes must not introduce regressions — verify with lint, build, and tests.
+- **Security:** Validate all external inputs (Zod). Never expose internals in error responses. Follow OWASP best practices.
+- **Low Coupling:** Minimize dependencies between modules. Components should not know about each other's internals.
+- **Low Bug Potential:** Use strict typing (never `any`), guard clauses, and early returns. Avoid mutable shared state and implicit side effects.
+
 ---
 
 ## 🛠️ Refactoring Guidelines
