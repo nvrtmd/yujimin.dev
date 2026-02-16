@@ -191,6 +191,6 @@ describe('StartMenu', () => {
     render(<StartMenu {...defaultProps} />);
 
     // Assert
-    expect(screen.getByText('Yuji Min')).toBeInTheDocument();
+    expect(screen.getByText('yujimin.dev')).toBeInTheDocument();
   });
 });

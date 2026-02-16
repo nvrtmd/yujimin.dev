@@ -2,8 +2,6 @@
 
 import { useEffect, RefObject } from 'react';
 
-// Triggers handler when a click/touch occurs outside the given element.
-// Useful for OS-like deselection behavior.
 export const useClickOutside = <T extends HTMLElement = HTMLElement>(
   ref: RefObject<T>,
   handler: (event: MouseEvent | TouchEvent) => void,
