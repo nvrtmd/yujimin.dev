@@ -26,6 +26,7 @@ export function TOC() {
       level: Number(el.tagName.replace(HEADING_TAG_PREFIX, '')),
     }));
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- One-time DOM read for heading extraction
     setHeadings(headingsData);
   }, []);
 

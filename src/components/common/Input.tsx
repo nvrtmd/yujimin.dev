@@ -26,7 +26,7 @@ const InputBase = forwardRef<HTMLInputElement, InputProps>(
           aria-describedby={describedBy}
           className={[
             'w-full p-1 outline-none bg-[var(--color-white)] text-md',
-            'border shadow-inset cursor-retro',
+            'border shadow-inset',
             error ? 'border-red-500 bg-red-100' : 'border-black',
             className ?? '',
           ].join(' ')}

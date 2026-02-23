@@ -28,7 +28,7 @@ export const TreeItem = ({
   const selectedStyle = useSelectedStyle(isSelected);
   return (
     <div
-      className={`flex items-center mb-0.5 px-1 cursor-pointer select-none border ${selectedStyle.container} relative`}
+      className={`flex items-center mb-0.5 px-1 select-none border ${selectedStyle.container} relative`}
       onClick={onClick}
     >
       {level > 0 && (

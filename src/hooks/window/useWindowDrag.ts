@@ -1,6 +1,12 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useRef,
+} from 'react';
 import type { SetStateAction, Dispatch } from 'react';
 import type { App, Position, WindowState } from '@/models';
 
@@ -32,56 +38,35 @@ export const useWindowDrag = ({
   const [dragState, setDragState] = useState<DragState>(INITIAL_DRAG_STATE);
   const rafId = useRef<number | null>(null);
 
-  const calculateNewPosition = useCallback(
-    (mouseEvent: MouseEvent): Position => {
-      const deltaX = mouseEvent.clientX - dragState.mouseStartPosition.x;
-      const deltaY = mouseEvent.clientY - dragState.mouseStartPosition.y;
+  const handleMouseMove = useEffectEvent((e: MouseEvent) => {
+    if (!dragState.isDragging || !dragState.window) {
+      return;
+    }
 
-      return {
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+    }
+
+    rafId.current = requestAnimationFrame(() => {
+      const deltaX = e.clientX - dragState.mouseStartPosition.x;
+      const deltaY = e.clientY - dragState.mouseStartPosition.y;
+
+      const newPosition: Position = {
         x: dragState.windowStartPosition.x + deltaX,
         y: dragState.windowStartPosition.y + deltaY,
       };
-    },
-    [dragState.mouseStartPosition, dragState.windowStartPosition],
-  );
 
-  const updateWindowPosition = useCallback(
-    (newPosition: Position) => {
       setWindowList((prevWindows) =>
         prevWindows.map((w) =>
           w.id === dragState.window?.id ? { ...w, position: newPosition } : w,
         ),
       );
-    },
-    [dragState.window?.id, setWindowList],
-  );
+    });
+  });
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!dragState.isDragging || !dragState.window) {
-        return;
-      }
-
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
-
-      rafId.current = requestAnimationFrame(() => {
-        const newPosition = calculateNewPosition(e);
-        updateWindowPosition(newPosition);
-      });
-    },
-    [
-      dragState.isDragging,
-      dragState.window,
-      calculateNewPosition,
-      updateWindowPosition,
-    ],
-  );
-
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = useEffectEvent(() => {
     setDragState(INITIAL_DRAG_STATE);
-  }, []);
+  });
 
   const handleWindowDragMouseDown = useCallback(
     (e: React.MouseEvent, window: WindowState) => {
@@ -113,7 +98,7 @@ export const useWindowDrag = ({
         cancelAnimationFrame(rafId.current);
       }
     };
-  }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
+  }, [dragState.isDragging]);
 
   return { handleWindowDragMouseDown };
 };

@@ -258,7 +258,7 @@ pre[class*='language-'].line-numbers > code {
    Base Styles
    ============================================ */
 html {
-  cursor: url('/images/cursor.png'), auto;
+  cursor: url('/images/cursors/default.png'), auto;
   /* Extend safe-area to body on mobile */
   height: 100%;
 }
@@ -308,11 +308,25 @@ body {
   margin: 0;
 }
 
-a,
+/* Links: retro hand pointer */
+a {
+  cursor: url('/images/cursors/pointer.png'), pointer;
+}
+
+/* Buttons & interactive elements: retro arrow (same as default) */
 button,
 [role='button'],
 [onclick] {
-  cursor: url('/images/cursor.png'), auto;
+  cursor: url('/images/cursors/default.png'), default;
+}
+
+/* Override Tailwind cursor utilities with retro cursors */
+.cursor-pointer {
+  cursor: url('/images/cursors/pointer.png'), pointer;
+}
+
+.cursor-default {
+  cursor: url('/images/cursors/default.png'), default;
 }
 
 details[open] > summary svg {
@@ -377,13 +391,6 @@ details > summary svg {
 
   .shadow-blog-status {
     box-shadow: var(--shadow-blog-status);
-  }
-
-  /* Retro Cursor Utility */
-  .cursor-retro {
-    cursor:
-      url('https://user-images.githubusercontent.com/67324487/215311257-3abd7f34-8b4f-450c-a527-ed2e72801fbb.png'),
-      auto;
   }
 }
 

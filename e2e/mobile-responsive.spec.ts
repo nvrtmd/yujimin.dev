@@ -6,7 +6,7 @@ const MOBILE_VIEWPORT = { width: 375, height: 667 };
 test.describe('Mobile Responsiveness - useMobile Hook', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('desktop-icon-about')).toBeVisible({
+    await expect(page.getByTestId('desktop-icon-about-me')).toBeVisible({
       timeout: 500,
     });
   });
@@ -18,37 +18,37 @@ test.describe('Mobile Responsiveness - useMobile Hook', () => {
       page,
     }) => {
       // Arrange
-      const aboutIcon = page.getByTestId('desktop-icon-about');
+      const aboutIcon = page.getByTestId('desktop-icon-about-me');
 
       // Act - Single click
       await aboutIcon.click();
 
       // Assert - Window should NOT open
-      await expect(page.getByTestId('window-about')).not.toBeVisible();
+      await expect(page.getByTestId('window-about-me')).not.toBeVisible();
 
       // Act - Double click
       await aboutIcon.dblclick();
 
       // Assert - Window should open
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
     });
 
     test('[desktop-layout] should support multiple windows without fullscreen', async ({
       page,
     }) => {
       // Arrange
-      const aboutIcon = page.getByTestId('desktop-icon-about');
+      const aboutIcon = page.getByTestId('desktop-icon-about-me');
       const guestbookIcon = page.getByTestId('desktop-icon-guestbook');
 
       // Act - Open both windows
       await aboutIcon.dblclick();
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
 
       await guestbookIcon.dblclick();
       await expect(page.getByTestId('window-guestbook')).toBeVisible();
 
       // Assert - Both windows visible simultaneously
-      const aboutWindow = page.getByTestId('window-about');
+      const aboutWindow = page.getByTestId('window-about-me');
       const guestbookWindow = page.getByTestId('window-guestbook');
 
       await expect(aboutWindow).toBeVisible();
@@ -68,26 +68,26 @@ test.describe('Mobile Responsiveness - useMobile Hook', () => {
       page,
     }) => {
       // Arrange
-      const aboutIcon = page.getByTestId('desktop-icon-about');
+      const aboutIcon = page.getByTestId('desktop-icon-about-me');
 
       // Act
       await aboutIcon.click();
 
       // Assert
-      await expect(page.getByTestId('window-about')).toBeVisible();
+      await expect(page.getByTestId('window-about-me')).toBeVisible();
     });
 
     test('[mobile-layout] should show window in fullscreen mode', async ({
       page,
     }) => {
       // Arrange
-      const aboutIcon = page.getByTestId('desktop-icon-about');
+      const aboutIcon = page.getByTestId('desktop-icon-about-me');
 
       // Act
       await aboutIcon.click();
 
       // Assert - Window should be visible
-      const aboutWindow = page.getByTestId('window-about');
+      const aboutWindow = page.getByTestId('window-about-me');
       await expect(aboutWindow).toBeVisible();
 
       // Assert - Window should fill viewport
@@ -108,14 +108,14 @@ test.describe('Mobile Responsiveness - useMobile Hook', () => {
       // Arrange - Start in desktop mode
       await page.setViewportSize(DESKTOP_VIEWPORT);
       await page.reload();
-      await expect(page.getByTestId('desktop-icon-about')).toBeVisible({
+      await expect(page.getByTestId('desktop-icon-about-me')).toBeVisible({
         timeout: 500,
       });
-      const aboutIcon = page.getByTestId('desktop-icon-about');
+      const aboutIcon = page.getByTestId('desktop-icon-about-me');
 
       // Act & Assert - Desktop: single click should NOT open window
       await aboutIcon.click();
-      await expect(page.getByTestId('window-about')).not.toBeVisible();
+      await expect(page.getByTestId('window-about-me')).not.toBeVisible();
 
       // Arrange - Resize to mobile
       await page.setViewportSize(MOBILE_VIEWPORT);

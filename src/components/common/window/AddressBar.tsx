@@ -1,10 +1,24 @@
 'use client';
 
-import { useState, useEffect, memo } from 'react';
+import { useSyncExternalStore, memo } from 'react';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Button } from '@/components/common/Button';
 import type { BlogNavigation } from '@/hooks/useBlogNavigation';
+
+const EMPTY_ORIGIN = '';
+
+function subscribeToNothing() {
+  return () => {};
+}
+
+function getOrigin() {
+  return window.location.origin;
+}
+
+function getServerOrigin() {
+  return EMPTY_ORIGIN;
+}
 
 interface AddressBarProps {
   windowAppId: string;
@@ -20,12 +34,13 @@ export const AddressBar = memo(
       ? pathname
       : `/${windowAppId}`;
 
-    const [currentUrl, setCurrentUrl] = useState(displayPath);
+    const origin = useSyncExternalStore(
+      subscribeToNothing,
+      getOrigin,
+      getServerOrigin,
+    );
 
-    useEffect(() => {
-      const origin = window.location.origin;
-      setCurrentUrl(`${origin}${displayPath}`);
-    }, [displayPath]);
+    const currentUrl = `${origin}${displayPath}`;
 
     return (
       <div className='border border-[var(--color-border-medium)] font-sans text-base p-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>

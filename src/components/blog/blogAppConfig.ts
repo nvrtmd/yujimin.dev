@@ -9,7 +9,7 @@ export const DEFAULT_CATEGORY = 'all';
 export const BLOG_ROOT_NODE = 'blogRoot';
 
 export const SORT_HEADER_BASE_CLASS =
-  'border-r border-white border-b border-b-[var(--color-border-dark)] p-1 px-2 border-t border-t-white border-l border-l-white active:border-l-[var(--color-border-dark)] active:border-t-[var(--color-border-dark)] active:border-r-white active:border-b-white truncate cursor-pointer select-none flex items-center bg-[var(--color-window-bg)]';
+  'border-r border-white border-b border-b-[var(--color-border-dark)] p-1 px-2 border-t border-t-white border-l border-l-white active:border-l-[var(--color-border-dark)] active:border-t-[var(--color-border-dark)] active:border-r-white active:border-b-white truncate select-none flex items-center bg-[var(--color-window-bg)]';
 
 export const SORT_HEADERS = [
   {

@@ -37,7 +37,10 @@ describe('useGuestbookForm', () => {
       await result.current.handleSubmit();
     });
 
-    expect(mockOnSubmit).toHaveBeenCalledWith(validData, undefined);
+    expect(mockOnSubmit).toHaveBeenCalledWith(
+      validData,
+      expect.objectContaining({ reset: expect.any(Function) }),
+    );
   });
 
   it('[submit] should prevent submission with invalid data', async () => {

@@ -1,4 +1,10 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useSyncExternalStore,
+} from 'react';
 import type { AppId, Position } from '@/models';
 import { APP_LIST } from '@/libs/contentProvider';
 import { calculateInitialIconPositions } from '@/libs/iconLayout';
@@ -7,14 +13,32 @@ const DRAG_THRESHOLD = 3;
 const BOUNDARY_OFFSET_WIDTH = 100;
 const BOUNDARY_OFFSET_HEIGHT = 120;
 
+function getAppIds() {
+  return APP_LIST.map((app) => app.id);
+}
+
+function subscribeToResize(callback: () => void) {
+  window.addEventListener('resize', callback);
+  return () => window.removeEventListener('resize', callback);
+}
+
+function getViewportHeight() {
+  return window.innerHeight;
+}
+
 export const useIconDrag = (isMobile: boolean) => {
-  const isInitialized = useRef(false);
+  const viewportHeight = useSyncExternalStore(
+    subscribeToResize,
+    getViewportHeight,
+    () => undefined,
+  );
 
   const [iconPositions, setIconPositions] = useState<Record<string, Position>>(
-    () => calculateInitialIconPositions(APP_LIST.map((app) => app.id)),
+    () => calculateInitialIconPositions(getAppIds()),
   );
 
   const [isRenderReady, setIsRenderReady] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [dragState, setDragState] = useState<{
     isDragging: boolean;
@@ -30,17 +54,17 @@ export const useIconDrag = (isMobile: boolean) => {
 
   const [isDragged, setIsDragged] = useState(false);
 
-  useEffect(() => {
-    if (isInitialized.current) return;
-    isInitialized.current = true;
-
-    // Recalculate with actual viewport height
+  // Recalculate positions once with actual viewport height on first client render
+  if (!isInitialized && viewportHeight !== undefined) {
+    setIsInitialized(true);
     const actualPositions = calculateInitialIconPositions(
-      APP_LIST.map((app) => app.id),
-      window.innerHeight,
+      getAppIds(),
+      viewportHeight,
     );
     setIconPositions(actualPositions);
+  }
 
+  useEffect(() => {
     // Mark as ready for fade-in after browser paints
     requestAnimationFrame(() => {
       setIsRenderReady(true);
@@ -67,57 +91,52 @@ export const useIconDrag = (isMobile: boolean) => {
     [iconPositions, isMobile],
   );
 
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (!dragState.isDragging || !dragState.iconId) return;
+  const handleMouseMove = useEffectEvent((e: MouseEvent) => {
+    if (!dragState.isDragging || !dragState.iconId) return;
 
-      const deltaX = e.clientX - dragState.mouseStartPos.x;
-      const deltaY = e.clientY - dragState.mouseStartPos.y;
+    const deltaX = e.clientX - dragState.mouseStartPos.x;
+    const deltaY = e.clientY - dragState.mouseStartPos.y;
 
-      if (
-        Math.abs(deltaX) > DRAG_THRESHOLD ||
-        Math.abs(deltaY) > DRAG_THRESHOLD
-      ) {
-        setIsDragged(true);
+    if (
+      Math.abs(deltaX) > DRAG_THRESHOLD ||
+      Math.abs(deltaY) > DRAG_THRESHOLD
+    ) {
+      setIsDragged(true);
 
-        const newX = dragState.iconStartPos.x + deltaX;
-        const newY = dragState.iconStartPos.y + deltaY;
+      const newX = dragState.iconStartPos.x + deltaX;
+      const newY = dragState.iconStartPos.y + deltaY;
 
-        const constrainedX = Math.max(
-          0,
-          Math.min(newX, window.innerWidth - BOUNDARY_OFFSET_WIDTH),
-        );
-        const constrainedY = Math.max(
-          0,
-          Math.min(newY, window.innerHeight - BOUNDARY_OFFSET_HEIGHT),
-        );
+      const constrainedX = Math.max(
+        0,
+        Math.min(newX, window.innerWidth - BOUNDARY_OFFSET_WIDTH),
+      );
+      const constrainedY = Math.max(
+        0,
+        Math.min(newY, window.innerHeight - BOUNDARY_OFFSET_HEIGHT),
+      );
 
-        setIconPositions((prev) => ({
-          ...prev,
-          [dragState.iconId!]: { x: constrainedX, y: constrainedY },
-        }));
-      }
-    },
-    [dragState],
-  );
+      setIconPositions((prev) => ({
+        ...prev,
+        [dragState.iconId!]: { x: constrainedX, y: constrainedY },
+      }));
+    }
+  });
 
-  const handleMouseUp = useCallback(() => {
+  const handleMouseUp = useEffectEvent(() => {
     setDragState((prev) => ({ ...prev, isDragging: false, iconId: null }));
-  }, []);
+  });
 
   useEffect(() => {
-    if (dragState.isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
-    } else {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
-    }
+    if (!dragState.isDragging) return;
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [dragState.isDragging, handleMouseMove, handleMouseUp]);
+  }, [dragState.isDragging]);
 
   return {
     iconPositions,

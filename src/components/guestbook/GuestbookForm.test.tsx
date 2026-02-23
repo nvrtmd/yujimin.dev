@@ -18,12 +18,15 @@ vi.mock('@/hooks/guestbook/useGuestbookForm', () => ({
   useGuestbookForm: vi.fn((onSubmit) => {
     mockHandleSubmit.mockImplementation((e) => {
       e?.preventDefault?.();
-      return onSubmit({
-        nickname: 'testuser',
-        location: 'Seoul',
-        website: 'https://example.com',
-        message: 'Hello!',
-      });
+      return onSubmit(
+        {
+          nickname: 'testuser',
+          location: 'Seoul',
+          website: 'https://example.com',
+          message: 'Hello!',
+        },
+        { reset: mockReset },
+      );
     });
 
     return {

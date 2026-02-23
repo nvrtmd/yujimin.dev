@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { WindowState } from '@/models';
 import { App } from '@/models/app';
 import { StartMenu, Clock } from '@/components/layout';
@@ -29,25 +29,22 @@ export function Taskbar({
   const startButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      if (
-        isMenuOpen &&
-        !startButtonRef.current?.contains(event.target as Node) &&
-        !menuRef.current?.contains(event.target as Node)
-      ) {
-        setIsMenuOpen(false);
-      }
-    },
-    [isMenuOpen],
-  );
+  const handleClickOutside = useEffectEvent((event: MouseEvent) => {
+    if (
+      isMenuOpen &&
+      !startButtonRef.current?.contains(event.target as Node) &&
+      !menuRef.current?.contains(event.target as Node)
+    ) {
+      setIsMenuOpen(false);
+    }
+  });
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [handleClickOutside]);
+  }, []);
 
   return (
     <>

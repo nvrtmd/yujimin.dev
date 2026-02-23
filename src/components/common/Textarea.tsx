@@ -27,7 +27,7 @@ const TextareaBase = forwardRef<HTMLTextAreaElement, TextareaProps>(
           aria-describedby={describedBy}
           className={[
             'w-full h-full p-1 outline-none resize-none text-md',
-            'border bg-[var(--color-white)] shadow-inset-deep cursor-retro',
+            'border bg-[var(--color-white)] shadow-inset-deep',
             error ? 'border-red-500 bg-red-100' : 'border-black',
             className ?? '',
           ].join(' ')}

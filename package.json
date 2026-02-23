@@ -45,9 +45,9 @@
     "drizzle-orm": "^0.44.6",
     "googleapis": "^164.1.0",
     "html-react-parser": "^5.2.17",
-    "next": "15.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "16.1.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
     "react-hook-form": "^7.65.0",
     "react-infinite-scroll-hook": "^6.0.1",
     "react-intersection-observer": "^9.16.0",
@@ -55,8 +55,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@opennextjs/cloudflare": "^1.11.0",
+    "@opennextjs/cloudflare": "^1.16.5",
     "@playwright/test": "^1.58.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.19",
@@ -64,17 +63,18 @@
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.18",
     "@vitest/ui": "^4.0.18",
+    "babel-plugin-react-compiler": "^1.0.0",
     "better-sqlite3": "^12.4.1",
     "cpy-cli": "^6.0.0",
     "dotenv": "^17.2.3",
     "drizzle-kit": "^0.31.5",
     "eslint": "^9",
-    "eslint-config-next": "15.5.4",
+    "eslint-config-next": "16.1.6",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "jsdom": "^27.4.0",
@@ -90,5 +90,9 @@
     "velite": "^0.3.0",
     "vitest": "^4.0.18",
     "wrangler": "^4.43.0"
+  },
+  "overrides": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3"
   }
 }

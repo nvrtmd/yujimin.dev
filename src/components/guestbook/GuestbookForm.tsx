@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { SubmitHandler } from 'react-hook-form';
 import { type GuestbookForm } from '@/models';
 import { Button, Input, Textarea } from '@/components/common';
 import { useGuestbookForm } from '@/hooks/guestbook/useGuestbookForm';
@@ -65,36 +64,35 @@ export function GuestbookForm({ refreshEntries }: GuestbookFormProps) {
     return () => clearTimeout(timer);
   }, [submitResult]);
 
-  const onSubmit: SubmitHandler<GuestbookForm> = async (inputData) => {
-    try {
-      const response = await fetch('/api/guestbook', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(inputData),
-      });
-
-      const data = await response.json();
-      const parsedData = parseWithZod(data, guestbookEntryResponseSchema);
-
-      if (parsedData.success) {
-        refreshEntries();
-        setSubmitResult({ type: 'success', message: TEXT.SUCCESS });
-        reset();
-      } else {
-        console.error(ERROR_LOG.API, parsedData.error);
-        setSubmitResult({
-          type: 'error',
-          message: parsedData.error || TEXT.ERROR_FALLBACK,
+  const { register, handleSubmit, errors, isSubmitting } = useGuestbookForm(
+    async (inputData, { reset }) => {
+      try {
+        const response = await fetch('/api/guestbook', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(inputData),
         });
-      }
-    } catch (error) {
-      console.error(ERROR_LOG.SUBMIT, error);
-      setSubmitResult({ type: 'error', message: TEXT.ERROR_NETWORK });
-    }
-  };
 
-  const { register, handleSubmit, reset, errors, isSubmitting } =
-    useGuestbookForm(onSubmit);
+        const data = await response.json();
+        const parsedData = parseWithZod(data, guestbookEntryResponseSchema);
+
+        if (parsedData.success) {
+          refreshEntries();
+          setSubmitResult({ type: 'success', message: TEXT.SUCCESS });
+          reset();
+        } else {
+          console.error(ERROR_LOG.API, parsedData.error);
+          setSubmitResult({
+            type: 'error',
+            message: parsedData.error || TEXT.ERROR_FALLBACK,
+          });
+        }
+      } catch (error) {
+        console.error(ERROR_LOG.SUBMIT, error);
+        setSubmitResult({ type: 'error', message: TEXT.ERROR_NETWORK });
+      }
+    },
+  );
 
   return (
     <form

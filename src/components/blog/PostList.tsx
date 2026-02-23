@@ -15,6 +15,11 @@ interface PostListProps {
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
 }
 
+// Derive a stable key from sort/view config to reset displayedCount
+function getSortViewKey(sortConfig: SortConfig, viewMode: string): string {
+  return `${sortConfig.key}-${sortConfig.direction}-${viewMode}`;
+}
+
 export function PostList({
   posts,
   viewMode,
@@ -23,10 +28,19 @@ export function PostList({
 }: PostListProps) {
   const router = useRouter();
   const { selectedSlug, selectPost, clearSelection } = usePostSelection();
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  // Reset displayedCount when sortConfig or viewMode changes
+  const sortViewKey = getSortViewKey(sortConfig, viewMode);
+  const [prevSortViewKey, setPrevSortViewKey] = useState(sortViewKey);
   const [displayedCount, setDisplayedCount] = useState<number>(
     POST_LIST_CONFIG.POSTS_PER_LOAD,
   );
-  const triggerRef = useRef<HTMLDivElement>(null);
+
+  if (prevSortViewKey !== sortViewKey) {
+    setPrevSortViewKey(sortViewKey);
+    setDisplayedCount(POST_LIST_CONFIG.POSTS_PER_LOAD);
+  }
 
   const sortedPosts = useMemo(() => {
     return [...posts].sort((a, b) => {
@@ -72,10 +86,6 @@ export function PostList({
     observer.observe(triggerElement);
     return () => observer.disconnect();
   }, [displayedCount, scrollContainerRef, sortedPosts.length]);
-
-  useEffect(() => {
-    setDisplayedCount(POST_LIST_CONFIG.POSTS_PER_LOAD);
-  }, [sortConfig, viewMode]);
 
   const handleItemClick = useCallback(
     (e: React.MouseEvent, slug: string) => {

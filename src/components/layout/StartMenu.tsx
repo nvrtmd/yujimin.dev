@@ -59,10 +59,7 @@ export function StartMenu({
             <span>Home</span>
           </div>
         </Link>
-        <div
-          onClick={handleBlogClick}
-          className={`${MENU_ITEM_CLASS} cursor-pointer`}
-        >
+        <div onClick={handleBlogClick} className={MENU_ITEM_CLASS}>
           <Image
             src='/images/icons/blog_img.webp'
             alt='Blog'
@@ -84,10 +81,7 @@ export function StartMenu({
             <span>Source Code</span>
           </div>
         </a>
-        <div
-          onClick={() => window.close()}
-          className={`${MENU_ITEM_CLASS} cursor-pointer`}
-        >
+        <div onClick={() => window.close()} className={MENU_ITEM_CLASS}>
           <Image
             src='/images/icons/power_img.webp'
             alt='Shut Down'

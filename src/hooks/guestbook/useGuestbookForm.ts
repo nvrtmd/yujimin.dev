@@ -1,4 +1,4 @@
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { guestbookFormSchema, type GuestbookForm } from '@/models';
 
@@ -9,7 +9,12 @@ const DEFAULT_FORM_VALUES: GuestbookForm = {
   message: '',
 };
 
-export const useGuestbookForm = (onSubmit: SubmitHandler<GuestbookForm>) => {
+type SubmitCallback = (
+  inputData: GuestbookForm,
+  helpers: { reset: () => void },
+) => Promise<void>;
+
+export const useGuestbookForm = (onSubmit: SubmitCallback) => {
   const {
     register,
     handleSubmit,
@@ -22,7 +27,7 @@ export const useGuestbookForm = (onSubmit: SubmitHandler<GuestbookForm>) => {
 
   return {
     register,
-    handleSubmit: handleSubmit(onSubmit),
+    handleSubmit: handleSubmit((data) => onSubmit(data, { reset })),
     reset,
     errors,
     isSubmitting,

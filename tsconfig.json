@@ -1,8 +1,15 @@
 {
   "compilerOptions": {
-    "types": ["node", "vitest/globals"],
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,7 +19,7 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "jsxImportSource": "react",
     "incremental": true,
     "plugins": [
@@ -21,9 +28,15 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@/posts/*": ["./posts/*"],
-      "#site/content": ["./.velite/index.js"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@/posts/*": [
+        "./posts/*"
+      ],
+      "#site/content": [
+        "./.velite/index.js"
+      ]
     }
   },
   "include": [
@@ -33,7 +46,10 @@
     ".next/types/**/*.ts",
     "next.config.mjs",
     ".velite/**/*.ts",
-    "cloudflare-env.d.ts"
+    "cloudflare-env.d.ts",
+    ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

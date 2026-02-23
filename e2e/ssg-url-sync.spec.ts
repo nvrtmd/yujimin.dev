@@ -144,7 +144,7 @@ test.describe('SSG URL Synchronization', () => {
       await expect(page).toHaveURL('/blog');
 
       // Act - Close CSR window
-      await page.getByTestId('window-close-about').click();
+      await page.getByTestId('window-close-about-me').click();
       await expect(page.getByTestId('window-about-me')).not.toBeVisible();
 
       // Assert - URL still at /blog

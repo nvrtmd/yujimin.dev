@@ -1,9 +1,9 @@
-import path from 'path';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  reactCompiler: true,
   compiler: {
     reactRemoveProperties:
       process.env.NODE_ENV === 'production'
@@ -22,12 +22,14 @@ const nextConfig = {
 
   serverExternalPackages: ['better-sqlite3', '@opennextjs/cloudflare'],
 
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@/posts': path.resolve('./posts'),
-    };
-    return config;
+  turbopack: {
+    resolveAlias: {
+      '@/posts': './posts',
+    },
+  },
+
+  experimental: {
+    turbopackFileSystemCacheForDev: true,
   },
 };
 
