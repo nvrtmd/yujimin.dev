@@ -318,6 +318,42 @@ it('[calculation] should return correct sum', () => {
 
 ---
 
+## Blog Post Translation Workflow
+
+Korean blog posts are written first, then translated to English using the `translate-post` sub-agent.
+
+### Agent Location
+
+`.claude/agents/translate-post.md` — Opus-based Korean→English translation agent with built-in two-phase (draft + self-review) process.
+
+### Usage
+
+To translate a Korean post, invoke the `translate-post` agent with the target file:
+
+```
+Translate the post at src/posts/{filename}.mdx to English using the translate-post agent.
+```
+
+The agent will:
+
+1. Read the Korean MDX file
+2. Translate frontmatter (`title`, `summary`) and body to English
+3. Preserve all Markdown structure, code blocks, and image references
+4. Write the translated content back (or to a new file if specified)
+
+### Adding Translation Examples
+
+To improve translation quality, add Korean→English example pairs to `.claude/agents/translate-post.md` under the `## Translation Examples` section. The more examples that match the author's voice, the more consistent the output.
+
+### Key Principles
+
+- **Natural over literal:** The translation should read as if originally written in English
+- **Preserve warmth:** The author's personal, reflective tone must come through
+- **Technical accuracy:** Keep technical terms in standard English form
+- **No filler:** No "In this article we will..." or "As you can see"
+
+---
+
 ## Current Status
 
 The project has an established test suite (Vitest + Playwright) and is actively being refactored for improved maintainability. Key areas to be mindful of:
