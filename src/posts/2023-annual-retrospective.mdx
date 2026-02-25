@@ -1,0 +1,75 @@
+---
+title: '2023 Retrospective: Taking My First Steps'
+date: '2023-12-31'
+summary: 'I say this every year, but 2023 was hands down the busiest and most hard-working year of my life.'
+category: 'Retrospective'
+thumbnail: '/images/thumbnails/filled_file_img.png'
+---
+
+# 2023 Retrospective: Taking My First Steps
+
+I say this every year, but 2023 was hands down the busiest and most hard-working year of my life. I graduated from college, participated in a hackathon, threw myself into the job search, and landed a full-time position. Along the way, I attended conferences and events, met new people, and traveled with friends and family. Looking back, it feels satisfying to see how full the year was. I'm grateful to my past self for giving present-me this sense of fulfillment at year's end.
+
+I don't have the time or energy to write as detailed a retrospective as last year, so I'll keep things simple. Hopefully this won't run too long...
+
+## February: Finally Graduating
+
+After deferring graduation again and again, I finally got my bachelor's degree this February. Going back to campus, wearing the graduation gown with my family, and receiving my diploma -- it slowly started to sink in that my college days were truly over.
+
+Commuting over an hour and a half each way by subway, giving awkward presentations in front of classmates I barely knew (countless times), and furiously filling exam papers for an hour straight -- through all of that, I used to think, "There will be no more school in my life. There must not be...!" I was the quiet, low-key type in school, so I never had a particularly colorful college experience. My stamina was at rock bottom from lack of exercise, and I was constantly working part-time jobs, which left me completely drained during the semester. But you never know what life has in store... (to be continued)
+
+In any case, I finally graduated and shed the "student" label. Which meant that until I found a job, I was undeniably "unemployed."
+
+## March: My First Hackathon
+
+The previous winter, I'd applied to 9oormthon and got rejected. Early this year, I picked myself back up, spent even more time crafting a polished application, and tried again. Thankfully, I got in. I still remember jumping for joy when I received the acceptance message.
+
+Jeju Island in spring was beautiful. Unlike my city, the cherry blossoms were already in full bloom, and the weather was clear and warm. Of course, I barely had time to enjoy the scenery. Over four days and three nights, I slept less than eight hours total and only managed three or four proper meals while pouring everything into the project. We didn't win any awards, but I can confidently say I gave it my absolute best with no regrets.
+
+What I gained from 9oormthon was the experience of deep focus itself. Before that, I honestly didn't know what it felt like to be truly immersed in something. I just did what I had to do, and time passed. But at this hackathon -- one I'd desperately wanted to join -- pushing through to meet the deadline pulled me naturally into a state of deep concentration. When I realized just how absorbed I was, I felt a quiet thrill. It was like, "So this is what everyone means by being in the zone! Eureka!" Even while coding through the night and running on fumes, I was genuinely having fun. I felt happy knowing I was doing something I truly enjoyed. It was far more physically demanding than I'd expected, but if I could go back, I'd sign up again in a heartbeat. It was an invaluable experience.
+
+## April to August: The Grind
+
+These four months were an endless cycle of resumes and portfolios, take-home assignments and coding tests, and interview after interview after interview. I've written about the struggles of this period in detail in a [previous post](https://nvrtmd.github.io/%EC%8B%A0%EC%9E%85-%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%94%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90%EA%B0%80-%EA%B3%B5%EC%9C%A0%ED%95%98%EB%8A%94-%EC%86%8C%EC%86%8C%ED%95%9C-%EC%B7%A8%EC%A4%80%ED%8C%81/), so please check that out if you're interested.
+
+## August to November: Probation Period
+
+After getting hired... well, as everyone knows, office life is pretty monotonous. You spend nine hours a day at the company (including lunch), so there isn't much room for exciting events. I've covered the efforts I made during my probation period in the post linked above, so I'll skip that here. Instead, I want to talk about a few memorable tasks from my time working on the job.
+
+### Untangling Tightly Coupled Components
+
+Apart from the first few weeks, I mostly found work on my own rather than having my senior developer assign tasks to me. One day, I started digging into the code for a page to apply responsive design. I decided that components should rearrange themselves as the viewport shrank so nothing would overflow off-screen, and to do that, I had to separate components that were completely entangled with each other. In the process, I eliminated duplicate logic, removed unnecessary code, reduced the line count significantly, and -- I believe -- made the code much easier to understand.
+
+Through this work, I discovered that I genuinely enjoy the process of untangling tightly coupled logic and extracting components. Despite being somewhat lazy by nature, I place a lot of importance on keeping my surroundings organized. I'm the type who picks a day to tear apart the closet or drawers and reorganize everything neatly. This tendency seems to carry over to how I code. To make the most of it, I'll need to get better at understanding other people's code and restructuring it systematically while keeping things safe from bugs. That's something I want to keep developing.
+
+### Replacing a Library
+
+Despite making it sound like things went smoothly, there was a problem on that same page that tormented me for over a month. One day, I received a Slack message saying something was wrong with the page I'd improved. The page was essentially a status dashboard -- six chart components re-rendering once per second to show the application's overall status in real time. The issue was that if you stayed on the page long enough, the application would suddenly crash. When I investigated, I found that the application's memory usage kept climbing while on that page, eventually exceeding a gigabyte. A memory leak was happening somewhere.
+
+To find the cause, I rolled back to the previous code and -- for better or worse -- the same issue was there. It had been a pre-existing problem that went unnoticed until my teammates started testing my improved code.
+
+The culprit turned out to be the chart library. I found issues filed about memory leaks in that library, and removing just the chart rendering eliminated the problem entirely. I tried everything to fix it: increasing the render interval to 3 or 5 seconds, turning off animations, trimming old data points that had scrolled past the visible area, even periodically destroying and re-mounting the chart components as a kind of forced refresh. I tried many other things too, and my senior developer and I racked our brains together, but nothing worked. And it took so long each time -- just reproducing the issue meant sitting on the page for an extended period, so the slow pace was maddening. This wasn't a simple implementation bug or a coding error. It was a performance issue I'd never encountered before, and I felt completely lost. It hit me: "I really am doing real-world work now."
+
+In the end, my solution was to ditch the chart library entirely and build the charts from scratch. After watching me struggle for over a month, my senior developer told me to move on to other work while he implemented the charts himself. But I couldn't bring myself to abandon the issue I'd been working on, so I told him I wanted to finish it myself. Through a combination of googling and collaborating with ChatGPT, I managed to build chart components that looked roughly 90% identical to the original library's charts -- in just two days. Watching my hand-written charts gradually match the look of the library's charts gave me a rough understanding of how the library itself was implemented. And thankfully, my custom components showed no memory leak even after running for extended periods. I finally resolved the issue. The joy and relief I felt in that moment! It still gives me a thrill just thinking about it.
+
+### Applying Responsive Design
+
+The existing application had no responsive design whatsoever. Since our team was building a desktop application likely to be viewed on large screens, components and font sizes needed to scale fluidly with the viewport. I started applying responsive design one page at a time.
+
+Our team was using Ant Design as the UI library, which meant I frequently had to override library component CSS directly. I once saw someone on Twitter say the hardest programming language they'd encountered was CSS -- and I started to understand why. CSS is tricky and demanding no matter how much experience you have. Buttons and Inputs were relatively straightforward to customize. The hardest one by far was Ant Design's RangePicker. Despite being a single component, it rendered completely different UIs for decade, year, and month views, plus it had range-selection highlight effects. I had to stare at the browser dev tools and VS Code back and forth until my eyes hurt, hunting down class names one by one to apply the CSS. I got it done eventually, but looking back, all I can do is laugh nervously. Ha...
+
+The responsive design work still isn't finished -- there's a lot left to do. Last week, I started using Storybook, which I'd been wanting to try, to extract responsive components so they can be used anywhere. It's been convenient to test and modify code just by checking the Storybook server instead of loading the full application UI. I'm not proficient yet, but I'm happy to be applying a technology I'd been wanting to learn to my actual work.
+
+## And Now: Dreaming New Dreams
+
+In mid-November, I was officially converted to a full-time employee and even received my business card. After roughly two years of preparation, I could finally earn a living with my code.
+
+I still vividly remember the day the seed of wanting to become a developer was planted deep in my heart. Three or four years ago, I happened to watch a TED talk where the speaker discussed the lack of women in tech and introduced lesser-known women engineers and technologists from history -- [this video](https://youtu.be/1QQ3gWmd20s?si=g7RXSOyd_d_DHsNj). I was in the middle of figuring out my career path at the time, and that evening, I remember explaining the video to my family, saying I wanted to work in the tech industry and be one more woman adding to its tiny female representation. Honestly, even as the words left my mouth, I thought it was a wildly unrealistic dream with very little chance of coming true. But that seed curled up inside me, and when the time came, it made me grab hold of a small opportunity I would have otherwise walked right past. That was the beginning. All from one video.
+
+My dream hasn't come true yet. The journey has only just begun. But I've gained the courage to dream new dreams. It's not just about finally getting hired and becoming a full-time employee. Seeing the sprout emerge from a seed I thought could never bloom -- now I can dare to dream other seemingly impossible dreams too. I believe this courage will pick me up and support me through the countless stumbles, collisions, and falls that lie ahead as I go from baby steps to walking, from walking to jogging, and from jogging to an all-out sprint. I'm still scared and anxious, but I don't intend to stop walking until I choose to.
+
+Think about rolling a boulder down a mountain. If you strain to push a stationary rock at the summit just one centimeter to the side and let it roll downhill, it'll end up somewhere completely different from where it started. When the cynical voice in my head scoffs at how unrealistic my dreams are, I remind myself that this dream -- and the effort I put toward it -- is like nudging that boulder at the top just slightly to one side. After all, that's exactly how I became a developer, isn't it? When my thinking reaches that point, the inner voice that was mocking me grows a little sheepish and puts the smirk away.
+
+Contrary to what I wrote above about being done with school, this December I went ahead and submitted an enrollment application to Korea National Open University. Ha ha ha... But I decided I'd need the degree to pursue my dreams, and I also wanted to study computer science properly, so it was (of course) a voluntary choice. 2024 is going to be a very busy and demanding year, but I'm looking forward to it. That's the terrifying and wonderful thing about having dreams and goals.
+
+I hope these stories help anyone who's dreaming new dreams as the new year begins. Just as one short video changed the trajectory of my life, I sincerely hope that 2024 will be a year where everyone dares to dream new dreams and takes their first steps toward them. Happy New Year!

@@ -1,0 +1,114 @@
+---
+title: 'My First Foray into Test Code: How I Achieved 100% Coverage'
+date: '2024-08-15'
+summary: 'A junior frontend developer shares the struggles, small wins, and lessons learned while writing test code for the first time—from zero experience to 100% coverage on a core business function.'
+category: 'Development'
+thumbnail: '/images/thumbnails/filled_file_img.png'
+---
+
+# My First Foray into Test Code: How I Achieved 100% Coverage
+
+## 1. My First Encounter with Test Code
+
+My story begins with a simple question: "Why should I even write test code?" After a round of QA, our team entered a phase where we weren't building new features but instead focused on refactoring and minimizing code changes. During a meeting where we each picked roles to take the lead on, I volunteered to be our TDD (Test-Driven Development) lead.
+
+At the time, our codebase had barely any test code. Only a handful of key functions had unit tests, and overall test coverage was extremely low. Every time I made changes, I worried about introducing unexpected bugs or breaking existing functionality. I kept thinking, "Wouldn't refactoring and maintenance be so much easier if we had solid test coverage?" Even though I had zero experience writing test code, I was convinced it would help prevent bugs and make future changes safer. So, I decided to take the plunge and lead our team's efforts to introduce test code.
+
+This post is for junior frontend developers like me, who feel lost when it comes to testing. I want to share my struggles, small wins, and the lessons I learned along the way.
+
+## 2. What Should I Test First?
+
+Once I committed to writing tests, the first thing I did was thoroughly explore our codebase. Our team builds a dashboard product that visualizes statistical data. As I was digging around, I found one of the product's core logic functions: `summarizeData`. This function takes an array of data collected throughout the day and summarizes it into a single object.
+
+`summarizeData` was a pure function: its input and output were clearly defined by TypeScript interfaces, and it didn't depend on any external modules or functions. That meant the same input would always produce the same output—perfect for testing. Plus, since it was central to how our service worked, adding tests here would be a huge win for the whole team. It seemed like the ideal place to start my test-writing journey.
+
+## 3. First Attempts: Overwhelmed, but Small Wins
+
+But as soon as I opened up the `summarizeData` function, I was overwhelmed—the function was over 140 lines long! Up until then, I'd only ever worked with the summarized data it produced, never the function's internal logic. The input and output objects were complex, with numerous properties, some of which were themselves objects, and some that might not even exist depending on the situation. The function was full of branches and conditional logic, making it pretty daunting to understand.
+
+I realized that before I could write any tests, I needed to fully understand how the function worked. So, I painstakingly read through every line, adding comments to explain what each part did and under which conditions certain branches would run. By dissecting the code this way, I gradually understood how the function flowed and what each property meant.
+
+Now it was time to actually write some tests. But I'd never really done this before, and I had no idea where to start. So, I asked ChatGPT for a step-by-step guide for someone writing tests for the first time. ChatGPT suggested starting with the simplest, easiest-to-test case.
+
+So, I picked a scenario where if a certain property was missing from the input object, the corresponding property in the output should be `NaN`. I removed that property from the input, ran `summarizeData`, and used `expect(...).toBeNaN()` to check the result. The test passed! That first little win gave me a huge boost of confidence and helped me get a feel for how to approach testing.
+
+## 4. The Wall: Complex Inputs and Test Design Challenges
+
+But after writing my first test case, I quickly hit another wall. The function was so large and had so many branches that it was hard to figure out which test cases were needed just by looking at the code and my comments. Plus, the input object had so many properties—some of which were themselves objects—that creating a new input for every test case felt tedious and made the tests hard to read.
+
+## 5. A Systematic Approach: Mapping Out Test Cases and Streamlining Inputs
+
+I realized I needed a better strategy. So, I decided to map out all the function's branches and conditions in a table. Each row represented a test case, and the columns included the test level (top-level property), a brief description, relevant conditions, expected outcome, and whether I'd written the test yet.
+
+For example:
+
+| Test Level | Test Description | Condition | Expected Result | Tested |
+|---|---|---|---|---|
+| all fields | If `score.normal` is missing in input (undefined), `all.normal` should be NaN | `input.score.normal === undefined` | `summary.all.normal === NaN` | O |
+| | If result is "Normal", increment `all.result.normal` by 1 | `input.result === 'Normal'` | `summary.all.result.normal++` | X |
+| | If result is "Abnormal", increment `all.result.abnormal` by 1 | `input.result === 'Abnormal'` | `summary.all.result.abnormal++` | X |
+
+Having everything laid out in a table made it much easier to see which cases I needed to cover and which ones I might have missed.
+
+To avoid duplicating effort when building complex input objects, I also created a `baseInput` object containing all the common properties. For each test, I'd copy `baseInput` and override only the properties relevant to that particular test case.
+
+For example:
+
+```typescript
+const baseInput: InputType = {
+  id: 'abc',
+  timestamp: 1673017200,
+  processing_time: {
+    // ...
+  },
+  score: {
+    // ...
+  },
+  // ...
+};
+```
+
+And in a test case:
+
+```typescript
+test('should set all.normal to NaN when score.normal is missing (undefined)', () => {
+  const input: InputType = {
+    ...baseInput,
+    score: {
+      a: 9.7,
+      b: 99.59,
+      c: 4.2,
+    },
+  };
+
+  const testCase = summarizeData(input);
+
+  expect(testCase.all.normal).toBeNaN();
+});
+```
+
+This approach made my test code much cleaner and saved a lot of repetitive work.
+
+## 6. Execution: Writing Tests and Hitting 100% Coverage
+
+With my table of test cases as a roadmap, I implemented each one, checking them off as I went. In the end, I could write about 15 test cases in short order.
+
+After running my tests and confirming they all passed, I generated a coverage report—and saw that I'd hit 100% on Statements, Branches, Functions, and Lines. Knowing that I'd analyzed the logic, designed the tests, and systematically covered every branch gave me a real sense of accomplishment and confidence that my test code was actually making our codebase more robust.
+
+## 7. Reflections: Lessons Learned and Advice for Junior Developers
+
+Of course, 100% coverage doesn't mean I've caught every possible bug. But this experience taught me how to break down complex logic, systematically extract test cases, and build a safety net for future changes. Now, whenever I or someone else needs to refactor this function, I know my tests will catch regressions and give us peace of mind.
+
+I also realized that these tests will help new teammates understand the function, since they clearly document the function's logic, branches, and expected outcomes.
+
+If you're a junior developer with little or no experience writing tests, here's what I recommend for tackling complex logic:
+
+1. Thoroughly analyze the function you want to test.
+2. Map out every possible branch and scenario in a table to extract test cases.
+3. Use a base input object to avoid repetition and keep your tests clean.
+
+This approach will help you overcome that initial sense of being overwhelmed and allow you to write tests in a systematic way.
+
+## 8. Wrapping Up: A Record of Growth
+
+This experience showed me that test code isn't just about "hitting coverage numbers"—it's a vital tool for personal growth and for building trust in your code. At first, I felt lost, but by breaking the problem down and tackling it step by step, I found it was much more manageable than I'd feared. The confidence I gained from facing this challenge head-on will be a huge asset in my career going forward. As my team's TDD lead, I'm excited to keep driving our test coverage and code quality to new heights.

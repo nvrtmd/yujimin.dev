@@ -1,0 +1,312 @@
+---
+title: 'The Joys and Sorrows of Maintenance: Migrating Legacy Dependencies in a Design System'
+date: '2025-06-15'
+summary: 'How we upgraded our design system libraries step by step to support React 19, Storybook 9, and MUI 7—documenting every debugging session and breaking change along the way.'
+category: 'Development'
+thumbnail: '/images/thumbnails/filled_file_img.png'
+---
+
+# The Joys and Sorrows of Maintenance: Migrating Legacy Dependencies in a Design System
+
+## 1. Overview
+
+Our team operates the company's official design system library. Using a design system made it convenient to apply the same design and style across different projects with consistency. Recently, since the design system was planned to gradually expand to all teams across the company, we needed to prepare for that. This post documents how we upgraded our design system libraries step by step to support React 19, Storybook 9, and MUI 7.
+
+The goal was not just version upgrades. We wanted to ensure that consumer apps could install, build, and render successfully without additional flags, and that during this process, the UI remained unchanged.
+
+The upgrade and migration were carried out in the following order:
+
+1. Expand `peerDependencies` to support React 19
+2. Migrate Storybook 7 → 9 for development environment compatibility
+3. Lock `devDependencies` to React 19 and resolve type conflicts
+4. Sequential migration of MUI 5 → 6 → 7 with API adjustments
+
+## 2. Goals
+
+- Ensure installation without `--legacy-peer-deps` in consumer apps
+- Confirm proper rendering in Storybook under React 19, and verify visual consistency in Chromatic (changes must be reviewed by all team members)
+- Upgrade MUI to v7 while ensuring design tokens, component APIs, and layouts work without UI changes
+
+## 3. Supporting React v19: Expanding `peerDependencies`
+
+### Background
+
+When consumer apps used React 19, installation failed because the existing design system packages' `peerDependencies` only allowed React up to v18, causing `ERESOLVE` errors.
+
+### Objective
+
+Installation should succeed without requiring `--legacy-peer-deps`.
+
+### Work
+
+Expanded the peer ranges in `design-system/package.json`:
+
+```json
+// Before
+"peerDependencies": {
+  "@mui/material": "^5.0.0",
+  "@types/react": "^17.0.0 || ^18.0.0",
+  "react": "^17.0.0 || ^18.0.0",
+  "react-dom": "^17.0.0 || ^18.0.0"
+}
+
+// After
+"peerDependencies": {
+  "@mui/material": "^5.0.0",
+  "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+  "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+  "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
+}
+```
+
+### Verification
+
+Created a test consumer app with React 19. Verified that design system components imported and rendered correctly, and that installation succeeded without `--legacy-peer-deps`.
+
+## 4. Ensuring Development Compatibility with Storybook v9
+
+### Background
+
+When upgrading `devDependencies` to React 19, the Storybook v7 used in our design system failed to support it, producing `Objects are not valid` errors. Rendering in Storybook became impossible.
+
+### Goal
+
+Upgrade to Storybook v8.5.0 or higher, which supports React 19.
+
+### Storybook v7 → v8
+
+#### Debugging: `React is not defined`
+
+```
+React is not defined
+The component failed to render properly, likely due to a configuration issue in Storybook.
+```
+
+**Cause:** When using JSX in `preview.js`, if no specific Babel configuration is provided, JSX is converted to `React.createElement()`. Since `React` is not present in that file, the `React is not defined` error occurs.
+
+**Solutions (choose one):**
+
+1. Add `import React from "react";` to the `.storybook/preview.js` file where the error occurs.
+2. Or, to make JSX work in JS files without importing React, add `{ runtime: 'automatic' }` to `@babel/preset-react` in Storybook's Babel configuration (`.babelrc.json`).
+
+Currently, the version of Babel used in the design system is v7, and from v8 onward `{ runtime: 'automatic' }` is the default option.
+
+- `{ runtime: 'classic' }` (default): Transforms JSX into `React.createElement()`. React import is required.
+- `{ runtime: 'automatic' }`: Transforms JSX into `_jsx()`. React import is not required.
+
+```javascript
+import { jsx as _jsx } from 'react/jsx-runtime';
+
+_jsx(Button, { children: 'Hello' });
+```
+
+#### Debugging: `Could not resolve "@storybook/addons"`
+
+```
+✘ [ERROR] Could not resolve "storybook/addons"
+    .storybook/manager.js:1:23:
+      1 │ import { addons } from "storybook/addons";
+        ╵                        ~~~~~~~~~~~~~~~~~~
+```
+
+**Cause:** Starting with Storybook v8, the `storybook/addons` package was split into two: `storybook/manager-api` (for the manager UI) and `storybook/preview-api` (for preview).
+
+**Solution:** Replace `storybook/addons` with `storybook/manager-api`.
+
+### Storybook v8 → v9
+
+Fortunately, upgrading Storybook from v8 to v9 went smoothly without any major issues.
+
+## 5. Fixing React v19 in `devDependencies` and Resolving Type Conflicts
+
+### Background
+
+We have expanded the React version in `peerDependencies` to v19 and confirmed that components render without issues in the test consumer app. However, we determined that to guarantee our Design System supports the React v19 environment, we must also verify (by applying React v19 to Storybook) that components behave without UI changes when viewed through Chromatic.
+
+### Goal
+
+Ensure components behave without UI changes in the React v19 environment.
+
+### Debugging: `'SvgIcon' cannot be used as a JSX component`
+
+```
+'SvgIcon' cannot be used as a JSX component.
+  The type 'OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string; }'
+  is not a valid JSX element type.
+```
+
+**Cause:**
+
+- `@types/react` v18 and below: JSX types reside in the global `JSX` namespace (`JSX.Element`).
+- Starting with `@types/react` v19: JSX types exist in the `React.JSX` namespace.
+
+When a single package depends on libraries that each use different versions of `@types/react`, compatibility issues arise when using `JSX.Element`.
+
+Looking at the dependency tree:
+
+```
+npm ls @types/react -ws
+
+design-system@0.0.0
+├─┬ @design-system-icons@2.1.0
+│ ├─┬ @mui/material@5.18.0
+│ │ ├─┬ @mui/system@5.18.0
+│ │ │ ├─┬ @mui/private-theming@5.17.1
+│ │ │ │ └── @types/react@18.2.14 deduped
+```
+
+Even after installing `@types/react@19.0.0`, other packages still pull `@types/react@18` into the dependency tree. This causes both v18 and v19 type definitions to coexist within the project.
+
+**Identifying the causative package:** Searching the `package-lock.json` file for `@types/react` revealed that dependencies for a test consumer app, previously used within the design system but now removed, still contained `@types/react@18.2.14`. This dependency had not been properly removed.
+
+**Solution:** After removing the remaining test consumer app-related entries from the `package-lock.json` file and rerunning `npm install` from the root directory, the issue disappeared.
+
+### Verification
+
+Confirmed that all `@types/react` versions are fixed at 19. Also verified that the component previously reporting the `'SvgIcon' cannot be used as a JSX component` error now correctly recognizes the type, resolving the issue.
+
+## 6. Update the UI Component Library to MUI v7
+
+### Background
+
+The current version of MUI used in the design system is v5, which is an outdated package released in September 2021.
+
+### Goal
+
+Upgrade MUI to the latest version, v7, to incorporate the newest APIs.
+
+### MUI v5 → v6
+
+#### Breaking Changes
+
+**The `color` property of Typography has been incorporated into `sx`:**
+
+```tsx
+// Before
+<Typography
+  variant="body1_16_semibold"
+  color={(sxTheme) => sxTheme.text_normal}
+>
+  TEST
+</Typography>
+
+// After
+<Typography
+  variant="body1_16_semibold"
+  sx={{ color: (sxTheme) => sxTheme.text_normal }}
+>
+  TEST
+</Typography>
+```
+
+**Replaced `styled(Box)` with `styled('div')`:**
+
+```typescript
+// Before
+export const Container = styled(Box)(({ theme }) => ({
+  // ...
+}));
+
+// After
+export const Container = styled('div')(({ theme }) => ({
+  // ...
+}));
+```
+
+**The deprecated system prop has been incorporated into `sx`:**
+
+```tsx
+// Before
+<Box
+  className="light1"
+  bgcolor={theme.core.bg_01}
+  color={theme.text_normal}
+  sx={{ p: 2 }}
+>
+  // ...
+</Box>
+
+// After
+<Box
+  className="light1"
+  sx={{
+    bgcolor: theme.bg_01,
+    color: theme.text_normal,
+    p: 2,
+  }}
+>
+  // ...
+</Box>
+```
+
+### MUI v6 → v7
+
+#### Breaking Changes
+
+**Deep imports exceeding one level are not permitted:**
+
+```typescript
+// Before
+import type { Typography } from '@mui/material/styles/createTypography';
+
+type sizeStyleParams = Pick<ToggleButtonProps, 'selected'> & {
+  typography: Typography;
+};
+
+// After
+import type { TypographyVariants } from '@mui/material/styles';
+
+type sizeStyleParams = Pick<ToggleButtonProps, 'selected'> & {
+  typography: TypographyVariants;
+};
+```
+
+**Replaced the legacy Grid with Grid2 and removed deprecated properties:**
+
+```tsx
+// Before
+<Grid
+  item
+  xs={4}
+  sx={{
+    display: 'flex',
+    flexDirection: 'row',
+  }}
+>
+  // ...
+</Grid>
+
+// After
+<Grid
+  size={4}
+  sx={{
+    display: 'flex',
+    flexDirection: 'row',
+  }}
+>
+  // ...
+</Grid>
+```
+
+#### Debugging: Heap Memory OOM in GitHub Actions
+
+```
+FATAL ERROR: Ineffective mark-compacts near heap limit
+Allocation failed - JavaScript heap out of memory
+```
+
+**Cause:** Based on current findings, memory spikes were observed when using MUI's `createTheme` within the code.
+
+**Solution:** Subsequent debugging would require a thorough investigation of all files imported by `createTheme`, which is expected to be difficult. Therefore, we resolved this by creating a `.npmrc` file in the root folder and adding the memory option:
+
+```
+node-options=--max-old-space-size=4096
+```
+
+Additionally, after directly reproducing the issue, I uploaded the relevant codebase to a public repository and completed the issue reporting process with MUI, including the link.
+
+## Conclusion
+
+The most significant realization during this upgrade process was that maintenance work is far more tedious and challenging than developing new features from scratch. Developing the library was relatively enjoyable and smooth, but once we entered the maintenance phase, such as version upgrades, unexpected issues arose constantly. We had to go through numerous debugging processes to trace and resolve their causes. It required significant time and effort because we had to examine everything step by step—not just modifying code, but also the dependency tree, type system, and build environment.
+
+Despite this, I voluntarily engaged in this process because the fact that not just my team, but multiple teams across the company were using the design system we worked so hard to build was truly exciting as a developer. Knowing that each maintenance task I handled directly impacted other teams' development experience and user experience gave me energy. This sense of purpose fueled my determination to dig deep into the root causes of issues. Tackling problems one by one brought immense satisfaction and joy. Through this experience, I came to understand firsthand that maintenance isn't just a tedious chore—it's the most crucial process for building trust in our product. Moving forward, I intend to actively engage in maintenance tasks, even when they might seem tedious, complex, or challenging, rather than avoiding them.

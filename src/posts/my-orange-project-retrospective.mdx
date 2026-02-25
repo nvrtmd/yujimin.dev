@@ -1,0 +1,168 @@
+---
+title: 'Retrospective: My Orange Project (Re:Boot Camp 3rd Gen)'
+date: '2022-12-13'
+summary: 'Just as the Pre-Onboarding course hosted by Wanted was coming to a close, a notice popped up on our Slack channel. Since I had no immediate plans, I decided to give it a shot—and thankfully, I got in.'
+category: 'Retrospective'
+thumbnail: '/images/thumbnails/empty_file_img.png'
+---
+
+# One Thing Leads to Another 💫
+
+Just as the Pre-Onboarding course hosted by Wanted was coming to a close, a specific notice popped up on the Slack channel used for communication between participants and mentors.
+
+![](/images/posts/my-orange-project-retrospective/image-1.png)
+
+Since I didn't have any specific plans scheduled for after the course, I thought, *"Nothing to lose,"* and applied immediately. Thankfully, I was accepted.
+
+This camp involved developing a project based on requirements provided by a partner company. I was assigned to a team working on a new service for **Slowalk**. Our specific task was to enhance the content suggestion and subscription process—categorizing content for a new platform and refining the "Orange Letter" submission flow based on user interests.
+
+# The Never-Ending Planning Phase 😵
+
+Our team was responsible for implementing the essential features for the new platform: **Login, Sign-up, My Page** (for managing member information), and a **Submission Page** for the Orange Letter newsletter.
+
+The team consisted of two product managers (PMs) and two developers. We agreed that the developers would also participate in the planning phase before diving into code. I took the lead on creating wireframes using Figma.
+
+![](/images/posts/my-orange-project-retrospective/image-2.png)
+
+![](/images/posts/my-orange-project-retrospective/image-3.png)
+
+Participating in the planning phase allowed me to leave comments on aspects that would need attention during development or areas requiring clarification. I based my contributions on advice from our project coach, which turned out to be a great opportunity to learn the proper attitude for planning and understanding my role within that scope.
+
+However, just as we were nearing the completion of the Web-view wireframes, the partner company suddenly requested that we develop for **Mobile-view**. Consequently, we had to overhaul our wireframes.
+
+# Better Together 👩🏻‍🤝‍👩🏻
+
+After the meeting with the partner company, we had a laundry list of modifications beyond just the shift to mobile view. We were swamped with meetings and revisions.
+
+During this chaos, I started wondering if it would be more efficient to collaborate with Team 1 (we were Team 2), who had received a similar assignment from the same partner. I pitched the idea of a merger to my teammates, and after several discussions, we agreed to join forces. 👍🏻
+
+Since our team didn't have a dedicated designer, we adopted Team 1's wireframes and applied their design language. The result?
+
+![](/images/posts/my-orange-project-retrospective/image-4.png)
+
+As you can see, it looked significantly better than before. 👍🏻
+
+Merging with Team 1 accelerated our progress, but we had already lost a lot of time. With only about three and a half weeks left until the final presentation, I felt the pressure mounting and immediately dove into development.
+
+# Implementing Authentication for the First Time 🤯
+
+This was my first time implementing a login system. By researching various resources, I managed to handle the input validation fairly easily.
+
+```jsx
+// utils/validation/validation.js
+
+const validation = {
+  isInput(input) {
+    if (!input) {
+      return false
+    }
+    return true
+  },
+
+  isEmail(input) {
+    if (!input) {
+      return false
+    }
+    // Regex for basic email structure
+    const emailReg = /([\w-.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/
+    return emailReg.test(input)
+  },
+
+  isPassword(input) {
+    if (!input) {
+      return false
+    }
+    if (!this.isOver8(input)) {
+      return false
+    }
+    // Password must contain letters, numbers, and special characters
+    const passwordReg = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$/
+    return passwordReg.test(input)
+  },
+
+  isOver8(input) {
+    return 8 <= input.length
+  },
+
+  isNickname(input) {
+    if (!input) {
+      return false
+    }
+    return input.length <= 10
+  },
+}
+
+export default validation
+
+```
+
+I set up checks for empty inputs, email format, password format (including the 8-character limit), and nickname constraints.
+
+The real hurdle was connecting this to the backend—specifically, **how to consume the login API**. Fortunately, the backend developer on our team was incredibly helpful. Thanks to his explanations, I was able to mentally organize the authentication flow:
+
+1. When a `POST` request is sent, the server responds with a token inside a cookie.
+2. When sending a `GET` request for user info or submitting a form (actions requiring proof of identity), we must include the `{ withCredentials: true }` option. This ensures the cookies stored in the browser are sent to the backend.
+3. Because the browser automatically forwards the cookie (containing the token), the backend can verify the user is logged in.
+4. Therefore, as long as the cookie from the login step is saved correctly in the browser, we can successfully call protected APIs.
+
+Here is how the login request looks:
+
+```jsx
+axios
+  .post(`${process.env.REACT_APP_API_URL}/auth/signin`, {
+    email: loginData.email, // Email input by user
+    password: loginData.password, // Password input by user
+  })
+  .then((res) => {
+    // Code to execute upon successful login
+  })
+  .catch(() => {
+    // Error handling
+  })
+
+```
+
+If we need to call an API that requires a logged-in state (e.g., changing a password on My Page), it looks like this:
+
+```jsx
+axios
+  .put(
+    `${process.env.REACT_APP_API_URL}/user/password`,
+    {
+      password: passwordData.oldPassword, // Old password
+      new_password: passwordData.password, // New password
+    },
+    { withCredentials: true }, // Crucial: Sends the token stored in the browser to the backend
+  )
+  .then(() => {
+    // Code to execute upon successful password change
+  })
+  .catch(() => {
+    // Error handling
+  })
+
+```
+
+# Collaboration: Simple Yet Complex 💔
+
+I don't usually find working in teams burdensome.
+
+However, it's not always smooth sailing. Because everyone is different, there are times when my words or actions aren't conveyed or understood the way I intended.
+
+Since this project was conducted remotely, we hit a snag during the merge with Team 1. A lack of clear communication led to a small issue regarding database modifications. We resolved this through several text exchanges and a video meeting.
+
+**My takeaway:** When working with others, it is far better to **over-communicate**—even to the point of being annoying—than to hold back for fear of bothering someone. More communication is always better.
+
+After navigating that issue:
+
+I made a conscious effort to be more attentive to my teammates, proactively asking if there was anything I could help with.
+
+I know I will continue to clash and collaborate with many people in the future. While meeting new people can be energy-intensive, it’s also a chance to learn immense amounts and gain new experiences. For instance, in this project, I worked with PMs who were women returning to the workforce. I learned about their unique challenges while witnessing their professional depth and competence. I also received a wealth of high-quality development knowledge from a teammate who had started coding before me. 😇
+
+# Wrapping Up 🤗
+
+I’m particularly fond of the outcome of this project. The code quality is arguably the best I’ve written so far 😂, and tackling features I’d never built before—like login and sign-up—gave me a significant confidence boost in my development skills. I’m wrapping this up with a genuinely happy heart. 😊
+
+For anyone interested, I’m linking the [Demo Video](https://www.google.com/search?q=https://bit.ly/myorange-demo-vid) here.
+
+```

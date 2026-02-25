@@ -1,0 +1,173 @@
+---
+title: 'Troubleshooting TRPC Data Flicker: From Recognizing the Problem to Fixing It'
+date: '2024-11-15'
+summary: 'A deep dive into diagnosing and resolving data flickering caused by TanStack Query refetching behavior, and the nuances of isLoading vs isFetching when using keepPreviousData.'
+category: 'Development'
+thumbnail: '/images/thumbnails/filled_file_img.png'
+---
+
+# Troubleshooting TRPC Data Flicker: From Recognizing the Problem to Fixing It
+
+## 1. Introduction
+
+The brief disappearance and reappearance of data on the screen—commonly referred to as "flickering"—is a problem nearly every frontend developer has encountered at least once. This flicker typically occurs when existing values momentarily vanish during a server data refetch, significantly affecting the user experience. In this post, I'll walk through a real-world issue I encountered in a production project, analyze its cause, compare several possible solutions, and explain the decision-making process behind the approach I ultimately chose.
+
+## 2. Identifying the Problem and Context
+
+In this project, I was tasked with resolving the flickering issue during the QA verification phase. At this stage, the most critical requirement was to fix the problem without affecting any tests already marked as "Pass" by the QA team. This meant preserving the stability of existing features while minimizing the scope of code changes. Rather than engaging in unnecessary refactoring, the priority was to accurately identify the issue and find a feasible solution within the given constraints.
+
+The issue arose in the following scenario: The page I was working on sends user input to the server and displays simulation results. Since I'm unable to disclose the specifics of the actual project, I'll explain using an analogy: a simulation of egg doneness based on boiling time. In this case, the user input is the "boiling time," and the output is the "egg's doneness." Meanwhile, the server already stores a preset boiling time along with the corresponding egg status. For example, if the client sends an initial boiling time of 0, the server responds with a pre-existing value such as `{ time: 12, eggStatus: 30 }`.
+
+In summary, the client sends `modifiedTime` to the server, and the server responds with `{ time: <preset server time>, eggStatus: <simulated result based on modifiedTime> }`.
+
+```tsx
+// pages/boilSimulation/index.page.tsx
+function BoilSimulationPage() {
+  const [modifiedTime, setModifiedTime] = useState(0);
+  const {
+    data, // {time, eggStatus}
+    error,
+    isLoading,
+  } = useBoilSimulationResult(modifiedTime);
+
+  return (
+    <div>
+      <div>Current Time: {data?.time}</div>
+      <div>
+        <button onClick={() => setModifiedTime(prev => prev + 1)}>+</button>
+        <div>Simulation Time: {modifiedTime}</div>
+        <button onClick={() => setModifiedTime(prev => prev - 1)}>-</button>
+      </div>
+      <div>
+        {isLoading ? 'Loading Spinner' : data?.eggStatus}
+      </div>
+    </div>
+  );
+}
+```
+
+```typescript
+// queries/boilSimulation.ts
+export function useBoilSimulationResult(
+  args: Parameters<typeof trpc.boilSimulation.results.useQuery>[0]
+) {
+  return trpc.boilSimulation.results.useQuery(args);
+}
+```
+
+```typescript
+// server/routers/boilSimulation.ts
+export const boilSimulationRouter = router({
+  results: procedure
+    .input(boilSimulationResultsSchema)
+    .query(async ({ input }) => {
+      // Simulation logic omitted
+      return boilSimulationResults; // {time, eggStatus}
+    }),
+});
+```
+
+Among the returned values, `eggStatus` is a simulation result and was already covered with a loading spinner to handle delays. However, the `time` value—preset on the server and never expected to change—was not handled with any loading treatment. As a result, when the user clicked the + or - buttons to change `modifiedTime`, triggering a new simulation fetch, even the unchanged `time` briefly disappeared and then reappeared.
+
+This flickering occurred because TanStack Query, by default, removes previous data when a new fetch begins, then re-caches the incoming data. During this transition, the `data` becomes temporarily `undefined`, leading to the flicker. Although `time` is conceptually stable, it was grouped with `eggStatus` inside the `data` object and was thus cleared and reloaded during every fetch—causing unintended visual behavior.
+
+## 3. Exploring Potential Solutions
+
+After identifying the root cause, I considered several approaches. Taking into account both practical constraints and structural complexity, I arrived at the following three potential solutions:
+
+### 1) Splitting the API
+
+**Concept:** Separate `time` and `eggStatus` into distinct tRPC queries so they can be managed independently.
+
+**Pros:** Each field can be fetched separately based on its update frequency, which prevents unnecessary flickering.
+
+**Why it was ruled out:** Modifying the API structure at the verification stage carried significant risk and required substantial changes on both client and server. Thus, it was deemed infeasible.
+
+### 2) Managing `time` in Local State
+
+**Concept:** Copy the server-provided `time` into local state for independent rendering.
+
+**Pros:** Values stored in local state persist regardless of server fetches, eliminating flicker.
+
+**Why it was ruled out:** This approach contradicts the core philosophy of TanStack Query, which promotes unified management of server state. Introducing local state solely for rendering introduces potential sync issues and maintenance overhead.
+
+### 3) Using the `keepPreviousData` Option
+
+**Concept:** Utilize the `placeholderData: keepPreviousData` option in TanStack Query to retain the previous data until the new response arrives.
+
+**Why it was chosen:** This was the only solution that required minimal code changes while effectively resolving the flicker. It aligned with the intended usage of TanStack Query.
+
+**Outcome:** While a new fetch is underway, the previous data is retained and instantly replaced when the new data arrives—preventing the `data` object from becoming `undefined`, and thereby eliminating the flickering of the `time` field.
+
+```typescript
+import { keepPreviousData } from '@tanstack/react-query';
+
+export function useBoilSimulationResult(
+  args: Parameters<typeof trpc.boilSimulation.results.useQuery>[0]
+) {
+  return trpc.boilSimulation.results.useQuery(args, {
+    placeholderData: keepPreviousData,
+  });
+}
+```
+
+## 4. Considerations When Using `keepPreviousData`
+
+Unexpectedly, a new issue emerged after applying `keepPreviousData`. Previously, when fetching a new `eggStatus`, the `isLoading` flag would toggle to `true`, triggering the spinner. However, after applying `keepPreviousData`, `isLoading` no longer became `true`, preventing the spinner from appearing.
+
+### Comparison: `isLoading` vs `isPending` vs `isFetching`
+
+To understand this behavior, it's essential to understand the relationship between `status` and `fetchStatus`.
+
+**`status`: Does the query have data?**
+
+| Value | Meaning |
+|---|---|
+| `pending` | No data has been received yet |
+| `error` | Query failed |
+| `success` | Data has been successfully fetched and cached |
+
+**`fetchStatus`: Is the query function (`queryFn`) running?**
+
+| Value | Meaning |
+|---|---|
+| `fetching` | Fetch in progress |
+| `paused` | Fetch has been issued but paused (e.g., offline) |
+| `idle` | No active fetch |
+
+**`isLoading`:** As explained in TkDoDo's comment and the source code, `isLoading` is determined by the combination of `status` and `fetchStatus`:
+
+```typescript
+const isFetching = newState.fetchStatus === 'fetching';
+const isPending = status === 'pending';
+const isError = status === 'error';
+
+const isLoading = isPending && isFetching;
+```
+
+In other words, `isLoading` is `true` only when the query has no data (`status === 'pending'`) and a fetch is in progress (`fetchStatus === 'fetching'`). With `keepPreviousData` enabled, previous data remains (`status !== 'pending'`), so `isLoading` never becomes `true`. Thus, relying on `isLoading` to show loading spinners no longer works.
+
+**`isPending`:** Added in TanStack Query v5, `isPending` may seem like a replacement for `isLoading`, but they differ. `isPending` is `true` as long as the query has not yet received data (`status === 'pending'`). It encompasses a broader range than `isLoading`. It also pairs well with TypeScript's type guard logic—for example, `!isPending && !isError` ensures `data` is defined. Still, since the query retains previous data in this case, `isPending` is also `false`, making it unsuitable for controlling the loading spinner.
+
+**`isFetching`:** `isFetching` turns `true` whenever a fetch is in progress, regardless of whether previous data exists. Therefore, even when `keepPreviousData` is in effect, `isFetching` correctly reflects the fetch status. As such, it was the most reliable flag to control loading UI in this context.
+
+Here is a table summarizing the behaviors:
+
+| `status` | `fetchStatus` | `isLoading` | `isFetching` |
+|---|---|---|---|
+| `pending` | `fetching` | true | true |
+| `pending` | `idle` | false | false |
+| `success` | `fetching` | false | true |
+| `success` | `idle` | false | false |
+| `error` | `fetching` | false | true |
+| `error` | `idle` | false | false |
+
+I validated these behaviors through the official documentation and GitHub Discussions and concluded that replacing `isLoading` with `isFetching` was the most reliable way to control the spinner in this page. The core insight behind `keepPreviousData` lies not just in retaining values, but in understanding how it alters the query's state transitions.
+
+## 5. Conclusion
+
+This experience went beyond simply fixing a UI flicker—it prompted me to reflect on how to prioritize and make technical decisions under real-world constraints. The problem could have easily been overlooked without a solid grasp of TanStack Query's internal state mechanisms (`status`, `fetchStatus`). The decision to use `keepPreviousData` allowed me to address the issue without restructuring the system, making it both practical and aligned with the library's philosophy. Switching to `isFetching` for spinner control preserved the user experience as intended.
+
+In hindsight, separating `time` and `eggStatus` into distinct APIs from the start might have been more ideal. However, in the real world, we often can't afford perfect architectures. What matters more is making the best possible decision under given constraints—grounded in an accurate understanding of system behavior.
+
+Even a small UI issue like this can reveal deeper technical insights. Tackling such problems with depth and accuracy has proven to be a valuable part of my growth as a developer. Moving forward, I hope to continue focusing on subtle yet meaningful issues to create even more refined and reliable user experiences.
