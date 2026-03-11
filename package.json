@@ -6,7 +6,7 @@
     "dev": "npm run cf-typegen && npm run db:generate && velite build && next dev",
     "clean": "rimraf .next .open-next .velite src/velite-types.d.ts",
     "build:content": "velite build",
-    "build": "next build",
+    "build": "next build --webpack",
     "build:next": "opennextjs-cloudflare build",
     "build:copy-assets": "cpy .velite/public/static/** .open-next/assets/static",
     "build:deploy": "npm run clean && npm run build:content && npm run build:next && npm run build:copy-assets",
