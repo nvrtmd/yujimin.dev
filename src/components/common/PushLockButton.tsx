@@ -15,7 +15,7 @@ export const PushLockButton = memo(
         <button
           ref={ref}
           className={`
-            bg-[var(--color-window-bg)] flex items-center p-1
+            bg-[var(--color-window-bg)] flex items-center p-1 select-none
             ${isPushed ? 'shadow-inset-deep' : 'shadow-outset'}
             ${className ?? ''}
           `}

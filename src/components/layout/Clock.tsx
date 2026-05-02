@@ -21,7 +21,7 @@ export function Clock() {
   }, []);
 
   return (
-    <div className='flex items-center p-1 shadow-clock'>
+    <div className='flex items-center p-1 shadow-clock select-none'>
       <Image
         src={CLOCK_ICON}
         alt='scheduler icon'

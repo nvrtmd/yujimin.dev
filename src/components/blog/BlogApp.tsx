@@ -75,7 +75,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
 
   return (
     <div className='flex flex-col h-full bg-[var(--color-window-bg)] font-sans text-sm shadow-md'>
-      <div className='p-1 border-b border-white'>
+      <div className='py-0.5 px-1 border-b border-white'>
         <div className='flex items-center gap-1 justify-between'>
           <PushLockButton
             isPushed={isSidebarVisible}
@@ -200,7 +200,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
         </div>
       </div>
 
-      <div className='flex justify-between items-center px-2 py-1 border-t border-[var(--color-border-dark)] bg-[var(--color-window-bg)] text-xs text-black select-none shadow-blog-status'>
+      <div className='flex justify-between items-center px-2 py-0.5 border-t border-[var(--color-border-dark)] bg-[var(--color-window-bg)] text-xs text-black select-none shadow-blog-status'>
         <div className='flex gap-4'>
           <span>{filteredPosts.length} object(s)</span>
         </div>

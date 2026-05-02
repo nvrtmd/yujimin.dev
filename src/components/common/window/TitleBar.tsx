@@ -59,7 +59,7 @@ export const TitleBar = memo(
       <div
         ref={titleBarRef}
         data-testid={`window-titlebar-${windowId}`}
-        className={`${titleBarBgClass} p-1 flex justify-between items-center select-none shrink-0`}
+        className={`${titleBarBgClass} py-0.5 px-1 flex justify-between items-center select-none shrink-0`}
         onMouseDown={(e) => {
           if (e.detail > SINGLE_CLICK_DETAIL) {
             e.preventDefault();

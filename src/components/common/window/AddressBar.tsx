@@ -43,7 +43,7 @@ export const AddressBar = memo(
     const currentUrl = `${origin}${displayPath}`;
 
     return (
-      <div className='border border-[var(--color-border-medium)] font-sans text-base p-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>
+      <div className='border border-[var(--color-border-medium)] font-sans text-sm py-0.5 px-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>
         {showNavigationButtons && (
           <div className='flex shrink-0'>
             <Button
@@ -77,7 +77,7 @@ export const AddressBar = memo(
           </div>
         )}
         <div className='bg-white shadow-inset-deep border-none p-1 flex items-center w-full min-w-0 ml-1'>
-          <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis text-xs sm:text-sm'>
+          <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis text-xs sm:text-sm select-none'>
             {currentUrl}
           </div>
         </div>

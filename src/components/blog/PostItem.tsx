@@ -56,7 +56,7 @@ export function PostItem({
       data-testid={`post-item-${post.slug}`}
       onClick={(e) => onItemClick(e, post.slug)}
       onDoubleClick={(e) => onItemDoubleClick(e, post.slug)}
-      className='group flex flex-col cursor-default p-2 rounded-sm w-full max-w-[180px] mx-auto'
+      className='group flex flex-col cursor-default select-none p-2 rounded-sm w-full max-w-[180px] mx-auto'
     >
       <div className='w-3/4 mx-auto'>
         <div className={selectedStyle.thumbnailWrapper}>
