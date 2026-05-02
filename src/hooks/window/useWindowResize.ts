@@ -1,26 +1,9 @@
 'use client';
 
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useEffectEvent,
-  useRef,
-} from 'react';
+import { useCallback, useRef } from 'react';
 import type { Dispatch } from 'react';
 import { Position, Size, WindowState } from '@/models';
-
-const INITIAL_POSITION: Position = { x: 0, y: 0 };
-const INITIAL_SIZE: Size = { width: 0, height: 0 };
-
-interface ResizeState {
-  isResizing: boolean;
-  direction: string;
-  window: WindowState | null;
-  mouseStartPosition: Position;
-  windowStartSize: Size;
-  windowStartPosition: Position;
-}
+import { useDrag } from '@/hooks/useDrag';
 
 export const WINDOW_MIN_WIDTH = 290;
 export const WINDOW_MIN_HEIGHT = 270;
@@ -30,15 +13,6 @@ export const WINDOW_MEDIUM_HEIGHT = 480;
 
 export const WINDOW_DEFAULT_WIDTH = 800;
 export const WINDOW_DEFAULT_HEIGHT = 600;
-
-const INITIAL_RESIZE_STATE: ResizeState = {
-  isResizing: false,
-  direction: '',
-  window: null,
-  mouseStartPosition: INITIAL_POSITION,
-  windowStartSize: INITIAL_SIZE,
-  windowStartPosition: INITIAL_POSITION,
-};
 
 const calculateEastResize = (
   deltaX: number,
@@ -111,86 +85,60 @@ const calculateNewSizeAndPosition = (
   return { size: newSize, position: newPosition };
 };
 
+interface DragStartState {
+  window: WindowState;
+  direction: string;
+  startSize: Size;
+  startPosition: Position;
+}
+
 export const useWindowResize = (
   setWindowList: Dispatch<React.SetStateAction<WindowState[]>>,
   bringToFront: (window: WindowState) => void,
 ) => {
-  const [resizeState, setResizeState] =
-    useState<ResizeState>(INITIAL_RESIZE_STATE);
-  const rafId = useRef<number | null>(null);
+  const dragStartState = useRef<DragStartState | null>(null);
 
-  const handleResizeMouseDown = useCallback(
-    (e: React.MouseEvent, window: WindowState, direction: string) => {
-      e.preventDefault();
-      e.stopPropagation();
-
-      bringToFront(window);
-
-      setResizeState({
-        isResizing: true,
-        window,
-        direction,
-        mouseStartPosition: { x: e.clientX, y: e.clientY },
-        windowStartSize: window.size,
-        windowStartPosition: window.position,
-      });
-    },
-    [bringToFront],
-  );
-
-  const handleResizeMouseMove = useEffectEvent((e: MouseEvent) => {
-    if (!resizeState.isResizing || !resizeState.window) {
-      return;
-    }
-
-    if (rafId.current) {
-      cancelAnimationFrame(rafId.current);
-    }
-
-    rafId.current = requestAnimationFrame(() => {
-      const deltaX = e.clientX - resizeState.mouseStartPosition.x;
-      const deltaY = e.clientY - resizeState.mouseStartPosition.y;
+  const onDrag = useCallback(
+    (deltaX: number, deltaY: number) => {
+      const state = dragStartState.current;
+      if (!state) return;
 
       const { size: newSize, position: newPosition } =
         calculateNewSizeAndPosition(
-          resizeState.direction,
+          state.direction,
           deltaX,
           deltaY,
-          resizeState.windowStartSize,
-          resizeState.windowStartPosition,
+          state.startSize,
+          state.startPosition,
         );
 
       setWindowList((prev) =>
         prev.map((window) =>
-          window.id === resizeState.window?.id
+          window.id === state.window.id
             ? { ...window, size: newSize, position: newPosition }
             : window,
         ),
       );
-    });
-  });
+    },
+    [setWindowList],
+  );
 
-  const handleResizeMouseUp = useEffectEvent(() => {
-    setResizeState(INITIAL_RESIZE_STATE);
-  });
+  const { handleMouseDown: startDrag } = useDrag({ onDrag });
 
-  useEffect(() => {
-    if (!resizeState.isResizing) {
-      return;
-    }
-
-    document.addEventListener('mousemove', handleResizeMouseMove);
-    document.addEventListener('mouseup', handleResizeMouseUp);
-
-    return () => {
-      document.removeEventListener('mousemove', handleResizeMouseMove);
-      document.removeEventListener('mouseup', handleResizeMouseUp);
-
-      if (rafId.current) {
-        cancelAnimationFrame(rafId.current);
-      }
-    };
-  }, [resizeState.isResizing]);
+  const handleResizeMouseDown = useCallback(
+    (e: React.MouseEvent, window: WindowState, direction: string) => {
+      e.stopPropagation();
+      bringToFront(window);
+      dragStartState.current = {
+        window,
+        direction,
+        startSize: window.size,
+        startPosition: window.position,
+      };
+      startDrag(e);
+    },
+    [bringToFront, startDrag],
+  );
 
   return { handleResizeMouseDown };
 };

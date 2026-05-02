@@ -16,6 +16,7 @@ import {
   SORT_HEADERS,
 } from './blogAppConfig';
 export type { SortConfig, SortKey, SortDirection } from './blogAppConfig';
+import { useSidebarResize } from '@/hooks/blog/useSidebarResize';
 
 interface BlogAppProps {
   posts: Post[];
@@ -40,6 +41,9 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
     isSidebarVisible,
     sidebarClass,
   } = useBlogState(isMobile);
+
+  const { sidebarWidth, handleSidebarResizeStart, isSidebarResizing } =
+    useSidebarResize();
 
   const postCounts = useMemo(
     () =>
@@ -107,13 +111,22 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
         </div>
       </div>
 
-      <div className='flex flex-1 overflow-hidden px-1 pb-1 gap-1'>
+      <div
+        className={`flex flex-1 overflow-hidden px-1 pb-1 gap-1 ${isSidebarResizing ? 'select-none cursor-ew-resize' : ''}`}
+      >
         <div
           id='blog-sidebar'
           data-testid='blog-sidebar'
           aria-hidden={!isSidebarVisible}
-          className={`${sidebarClass} flex-col w-50 flex-shrink-0 transition-all`}
+          className={`${sidebarClass} relative flex-col flex-shrink-0`}
+          style={{ width: sidebarWidth }}
         >
+          {isSidebarVisible && (
+            <div
+              className='absolute top-0 bottom-0 right-0 w-1 z-10 cursor-ew-resize'
+              onMouseDown={handleSidebarResizeStart}
+            />
+          )}
           <div className='flex-1 bg-white border-2 border-[var(--color-border-dark)] border-r-white border-b-white overflow-y-scroll overflow-x-auto p-2 shadow-blog-panel'>
             <div className='min-w-full inline-block align-top'>
               <TreeItem
