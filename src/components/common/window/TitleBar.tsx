@@ -81,7 +81,7 @@ export const TitleBar = memo(
             alt='window page icon'
             width={16}
             height={16}
-            className='inline-block mr-1 select-none'
+            className='inline-block mr-1 select-none w-4 h-4'
             draggable={false}
           />
           <div className='text-white font-bold select-none'>{title}</div>

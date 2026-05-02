@@ -124,7 +124,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
                     alt='folder'
                     width={16}
                     height={16}
-                    className='mr-1 inline-block shrink-0'
+                    className='mr-1 inline-block shrink-0 w-3 h-3'
                   />
                 }
                 isSelected={selectedCategoryValue === DEFAULT_CATEGORY}
@@ -149,7 +149,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
                           alt='folder'
                           width={16}
                           height={16}
-                          className='mr-1 inline-block shrink-0'
+                          className='mr-1 inline-block shrink-0 w-3 h-3'
                         />
                       }
                       isSelected={selectedCategoryValue === category.value}

@@ -57,6 +57,7 @@ export const AddressBar = memo(
                 alt='back'
                 width={28}
                 height={28}
+                className='w-6 h-5'
               />
             </Button>
             <Button
@@ -70,6 +71,7 @@ export const AddressBar = memo(
                 alt='forward'
                 width={28}
                 height={28}
+                className='w-6 h-5'
               />
             </Button>
           </div>

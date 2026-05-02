@@ -48,7 +48,7 @@ export const ControlButtons = memo(
               alt='minimize'
               width={CONTROL_ICON_SIZE}
               height={CONTROL_ICON_SIZE}
-              className='h-full pt-3 select-none'
+              className='select-none w-4 h-1 self-end'
               draggable={false}
             />
           </Button>
@@ -83,7 +83,7 @@ export const ControlButtons = memo(
             alt='close'
             width={CONTROL_ICON_SIZE}
             height={CONTROL_ICON_SIZE}
-            className='select-none'
+            className='select-none w-4 h-4'
             draggable={false}
           />
         </Button>
