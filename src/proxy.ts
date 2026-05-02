@@ -25,14 +25,11 @@ const NEXTJS_METADATA_ROUTES = [
 ];
 
 /**
- * Middleware: Redirects invalid paths to home
+ * Proxy: Redirects invalid paths to home
  * Valid paths: /, /blog, /blog/[existing-slug]
  * All other paths redirect to home (/)
- *
- * TODO: Rename to proxy.ts when @opennextjs/cloudflare supports Next.js 16 proxy convention
- * @see https://github.com/opennextjs/opennextjs-cloudflare/issues/962
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Skip Next.js internal and API routes
@@ -69,7 +66,7 @@ export function middleware(request: NextRequest) {
 }
 
 /**
- * Matcher configuration for middleware execution
+ * Matcher configuration for proxy execution
  * Excludes API routes, static files, and Next.js internal paths
  */
 export const config = {

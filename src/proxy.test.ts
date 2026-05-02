@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { middleware } from './middleware';
+import { proxy } from './proxy';
 
 vi.mock('#site/content', () => ({
   blogPosts: [
@@ -8,7 +8,7 @@ vi.mock('#site/content', () => ({
   ],
 }));
 
-describe('middleware', () => {
+describe('proxy', () => {
   const createRequest = (pathname: string): NextRequest =>
     new NextRequest(new URL(pathname, 'http://localhost:3000'));
 
@@ -21,7 +21,7 @@ describe('middleware', () => {
     const request = createRequest(pathname);
 
     // Act
-    const response = middleware(request);
+    const response = proxy(request);
 
     // Assert
     expect(response).toBeInstanceOf(NextResponse);
@@ -38,7 +38,7 @@ describe('middleware', () => {
     const request = createRequest(pathname);
 
     // Act
-    const response = middleware(request);
+    const response = proxy(request);
 
     // Assert
     expect(response).toBeInstanceOf(NextResponse);
@@ -56,7 +56,7 @@ describe('middleware', () => {
     const request = createRequest(pathname);
 
     // Act
-    const response = middleware(request);
+    const response = proxy(request);
 
     // Assert
     expect(response).toBeInstanceOf(NextResponse);
