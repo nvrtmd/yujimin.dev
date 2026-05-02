@@ -14,14 +14,12 @@ export const SORT_HEADER_BASE_CLASS =
 export const SORT_HEADERS = [
   {
     key: 'title' as const,
-    label: 'Title',
     sizeClass: 'flex-[2] min-w-[150px]',
   },
   {
     key: 'summary' as const,
-    label: 'Summary',
     sizeClass: 'flex-[3] min-w-[200px]',
   },
-  { key: 'date' as const, label: 'Date', sizeClass: 'w-32 shrink-0' },
-  { key: 'category' as const, label: 'Category', sizeClass: 'w-24 shrink-0' },
+  { key: 'date' as const, sizeClass: 'w-32 shrink-0' },
+  { key: 'category' as const, sizeClass: 'w-24 shrink-0' },
 ] as const;

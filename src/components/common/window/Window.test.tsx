@@ -26,6 +26,14 @@ vi.mock('next/navigation', () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
+vi.mock('@/i18n/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  usePathname: () => mockPathname,
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Mock next/image
 vi.mock('next/image', () => ({
   default: ({

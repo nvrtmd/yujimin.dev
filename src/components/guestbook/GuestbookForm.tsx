@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { type GuestbookForm } from '@/models';
 import { Button, Input, Textarea } from '@/components/common';
 import { useGuestbookForm } from '@/hooks/guestbook/useGuestbookForm';
@@ -10,20 +11,6 @@ import { guestbookEntryResponseSchema } from '@/models';
 const CONFIG = {
   MESSAGE_DISPLAY_DURATION: 3000,
   TEXTAREA_ROWS: 2,
-} as const;
-
-const PLACEHOLDER = {
-  NICKNAME: 'yuza',
-  LOCATION: 'Seoul, Korea',
-  WEBSITE: 'https://example.com',
-} as const;
-
-const TEXT = {
-  SUBMIT: 'Submit',
-  SUBMITTING: 'Submitting...',
-  SUCCESS: 'Message added successfully!',
-  ERROR_FALLBACK: 'Failed to submit.',
-  ERROR_NETWORK: 'An unexpected network error occurred.',
 } as const;
 
 const ERROR_LOG = {
@@ -49,6 +36,7 @@ function getResultStyle(type: 'success' | 'error'): string {
 }
 
 export function GuestbookForm({ refreshEntries }: GuestbookFormProps) {
+  const t = useTranslations('guestbook.form');
   const [submitResult, setSubmitResult] = useState<{
     type: 'success' | 'error';
     message: string;
@@ -78,18 +66,18 @@ export function GuestbookForm({ refreshEntries }: GuestbookFormProps) {
 
         if (parsedData.success) {
           refreshEntries();
-          setSubmitResult({ type: 'success', message: TEXT.SUCCESS });
+          setSubmitResult({ type: 'success', message: t('successMessage') });
           reset();
         } else {
           console.error(ERROR_LOG.API, parsedData.error);
           setSubmitResult({
             type: 'error',
-            message: parsedData.error || TEXT.ERROR_FALLBACK,
+            message: parsedData.error || t('errorFallback'),
           });
         }
       } catch (error) {
         console.error(ERROR_LOG.SUBMIT, error);
-        setSubmitResult({ type: 'error', message: TEXT.ERROR_NETWORK });
+        setSubmitResult({ type: 'error', message: t('errorNetwork') });
       }
     },
   );
@@ -102,34 +90,34 @@ export function GuestbookForm({ refreshEntries }: GuestbookFormProps) {
       <Input
         label={
           <span className='flex items-center gap-1'>
-            Nickname
+            {t('nicknameLabel')}
             <RequiredIndicator />
           </span>
         }
         error={errors.nickname?.message}
         {...register('nickname')}
-        placeholder={PLACEHOLDER.NICKNAME}
+        placeholder={t('nicknamePlaceholder')}
       />
 
       <Input
-        label='Location'
+        label={t('locationLabel')}
         error={errors.location?.message}
         {...register('location')}
-        placeholder={PLACEHOLDER.LOCATION}
+        placeholder={t('locationPlaceholder')}
       />
 
       <Input
-        label='Website'
+        label={t('websiteLabel')}
         error={errors.website?.message}
         {...register('website')}
-        placeholder={PLACEHOLDER.WEBSITE}
+        placeholder={t('websitePlaceholder')}
         type='url'
       />
 
       <Textarea
         label={
           <span className='flex items-center gap-1'>
-            Message
+            {t('messageLabel')}
             <RequiredIndicator />
           </span>
         }
@@ -143,7 +131,7 @@ export function GuestbookForm({ refreshEntries }: GuestbookFormProps) {
         disabled={isSubmitting}
         className='btn-outset px-4 py-1 bg-[var(--color-window-bg)] self-end'
       >
-        {TEXT.SUBMIT}
+        {isSubmitting ? t('submitting') : t('submit')}
       </Button>
 
       {submitResult && (

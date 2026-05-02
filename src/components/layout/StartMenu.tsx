@@ -1,8 +1,9 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
 import { RefObject } from 'react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { TASKBAR_HEIGHT } from './Taskbar';
 
 const GITHUB_URL = 'https://github.com/nvrtmd/yujimin.dev';
@@ -23,6 +24,8 @@ export function StartMenu({
   onCloseAllWindows,
   onAppActivate,
 }: StartMenuProps) {
+  const t = useTranslations('startMenu');
+
   const handleHomeClick = () => {
     onCloseAllWindows();
     closeMenu();
@@ -51,45 +54,45 @@ export function StartMenu({
           <div className={MENU_ITEM_CLASS}>
             <Image
               src='/images/icons/home_img.webp'
-              alt='Home'
+              alt={t('home')}
               width={24}
               height={24}
               className={MENU_ICON_CLASS}
             />
-            <span>Home</span>
+            <span>{t('home')}</span>
           </div>
         </Link>
         <div onClick={handleBlogClick} className={MENU_ITEM_CLASS}>
           <Image
             src='/images/icons/blog_img.webp'
-            alt='Blog'
+            alt={t('blog')}
             width={24}
             height={24}
             className={MENU_ICON_CLASS}
           />
-          <span>Blog</span>
+          <span>{t('blog')}</span>
         </div>
         <a href={GITHUB_URL} target='_blank' rel='noopener noreferrer'>
           <div className={MENU_ITEM_CLASS}>
             <Image
               src='/images/icons/source_code_img.webp'
-              alt='Source Code'
+              alt={t('sourceCode')}
               width={24}
               height={24}
               className={MENU_ICON_CLASS}
             />
-            <span>Source Code</span>
+            <span>{t('sourceCode')}</span>
           </div>
         </a>
         <div onClick={() => window.close()} className={MENU_ITEM_CLASS}>
           <Image
             src='/images/icons/power_img.webp'
-            alt='Shut Down'
+            alt={t('shutDown')}
             width={24}
             height={24}
             className={MENU_ICON_CLASS}
           />
-          <span>Shut Down</span>
+          <span>{t('shutDown')}</span>
         </div>
       </div>
     </div>

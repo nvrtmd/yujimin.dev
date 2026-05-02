@@ -3,7 +3,7 @@ import type { App, AppId } from '@/models/app';
 import dynamic from 'next/dynamic';
 import { GuestbookApp } from '@/components/guestbook/GuestbookApp';
 import { AboutApp } from '@/components/about';
-import { ColophonApp } from '@/components/colophon/ColophonApp';
+import { SpecApp } from '@/components/spec/SpecApp';
 import { AnalyticsApp } from '@/components/analytics/AnalyticsApp';
 import { ResumeApp } from '@/components/resume';
 
@@ -47,9 +47,9 @@ export const ABOUT_APP: App = {
   canMinimize: true,
 };
 
-export const COLOPHON_APP: App = {
-  id: 'colophon',
-  title: 'Colophon',
+export const SPEC_APP: App = {
+  id: 'spec',
+  title: 'Spec',
   iconSrc: '/images/icons/colophon_img.webp',
   showAddressBar: true,
   size: { width: WINDOW_MEDIUM_WIDTH, height: WINDOW_MEDIUM_HEIGHT },
@@ -86,7 +86,7 @@ export const APP_LIST: App[] = [
   ABOUT_APP,
   RESUME_APP,
   GUESTBOOK_APP,
-  COLOPHON_APP,
+  SPEC_APP,
   ANALYTICS_APP,
 ];
 
@@ -96,8 +96,8 @@ export function getContent(id: AppId): ReactNode {
       return <DynamicBlogContent />;
     case 'about-me':
       return <AboutApp />;
-    case 'colophon':
-      return <ColophonApp />;
+    case 'spec':
+      return <SpecApp />;
     case 'guestbook':
       return <GuestbookApp />;
     case 'analytics':

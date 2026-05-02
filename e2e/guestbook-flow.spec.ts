@@ -117,7 +117,7 @@ async function getFirstEntryNickname(page: Page): Promise<string | null> {
 test.describe('Guestbook - Form Validation', () => {
   test.beforeEach(async ({ page }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-guestbook')).toBeVisible();
     await openGuestbookWindow(page);
   });
@@ -160,7 +160,7 @@ test.describe('Guestbook - Form Validation', () => {
 test.describe('Guestbook - List Display', () => {
   test.beforeEach(async ({ page }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-guestbook')).toBeVisible();
     await openGuestbookWindow(page);
     await waitForListToLoad(page);
@@ -192,7 +192,7 @@ test.describe('Guestbook - Form Submission Flow', () => {
     page,
   }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-guestbook')).toBeVisible();
     await openGuestbookWindow(page);
 
@@ -241,7 +241,7 @@ test.describe('Guestbook - Rate Limit Handling', () => {
     page,
   }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-guestbook')).toBeVisible();
     await openGuestbookWindow(page);
 
@@ -291,7 +291,7 @@ test.describe('Guestbook - Edge Cases', () => {
     page,
   }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-guestbook')).toBeVisible();
     await openGuestbookWindow(page);
 

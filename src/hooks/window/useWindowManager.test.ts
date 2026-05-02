@@ -11,9 +11,12 @@ import type { WindowState } from '@/models';
 
 const mockPush = vi.fn();
 const mockPathname = vi.fn(() => '/');
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
   usePathname: () => mockPathname(),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 const mockOpenWindow = vi.fn();
@@ -22,6 +25,11 @@ const mockMinimizeWindow = vi.fn();
 const mockBringToFront = vi.fn();
 
 let mockWindowList: WindowState[] = [];
+const defaultApps = [
+  createMockSsgApp({ id: 'blog', syncWithUrl: true }),
+  createMockSsgApp({ id: 'about-me' }),
+  createMockCsrApp({ id: 'analytics' }),
+];
 
 vi.mock('./useWindowState', () => ({
   useWindowState: () => ({
@@ -66,7 +74,7 @@ describe('useWindowManager', () => {
   it('[frontmost] should return highest zIndex window as frontmost', () => {
     // Arrange - Empty array boundary
     mockWindowList = [];
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(defaultApps));
 
     // Assert - Empty case
     expect(result.current.frontmostOpenWindow).toBeNull();
@@ -95,7 +103,7 @@ describe('useWindowManager', () => {
     ];
 
     // Act
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Assert - guestbook(3) is frontmost since about(5) and analytics(4) are minimized
     expect(result.current.frontmostOpenWindow?.id).toBe('guestbook');
@@ -114,7 +122,7 @@ describe('useWindowManager', () => {
       isMinimized: false,
     });
     mockWindowList = [backWindow, frontWindow];
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Act - Click frontmost window
     act(() => {
@@ -139,7 +147,7 @@ describe('useWindowManager', () => {
 
   it('[open] should push route for URL-synced apps and directly open for other apps', () => {
     // Arrange
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Act - Open URL-synced app (Blog with syncWithUrl: true)
     act(() => {
@@ -191,7 +199,7 @@ describe('useWindowManager', () => {
       syncWithUrl: true,
     });
     mockWindowList = [existingWindow];
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Act - Open app that already has a window
     act(() => {
@@ -215,7 +223,7 @@ describe('useWindowManager', () => {
     const nonSyncedWindow = createMockCsrWindow({ id: 'analytics' });
     mockWindowList = [urlSyncedWindow, nonSyncedWindow];
     mockPathname.mockReturnValue('/blog');
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Act - Close active URL-synced window (pathname matches)
     act(() => {
@@ -243,7 +251,7 @@ describe('useWindowManager', () => {
     const window = createMockSsgWindow({ id: 'about-me' }); // No syncWithUrl
     mockWindowList = [window];
     mockPathname.mockReturnValue('/blog');
-    const { result } = renderHook(() => useWindowManager());
+    const { result } = renderHook(() => useWindowManager(defaultApps));
 
     // Act - Close window that does NOT match current URL
     act(() => {

@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect, useEffectEvent, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { WindowState } from '@/models';
 import { App } from '@/models/app';
 import { StartMenu, Clock } from '@/components/layout';
@@ -25,6 +26,7 @@ export function Taskbar({
   onCloseAllWindows,
   onAppActivate,
 }: TaskbarProps) {
+  const t = useTranslations('taskbar');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const startButtonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -71,13 +73,13 @@ export function Taskbar({
           >
             <Image
               src='/images/icons/start_img.webp'
-              alt='start icon'
+              alt={t('start')}
               width={20}
               height={20}
               className='mr-1'
               style={{ height: 'auto' }}
             />
-            <span className='font-bold'>Start</span>
+            <span className='font-bold'>{t('start')}</span>
           </PushLockButton>
 
           <div className='flex items-center ml-2 space-x-1 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden w-full'>

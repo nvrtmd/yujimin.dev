@@ -1,55 +1,45 @@
+'use client';
+
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 const ICON_SIZE = 18;
 
 const REPO_URL = 'https://github.com/nvrtmd/yujimin.dev';
 
-interface Feature {
-  title: string;
-  description: string;
-}
+export function SpecApp() {
+  const t = useTranslations('spec');
+  const features = [
+    {
+      title: t('features.windows.title'),
+      description: t('features.windows.description'),
+    },
+    {
+      title: t('features.blog.title'),
+      description: t('features.blog.description'),
+    },
+    {
+      title: t('features.guestbook.title'),
+      description: t('features.guestbook.description'),
+    },
+    {
+      title: t('features.resume.title'),
+      description: t('features.resume.description'),
+    },
+    {
+      title: t('features.analytics.title'),
+      description: t('features.analytics.description'),
+    },
+  ] as const;
 
-const FEATURES: Feature[] = [
-  {
-    title: 'Draggable Windows',
-    description:
-      'Drag, resize, minimize, and maximize — just like a real desktop.',
-  },
-  {
-    title: 'Blog',
-    description:
-      'Folder-style navigation with list/gallery views and syntax-highlighted code.',
-  },
-  {
-    title: 'Guestbook',
-    description: 'Leave a message and browse what others have written.',
-  },
-  {
-    title: 'Resume',
-    description:
-      'Live resume fetched from Google Docs, cached for instant loading.',
-  },
-  {
-    title: 'Analytics',
-    description:
-      'Real-time site stats including page views and visitor countries.',
-  },
-];
+  const techStack = [
+    { label: t('tech.framework.label'), value: t('tech.framework.value') },
+    { label: t('tech.styling.label'), value: t('tech.styling.value') },
+    { label: t('tech.content.label'), value: t('tech.content.value') },
+    { label: t('tech.database.label'), value: t('tech.database.value') },
+    { label: t('tech.hosting.label'), value: t('tech.hosting.value') },
+  ] as const;
 
-interface TechItem {
-  label: string;
-  value: string;
-}
-
-const TECH_STACK: TechItem[] = [
-  { label: 'Framework', value: 'Next.js 15 (React 19)' },
-  { label: 'Styling', value: 'Tailwind CSS v4' },
-  { label: 'Content', value: 'MDX via Velite' },
-  { label: 'Database', value: 'Cloudflare D1 (SQLite)' },
-  { label: 'Hosting', value: 'Cloudflare Workers' },
-];
-
-export function ColophonApp() {
   return (
     <div className='w-full h-full overflow-y-auto bg-white'>
       <div className='flex flex-col min-h-full text-black p-6 gap-10'>
@@ -57,18 +47,16 @@ export function ColophonApp() {
           <div className='order-1 sm:order-2 shrink-0'>
             <Image
               src='/images/icons/computer_img.webp'
-              alt='Computer'
+              alt={t('computerAlt')}
               width={120}
               height={120}
             />
           </div>
 
           <section className='space-y-2 order-2 sm:order-1 w-full'>
-            <h2 className='text-2xl font-bold'>Colophon</h2>
+            <h2 className='text-2xl font-bold'>{t('heading')}</h2>
             <p className='text-base leading-relaxed text-gray-700'>
-              Welcome to <strong className='text-black'>yujimin.dev</strong>.
-              Step into a retro virtual desktop where my work lives in draggable
-              windows — a playful mix of classic interface and modern tech.
+              {t('intro')}
             </p>
           </section>
         </div>
@@ -77,7 +65,7 @@ export function ColophonApp() {
 
         <section className='space-y-3'>
           <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
-            GitHub Repository
+            {t('repositoryHeading')}
           </h3>
           <a
             href={REPO_URL}
@@ -87,7 +75,7 @@ export function ColophonApp() {
           >
             <Image
               src='/images/icons/github-logo-black.svg'
-              alt='GitHub'
+              alt={t('repositoryAlt')}
               width={ICON_SIZE}
               height={ICON_SIZE}
             />
@@ -99,10 +87,10 @@ export function ColophonApp() {
 
         <section className='space-y-3'>
           <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
-            What&apos;s Inside
+            {t('whatsInsideHeading')}
           </h3>
           <ul className='grid gap-2 text-base'>
-            {FEATURES.map((feature) => (
+            {features.map((feature) => (
               <li key={feature.title} className='leading-relaxed'>
                 <span className='font-semibold'>{feature.title}</span>
                 <span className='text-gray-600'> — {feature.description}</span>
@@ -115,10 +103,10 @@ export function ColophonApp() {
 
         <section className='space-y-3'>
           <h3 className='text-lg font-bold bg-gray-50 px-3 py-1 -mx-3 border-l-3 border-gray-400'>
-            Built With
+            {t('builtWithHeading')}
           </h3>
           <dl className='grid gap-1.5 text-base'>
-            {TECH_STACK.map((item) => (
+            {techStack.map((item) => (
               <div key={item.label} className='flex gap-2'>
                 <dt className='font-semibold shrink-0'>{item.label}:</dt>
                 <dd className='text-gray-600'>{item.value}</dd>

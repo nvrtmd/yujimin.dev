@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo, useEffect, useRef, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import type { Post } from '@/models';
 import type { SortConfig } from './BlogApp';
 import { PostItem } from './PostItem';
@@ -26,6 +27,7 @@ export function PostList({
   sortConfig,
   scrollContainerRef,
 }: PostListProps) {
+  const t = useTranslations('blog');
   const router = useRouter();
   const { selectedSlug, selectPost, clearSelection } = usePostSelection();
   const triggerRef = useRef<HTMLDivElement>(null);
@@ -129,7 +131,7 @@ export function PostList({
           </div>
         ) : (
           <div className='flex flex-col items-center justify-center h-64 text-gray-500'>
-            <p>{POST_LIST_CONFIG.EMPTY_MESSAGE}</p>
+            <p>{t('empty')}</p>
           </div>
         )}
       </div>
@@ -139,7 +141,7 @@ export function PostList({
           data-testid='post-loading-trigger'
           className='h-8 w-full flex items-center justify-center text-gray-400 text-xs'
         >
-          <span>{POST_LIST_CONFIG.LOADING_MESSAGE}</span>
+          <span>{t('loadingMore')}</span>
         </div>
       )}
     </div>

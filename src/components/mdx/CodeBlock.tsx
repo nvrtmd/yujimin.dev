@@ -1,17 +1,17 @@
 'use client';
 
 import { useRef, useState, HTMLAttributes } from 'react';
+import { useTranslations } from 'next-intl';
 import { CopyIcon, CheckIcon } from '@/components/icons/mdx';
 
 const COPY_FEEDBACK_DURATION_MS = 1500;
-const TEXT_COPY = 'Copy';
-const ARIA_LABEL_DEFAULT = 'Copy code';
-const ARIA_LABEL_COPIED = 'Copied';
 const ERROR_COPY_FAILED = 'Failed to copy text: ';
 
 type CodeBlockProps = HTMLAttributes<HTMLPreElement>;
 
 export function CodeBlock({ children, ...props }: CodeBlockProps) {
+  const tCommon = useTranslations('common');
+  const tMdx = useTranslations('mdx');
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -33,11 +33,11 @@ export function CodeBlock({ children, ...props }: CodeBlockProps) {
   return (
     <div className='relative my-6 font-mono text-sm group code-block-wrapper not-prose'>
       <div className='bg-[var(--color-window-bg)] border-t-2 border-l-2 border-white border-r-2 border-r-[var(--color-border-dark)] border-b-2 border-b-[var(--color-border-dark)] px-2 py-1 flex justify-between items-center'>
-        <span className='text-xs text-black'>Source Code</span>
+        <span className='text-xs text-black'>{tMdx('sourceCode')}</span>
 
         <button
           onClick={handleCopy}
-          aria-label={copied ? ARIA_LABEL_COPIED : ARIA_LABEL_DEFAULT}
+          aria-label={copied ? tCommon('copied') : tMdx('copyCode')}
           className={`
                 px-2 py-[1px] text-xs font-sans text-black bg-[var(--color-window-bg)]
                 border-t border-l border-white border-b border-r border-[var(--color-button-dark)] shadow-[1px_1px_0_black]
@@ -46,7 +46,7 @@ export function CodeBlock({ children, ...props }: CodeBlockProps) {
             `}
         >
           {copied ? <CheckIcon /> : <CopyIcon />}
-          <span>{TEXT_COPY}</span>
+          <span>{copied ? tCommon('copied') : tCommon('copy')}</span>
         </button>
       </div>
       <pre

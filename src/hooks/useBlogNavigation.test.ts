@@ -4,9 +4,12 @@ import { useBlogNavigation } from './useBlogNavigation';
 const mockPush = vi.fn();
 const mockPathname = vi.fn(() => '/');
 
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   usePathname: () => mockPathname(),
   useRouter: () => ({ push: mockPush }),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 describe('useBlogNavigation', () => {

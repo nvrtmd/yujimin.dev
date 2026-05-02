@@ -15,13 +15,19 @@ import { validateResumeData } from '@/libs/resume/validateResumeData';
 
 type ResumeApiResponse = ApiSuccessResponse<ResumeData> | ApiErrorResponse;
 
-const {
-  FETCH_CACHE_OPTION,
-  ERROR_FALLBACK,
-  ERROR_UNKNOWN,
-  TEXT_ERROR_HEADER,
-  TEXT_NO_DATA,
-} = RESUME_CONFIG;
+const { FETCH_CACHE_OPTION } = RESUME_CONFIG;
+const TEXT = {
+  DOWNLOAD_PDF: 'Download PDF',
+  SKILLS: 'Technical Skills',
+  EXPERIENCE: 'Experience',
+  OPEN_SOURCE: 'Open Source',
+  LEADERSHIP: 'Leadership & Community',
+  EDUCATION: 'Education',
+  ERROR_HEADER: 'Error loading resume',
+  NO_DATA: 'No experience data.',
+  ERROR_FALLBACK: 'Failed to load',
+  ERROR_UNKNOWN: 'Unknown error',
+} as const;
 
 export function ResumeApp() {
   const [data, setData] = useState<ResumeData | null>(null);
@@ -36,7 +42,7 @@ export function ResumeApp() {
 
         if (!res.ok || !json.success) {
           throw new Error(
-            ('error' in json ? json.error : null) ?? ERROR_FALLBACK,
+            ('error' in json ? json.error : null) ?? TEXT.ERROR_FALLBACK,
           );
         }
 
@@ -45,7 +51,7 @@ export function ResumeApp() {
         setData(json.data);
         setError(null);
       } catch (e) {
-        setError((e as Error).message || ERROR_UNKNOWN);
+        setError((e as Error).message || TEXT.ERROR_UNKNOWN);
       } finally {
         setIsLoading(false);
       }
@@ -65,7 +71,7 @@ export function ResumeApp() {
     return (
       <div className='w-full h-full overflow-y-auto bg-white flex items-center justify-center'>
         <div className='p-6 bg-red-50 text-red-700 rounded-lg border border-red-100 max-w-md text-center'>
-          <p className='font-bold mb-2'>{TEXT_ERROR_HEADER}</p>
+          <p className='font-bold mb-2'>{TEXT.ERROR_HEADER}</p>
           <p className='text-sm opacity-80'>{error}</p>
         </div>
       </div>
@@ -101,8 +107,8 @@ export function ResumeApp() {
               <a
                 href={pdfUrl}
                 className='p-2 rounded-full text-zinc-400 hover:text-[var(--color-accent-blue)] hover:bg-[var(--color-accent-blue)]/5 transition-all'
-                aria-label='Download PDF'
-                title='Download PDF'
+                aria-label={TEXT.DOWNLOAD_PDF}
+                title={TEXT.DOWNLOAD_PDF}
               >
                 <DownloadIcon />
               </a>
@@ -138,7 +144,7 @@ export function ResumeApp() {
         </header>
 
         <section>
-          <SectionTitle title='Technical Skills' />
+          <SectionTitle title={TEXT.SKILLS} />
           <div className='grid grid-cols-1 gap-y-4 mb-4'>
             {skills.map((group, i) => (
               <div
@@ -164,17 +170,17 @@ export function ResumeApp() {
         </section>
 
         <section>
-          <SectionTitle title='Experience' />
+          <SectionTitle title={TEXT.EXPERIENCE} />
           {experience.length > 0 ? (
             experience.map((node, i) => <ExperienceItem key={i} node={node} />)
           ) : (
-            <p className='text-zinc-400 italic'>{TEXT_NO_DATA}</p>
+            <p className='text-zinc-400 italic'>{TEXT.NO_DATA}</p>
           )}
         </section>
 
         {openSource.length > 0 && (
           <section>
-            <SectionTitle title='Open Source' />
+            <SectionTitle title={TEXT.OPEN_SOURCE} />
             {openSource.map((node, i) => (
               <OpenSourceItem key={i} node={node} />
             ))}
@@ -183,7 +189,7 @@ export function ResumeApp() {
 
         {leadership.length > 0 && (
           <section>
-            <SectionTitle title='Leadership & Community' />
+            <SectionTitle title={TEXT.LEADERSHIP} />
             {leadership.map((node, i) => (
               <LeadershipItem key={i} node={node} />
             ))}
@@ -191,7 +197,7 @@ export function ResumeApp() {
         )}
 
         <section className='pb-12'>
-          <SectionTitle title='Education' />
+          <SectionTitle title={TEXT.EDUCATION} />
           <div className='space-y-4'>
             {education.map((e, i) => (
               <div key={i}>

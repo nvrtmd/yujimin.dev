@@ -3,13 +3,17 @@ import userEvent from '@testing-library/user-event';
 import { BlogApp } from './BlogApp';
 import type { Post } from '@/models';
 
-// Mock next/navigation
 const mockPush = vi.fn();
 let mockSearchParams = new URLSearchParams();
 
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
   usePathname: () => '/blog',
+  redirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
+}));
+
+vi.mock('next/navigation', () => ({
   useSearchParams: () => mockSearchParams,
 }));
 

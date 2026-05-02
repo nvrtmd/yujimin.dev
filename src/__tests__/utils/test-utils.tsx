@@ -1,12 +1,18 @@
 import { render, RenderOptions } from '@testing-library/react';
 import { ReactElement, ReactNode } from 'react';
+import { NextIntlClientProvider } from 'next-intl';
+import enMessages from '../../../messages/en.json';
 
 interface AllTheProvidersProps {
   children: ReactNode;
 }
 
 function AllTheProviders({ children }: AllTheProvidersProps) {
-  return <>{children}</>;
+  return (
+    <NextIntlClientProvider locale='en' messages={enMessages}>
+      {children}
+    </NextIntlClientProvider>
+  );
 }
 
 function customRender(

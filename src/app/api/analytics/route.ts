@@ -3,7 +3,6 @@ import { analytics as analyticsTable } from '@/db/schema';
 import { sql, desc, count, countDistinct } from 'drizzle-orm';
 import { z } from 'zod';
 import { parseWithZod } from '@/libs/parseWithZod';
-import { getTimeAgo } from '@/libs/getTimeAgo';
 import type { Analytics } from '@/models/analytics';
 import {
   getDbInstance,
@@ -101,9 +100,7 @@ export async function GET() {
       totalViews: totalViewsRes[0]?.value ?? 0,
       totalCountries: totalCountriesRes[0]?.value ?? 0,
       topCountry: topCountryRes[0]?.country ?? DEFAULTS.EMPTY_VALUE,
-      lastVisitor: lastVisitorTimestamp
-        ? getTimeAgo(lastVisitorTimestamp)
-        : DEFAULTS.EMPTY_VALUE,
+      lastVisitor: lastVisitorTimestamp ?? DEFAULTS.EMPTY_VALUE,
       todaysViews: todaysViewsRes[0]?.value ?? 0,
     };
 

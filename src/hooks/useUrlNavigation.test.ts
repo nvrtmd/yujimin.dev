@@ -7,20 +7,21 @@ import { useUrlNavigation } from './useUrlNavigation';
 import type { App, WindowState } from '@/models';
 
 const mockPathname = vi.fn(() => '/');
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   usePathname: () => mockPathname(),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
-vi.mock('@/libs/contentProvider', () => ({
-  APP_LIST: [
-    {
-      id: 'blog',
-      title: 'Blog',
-      iconSrc: '/images/icons/internet_img.webp',
-      showAddressBar: true,
-    },
-  ],
-}));
+const apps: App[] = [
+  {
+    id: 'blog',
+    title: 'Blog',
+    iconSrc: '/images/icons/internet_img.webp',
+    showAddressBar: true,
+  },
+];
 
 describe('useUrlNavigation', () => {
   let mockOpenWindow: (
@@ -41,7 +42,7 @@ describe('useUrlNavigation', () => {
   it('[init] should not open window on initial render', () => {
     // Arrange & Act
     renderHook(() =>
-      useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
+      useUrlNavigation(windowList, apps, mockOpenWindow, mockBringToFront),
     );
 
     // Assert
@@ -52,7 +53,7 @@ describe('useUrlNavigation', () => {
   it('[window] should open window on app path and ignore non-app paths', async () => {
     // Arrange
     const { rerender } = renderHook(() =>
-      useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
+      useUrlNavigation(windowList, apps, mockOpenWindow, mockBringToFront),
     );
 
     // Assert - Root path should not open window
@@ -93,7 +94,7 @@ describe('useUrlNavigation', () => {
     });
     windowList = [blogWindow];
     const { rerender } = renderHook(() =>
-      useUrlNavigation(windowList, mockOpenWindow, mockBringToFront),
+      useUrlNavigation(windowList, apps, mockOpenWindow, mockBringToFront),
     );
 
     // Act
@@ -111,7 +112,8 @@ describe('useUrlNavigation', () => {
   it('[guard] should only trigger on pathname change, not windowList change', async () => {
     // Arrange
     const { rerender } = renderHook(
-      ({ list }) => useUrlNavigation(list, mockOpenWindow, mockBringToFront),
+      ({ list }) =>
+        useUrlNavigation(list, apps, mockOpenWindow, mockBringToFront),
       { initialProps: { list: [] as WindowState[] } },
     );
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import type { GuestbookEntry } from '@/models';
 import { GuestbookItem } from './GuestbookItem';
 import useInfiniteScroll from 'react-infinite-scroll-hook';
@@ -12,9 +13,6 @@ interface GuestbookListProps {
 }
 
 const INFINITE_SCROLL_ROOT_MARGIN = '0px 0px 200px 0px';
-const TEXT_LOADING = '-- Loading... --';
-const TEXT_END_OF_MESSAGES = '-- End of messages --';
-const TEXT_EMPTY_STATE = 'Be the first to leave a message!';
 
 export function GuestbookList({
   entries,
@@ -22,6 +20,7 @@ export function GuestbookList({
   isLoading,
   hasNextPage,
 }: GuestbookListProps) {
+  const t = useTranslations('guestbook.list');
   const [scrollRef] = useInfiniteScroll({
     loading: isLoading,
     hasNextPage,
@@ -43,19 +42,19 @@ export function GuestbookList({
 
       {showLoadingIndicator && (
         <div ref={scrollRef} className='text-center p-4'>
-          {TEXT_LOADING}
+          {t('loading')}
         </div>
       )}
 
       {showEndMessage && (
         <p className='text-center text-gray-500 text-sm p-4 border-t mt-4'>
-          {TEXT_END_OF_MESSAGES}
+          {t('endOfMessages')}
         </p>
       )}
 
       {showEmptyState && (
         <p className='text-center text-gray-500 text-sm p-8'>
-          {TEXT_EMPTY_STATE}
+          {t('empty')}
         </p>
       )}
     </div>

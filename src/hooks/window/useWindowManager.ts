@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useCallback } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { App, WindowState } from '@/models';
 import { useWindowState } from './useWindowState';
 import { useWindowDrag } from './useWindowDrag';
@@ -19,7 +19,7 @@ const findFrontmostWindow = (windows: WindowState[]): WindowState | null => {
   return openWindows.sort((a, b) => b.zIndex - a.zIndex)[0];
 };
 
-export const useWindowManager = () => {
+export const useWindowManager = (apps: App[]) => {
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -32,7 +32,7 @@ export const useWindowManager = () => {
     bringToFront,
   } = useWindowState();
 
-  useUrlNavigation(windowList, openWindow, bringToFront);
+  useUrlNavigation(windowList, apps, openWindow, bringToFront);
 
   const blogNavigation = useBlogNavigation();
 

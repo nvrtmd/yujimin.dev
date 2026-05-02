@@ -21,6 +21,7 @@ describe('getCountryName', () => {
     // Arrange & Act & Assert
     expect(getCountryName('--')).toBe('--');
     expect(getCountryName('etc')).toBe('etc');
+    expect(getCountryName('etc', 'ko')).toBe('기타');
   });
 
   it('[invalid] should handle invalid country codes', () => {

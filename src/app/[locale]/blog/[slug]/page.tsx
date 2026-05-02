@@ -1,68 +1,32 @@
-import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getPostList, getPostBySlug, formatPostDate } from '@/libs';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Mdx } from '@/components/mdx';
+import { formatPostDate, getPostBySlug, getPostList } from '@/libs';
 
 const CONTAINER_MAX_WIDTH = 'max-w-3xl';
 const AUTHOR_NAME = 'Yuji Min';
-const END_OF_DOCUMENT_TEXT = '*** End of Document ***';
 
 type Props = {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 };
 
 export async function generateStaticParams() {
   const posts = getPostList();
+
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
-
-  if (!post) return {};
-
-  const postUrl = `https://yujimin.dev/blog/${slug}`;
-  const ogImage =
-    post.ogImage ??
-    post.thumbnail ??
-    '/images/thumbnails/blog_thumbnail_img.png';
-
-  return {
-    title: post.title,
-    description: post.summary,
-    authors: [{ name: AUTHOR_NAME }],
-    openGraph: {
-      type: 'article',
-      url: postUrl,
-      title: post.title,
-      description: post.summary,
-      publishedTime: post.date,
-      authors: [AUTHOR_NAME],
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.summary,
-      images: [ogImage],
-    },
-  };
-}
-
 export default async function PostPage({ params }: Props) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
+
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'blog.post' });
+
   const post = getPostBySlug(slug);
 
   if (!post) {
@@ -79,7 +43,9 @@ export default async function PostPage({ params }: Props) {
             {post.title}
           </h1>
           <div className='flex justify-between items-end text-sm text-gray-600 font-sans'>
-            <span className='font-bold text-black'>by {AUTHOR_NAME}</span>
+            <span className='font-bold text-black'>
+              {t('authorPrefix')} {AUTHOR_NAME}
+            </span>
             <span>{formatPostDate(post.date)}</span>
           </div>
         </div>
@@ -89,7 +55,7 @@ export default async function PostPage({ params }: Props) {
         </div>
 
         <div className='mt-16 pt-8 border-t border-dotted border-gray-400 text-center text-sm font-sans text-gray-500 select-none'>
-          {END_OF_DOCUMENT_TEXT}
+          {t('endOfDocument')}
         </div>
       </div>
     </div>

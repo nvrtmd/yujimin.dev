@@ -23,7 +23,7 @@ async function getZIndex(
 
 test.describe('Window System', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-about-me')).toBeVisible();
   });
 

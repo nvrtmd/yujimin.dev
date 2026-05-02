@@ -1,0 +1,194 @@
+{
+  "apps": {
+    "blog": "Blog",
+    "about-me": "About Me",
+    "spec": "Spec",
+    "guestbook": "Guestbook",
+    "analytics": "Analytics",
+    "resume": "Resume"
+  },
+  "startMenu": {
+    "home": "Home",
+    "blog": "Blog",
+    "sourceCode": "Source Code",
+    "shutDown": "Shut Down"
+  },
+  "taskbar": {
+    "start": "Start"
+  },
+  "blog": {
+    "metadata": {
+      "title": "Blog",
+      "description": "Technical blog posts by Yuji Min"
+    },
+    "toggleSidebar": "Toggle Sidebar",
+    "categories": "Categories",
+    "rootLabel": "Blog",
+    "objects": "{count} object(s)",
+    "empty": "No posts to display.",
+    "loadingMore": "Loading more...",
+    "columns": {
+      "title": "Title",
+      "summary": "Summary",
+      "date": "Date",
+      "category": "Category"
+    },
+    "post": {
+      "authorPrefix": "by",
+      "endOfDocument": "*** End of Document ***"
+    }
+  },
+  "guestbook": {
+    "metadata": {
+      "title": "Guestbook",
+      "description": "Leave a message on Yuji Min's guestbook"
+    },
+    "title": "Guestbook",
+    "subtitle": "Leave a message!",
+    "form": {
+      "nicknameLabel": "Nickname",
+      "locationLabel": "Location",
+      "websiteLabel": "Website",
+      "messageLabel": "Message",
+      "nicknamePlaceholder": "yuza",
+      "locationPlaceholder": "Seoul, Korea",
+      "websitePlaceholder": "https://example.com",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "successMessage": "Message added successfully!",
+      "errorFallback": "Failed to submit.",
+      "errorNetwork": "An unexpected network error occurred."
+    },
+    "list": {
+      "loading": "-- Loading... --",
+      "endOfMessages": "-- End of messages --",
+      "empty": "Be the first to leave a message!"
+    }
+  },
+  "analytics": {
+    "metadata": {
+      "title": "Analytics",
+      "description": "Site analytics for yujimin.dev"
+    },
+    "title": "Site Analytics",
+    "loading": "Loading analytics...",
+    "error": "Failed to load analytics.",
+    "metrics": {
+      "todaysViews": "Today's Views:",
+      "totalViews": "Total Views:",
+      "totalCountries": "Total Countries:",
+      "topCountry": "Top Country:",
+      "lastVisitor": "Last Visitor:"
+    },
+    "relative": {
+      "justNow": "just now",
+      "minute": "{count, plural, one {# minute ago} other {# minutes ago}}",
+      "hour": "{count, plural, one {# hour ago} other {# hours ago}}",
+      "day": "{count, plural, one {# day ago} other {# days ago}}",
+      "week": "{count, plural, one {# week ago} other {# weeks ago}}",
+      "month": "{count, plural, one {# month ago} other {# months ago}}",
+      "year": "{count, plural, one {# year ago} other {# years ago}}"
+    }
+  },
+  "mdx": {
+    "sourceCode": "Source Code",
+    "copyCode": "Copy code"
+  },
+  "about": {
+    "metadata": {
+      "title": "About Me",
+      "description": "About Yuji Min - Frontend Developer specializing in React, Next.js, and TypeScript"
+    },
+    "heading": "About Me",
+    "greeting": "\"Hello, World!\"",
+    "bio1": "I'm Yuji Min, a software developer currently focusing on frontend development at work.",
+    "bio2": "Through this blog, I hope to share my experiences and connect with others who love building things that make a difference.",
+    "linksHeading": "Links",
+    "profileAlt": "Profile Picture",
+    "emailAlt": "Email",
+    "githubAlt": "GitHub",
+    "linkedinAlt": "LinkedIn"
+  },
+  "spec": {
+    "metadata": {
+      "title": "Spec",
+      "description": "How yujimin.dev was built - tech stack, tools, and design decisions"
+    },
+    "heading": "Spec",
+    "intro": "Welcome to yujimin.dev. Step into a retro virtual desktop where my work lives in draggable windows - a playful mix of classic interface and modern tech.",
+    "computerAlt": "Computer",
+    "repositoryHeading": "GitHub Repository",
+    "repositoryAlt": "GitHub",
+    "whatsInsideHeading": "What's Inside",
+    "builtWithHeading": "Built With",
+    "features": {
+      "windows": {
+        "title": "Draggable Windows",
+        "description": "Drag, resize, minimize, and maximize - just like a real desktop."
+      },
+      "blog": {
+        "title": "Blog",
+        "description": "Folder-style navigation with list/gallery views and syntax-highlighted code."
+      },
+      "guestbook": {
+        "title": "Guestbook",
+        "description": "Leave a message and browse what others have written."
+      },
+      "resume": {
+        "title": "Resume",
+        "description": "Live resume fetched from Google Docs, cached for instant loading."
+      },
+      "analytics": {
+        "title": "Analytics",
+        "description": "Real-time site stats including page views and visitor countries."
+      }
+    },
+    "tech": {
+      "framework": {
+        "label": "Framework",
+        "value": "Next.js 15 (React 19)"
+      },
+      "styling": {
+        "label": "Styling",
+        "value": "Tailwind CSS v4"
+      },
+      "content": {
+        "label": "Content",
+        "value": "MDX via Velite"
+      },
+      "database": {
+        "label": "Database",
+        "value": "Cloudflare D1 (SQLite)"
+      },
+      "hosting": {
+        "label": "Hosting",
+        "value": "Cloudflare Workers"
+      }
+    }
+  },
+  "resume": {
+    "metadata": {
+      "title": "Resume",
+      "description": "Resume of Yuji Min - Software Engineer with experience in React, Next.js, and TypeScript"
+    },
+    "downloadPdf": "Download PDF",
+    "sections": {
+      "skills": "Technical Skills",
+      "experience": "Experience",
+      "openSource": "Open Source",
+      "leadership": "Leadership & Community",
+      "education": "Education"
+    },
+    "errorHeader": "Error loading resume",
+    "noData": "No experience data.",
+    "errorFallback": "Failed to load",
+    "errorUnknown": "Unknown error"
+  },
+  "common": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "close": "Close"
+  }
+}

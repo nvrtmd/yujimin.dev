@@ -10,6 +10,11 @@ export default defineConfig({
     globals: true,
     exclude: ['**/node_modules/**', '**/e2e/**'],
     css: false,
+    server: {
+      deps: {
+        inline: ['next-intl'],
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],

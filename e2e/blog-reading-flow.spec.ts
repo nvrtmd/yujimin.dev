@@ -30,7 +30,7 @@ test.describe('Blog Desktop Flow', () => {
 
   test.beforeEach(async ({ page }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('desktop-icon-blog')).toBeVisible();
   });
@@ -45,7 +45,7 @@ test.describe('Blog Desktop Flow', () => {
 
     // Assert
     await expect(blogWindow).toBeVisible();
-    await expect(page).toHaveURL('/blog');
+    await expect(page).toHaveURL('/en/blog');
   });
 
   test('[view] should switch between gallery and list view', async ({
@@ -84,13 +84,13 @@ test.describe('Blog Desktop Flow', () => {
     await firstPost.dblclick({ force: true });
 
     // Assert - Detail page loaded
-    await expect(page).toHaveURL(/\/blog\/.+/);
+    await expect(page).toHaveURL(/\/en\/blog\/.+/);
 
     // Act - Navigate back
     await page.goBack();
 
     // Assert - Back to list
-    await expect(page).toHaveURL('/blog');
+    await expect(page).toHaveURL('/en/blog');
     await expect(posts.first()).toBeVisible();
   });
 });
@@ -104,7 +104,7 @@ test.describe('Blog Mobile Flow', () => {
 
   test.beforeEach(async ({ page }) => {
     // Arrange
-    await page.goto('/');
+    await page.goto('/en');
     await page.waitForLoadState('networkidle');
     await expect(page.getByTestId('desktop-icon-blog')).toBeVisible();
   });

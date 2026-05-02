@@ -2,6 +2,7 @@
 
 import { memo } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/common/Button';
 
 const CONTROL_ICON_SIZE = 15;
@@ -26,6 +27,8 @@ export const ControlButtons = memo(
     canMinimize,
     canMaximize,
   }: ControlButtonsProps) => {
+    const t = useTranslations('common');
+
     return (
       <div
         className='flex select-none'
@@ -42,10 +45,12 @@ export const ControlButtons = memo(
             onClick={onMinimize}
             className='p-0.5 select-none'
             data-testid={`window-minimize-${windowId}`}
+            aria-label={t('minimize')}
+            title={t('minimize')}
           >
             <Image
               src='/images/icons/minimize_img.jpg'
-              alt='minimize'
+              alt={t('minimize')}
               width={CONTROL_ICON_SIZE}
               height={CONTROL_ICON_SIZE}
               className='select-none w-4 h-1 self-end'
@@ -60,10 +65,12 @@ export const ControlButtons = memo(
             onClick={onToggleMaximize}
             className='p-0.5 select-none'
             data-testid={`window-maximize-${windowId}`}
+            aria-label={t('maximize')}
+            title={t('maximize')}
           >
             <Image
               src='/images/icons/maximize_img.jpg'
-              alt='maximize'
+              alt={t('maximize')}
               width={CONTROL_ICON_SIZE}
               height={CONTROL_ICON_SIZE}
               className='select-none'
@@ -77,10 +84,12 @@ export const ControlButtons = memo(
           onClick={onClose}
           className='p-0.5 select-none'
           data-testid={`window-close-${windowId}`}
+          aria-label={t('close')}
+          title={t('close')}
         >
           <Image
             src='/images/icons/close_img.jpg'
-            alt='close'
+            alt={t('close')}
             width={CONTROL_ICON_SIZE}
             height={CONTROL_ICON_SIZE}
             className='select-none w-4 h-4'

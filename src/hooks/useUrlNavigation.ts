@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 import { App, WindowState } from '@/models';
-import { APP_LIST } from '@/libs/contentProvider';
 
 export const useUrlNavigation = (
   windowList: WindowState[],
+  apps: App[],
   openWindow: (
     app: App,
     size?: App['size'],
@@ -24,9 +24,7 @@ export const useUrlNavigation = (
 
     prevPathRef.current = pathname;
     const currentPathnameWindowId = pathname.split('/')[1] || '';
-    const currentPathnameApp = APP_LIST.find(
-      (app) => app.id === currentPathnameWindowId,
-    );
+    const currentPathnameApp = apps.find((app) => app.id === currentPathnameWindowId);
     const currentPathnameWindow = windowList.find(
       (window) => window.id === currentPathnameWindowId,
     );
@@ -42,5 +40,5 @@ export const useUrlNavigation = (
         );
       }
     }
-  }, [pathname, windowList, bringToFront, openWindow]);
+  }, [pathname, windowList, apps, bringToFront, openWindow]);
 };

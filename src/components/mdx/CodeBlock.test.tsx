@@ -54,7 +54,7 @@ describe('CodeBlock', () => {
   // [copy] Copy Feedback UI
   // ==========================================================================
 
-  it('[copy] should keep button text as "Copy" after clicking and change icon to checkmark', async () => {
+  it('[copy] should change button text and icon after clicking', async () => {
     // Arrange
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(
@@ -68,9 +68,9 @@ describe('CodeBlock', () => {
     // Act
     await user.click(button);
 
-    // Assert - Text stays "Copy" (no UI shift from text change)
+    // Assert - text updates to copied state
     await waitFor(() => {
-      expect(button).toHaveTextContent('Copy');
+      expect(button).toHaveTextContent('Copied');
     });
 
     // Assert - aria-label changes to "Copied" for accessibility

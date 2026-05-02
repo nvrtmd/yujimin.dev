@@ -3,6 +3,7 @@
 import { PostList } from './PostList';
 import type { Post } from '@/models';
 import { useMemo, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { PushLockButton } from '../common/PushLockButton';
 import { useMobile } from '@/hooks/useMobile';
 import { useBlogState } from '@/hooks/blog/useBlogState';
@@ -24,6 +25,7 @@ interface BlogAppProps {
 }
 
 export function BlogApp({ posts, initialCategories }: BlogAppProps) {
+  const t = useTranslations('blog');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isMobile = useMobile();
 
@@ -84,13 +86,13 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
           <PushLockButton
             isPushed={isSidebarVisible}
             onClick={handleToggleSidebar}
-            title='Toggle Sidebar'
-            aria-label='Toggle Sidebar'
+            title={t('toggleSidebar')}
+            aria-label={t('toggleSidebar')}
             aria-expanded={isSidebarVisible}
             aria-controls='blog-sidebar'
           >
             <FolderIcon variant='toggle' />
-            <span className='text-xs'>Categories</span>
+            <span className='text-xs'>{t('categories')}</span>
           </PushLockButton>
           <div className='flex items-center gap-1'>
             <PushLockButton
@@ -130,7 +132,7 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
           <div className='flex-1 bg-white border-2 border-[var(--color-border-dark)] border-r-white border-b-white overflow-y-scroll overflow-x-auto p-2 shadow-blog-panel'>
             <div className='min-w-full inline-block align-top'>
               <TreeItem
-                label='Blog'
+                label={t('rootLabel')}
                 icon={
                   <Image
                     src='/images/icons/folder_img.webp'
@@ -189,14 +191,14 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
           >
             {currentViewMode === 'list' && (
               <div className='sticky top-0 bg-[var(--color-window-bg)] flex text-xs z-10 box-border border-b border-[var(--color-border-dark)] min-w-[700px]'>
-                {SORT_HEADERS.map(({ key, label, sizeClass }) => (
+                {SORT_HEADERS.map(({ key, sizeClass }) => (
                   <div
                     key={key}
                     data-testid={`sort-${key}`}
                     className={`${sizeClass} ${SORT_HEADER_BASE_CLASS}`}
                     onClick={() => handleHeaderClick(key)}
                   >
-                    {label}
+                    {t(`columns.${key}`)}
                   </div>
                 ))}
               </div>
@@ -215,11 +217,11 @@ export function BlogApp({ posts, initialCategories }: BlogAppProps) {
 
       <div className='flex justify-between items-center px-2 py-0.5 border-t border-[var(--color-border-dark)] bg-[var(--color-window-bg)] text-xs text-black select-none shadow-blog-status'>
         <div className='flex gap-4'>
-          <span>{filteredPosts.length} object(s)</span>
+          <span>{t('objects', { count: filteredPosts.length })}</span>
         </div>
         <div className='flex gap-2'>
           <span className='border border-[var(--color-border-dark)] border-b-white border-r-white px-2 bg-[var(--color-window-bg)]'>
-            Blog
+            {t('rootLabel')}
           </span>
         </div>
       </div>

@@ -1,7 +1,8 @@
 'use client';
 
-import { ReactNode, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
+import { ReactNode, useCallback, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
+import { usePathname } from '@/i18n/navigation';
 import { Window } from '@/components/common';
 import { useWindowManager } from '@/hooks';
 import { Taskbar, TASKBAR_HEIGHT } from '@/components/layout';
@@ -14,10 +15,20 @@ import { useMobile } from '@/hooks/useMobile';
 import { useTrackVisit } from '@/hooks/analytics/useTrackVisit';
 
 export function RetroOS({ children }: { children: ReactNode }) {
+  const tApps = useTranslations('apps');
   const isMobile = useMobile();
   const pathname = usePathname();
   const activeAppId = pathname.split('/')[1] || '';
   useTrackVisit();
+
+  const appList = useMemo(
+    () =>
+      APP_LIST.map((app) => ({
+        ...app,
+        title: tApps(app.id),
+      })),
+    [tApps],
+  );
 
   const {
     windowList,
@@ -31,7 +42,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
     handleWindowDragMouseDown,
     handleResizeMouseDown,
     bringToFront,
-  } = useWindowManager();
+  } = useWindowManager(appList);
 
   const { clickedIdentifier, handleDoubleClick, clearSelection } =
     useDoubleClick<AppId>();
@@ -47,13 +58,13 @@ export function RetroOS({ children }: { children: ReactNode }) {
 
   const handleAppActivate = useCallback(
     (appId: string) => {
-      const app = APP_LIST.find((a) => a.id === appId);
-      if (!app) return;
+      const appFromList = appList.find((a) => a.id === appId);
+      if (!appFromList) return;
 
       const window = windowList.find((w) => w.id === appId);
 
       if (!window) {
-        handleOpenWindow(app);
+        handleOpenWindow(appFromList);
         return;
       }
 
@@ -62,7 +73,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
       // bringToFront also unminimizes the window
       bringToFront(window);
     },
-    [windowList, frontmostOpenWindow, bringToFront, handleOpenWindow],
+    [appList, windowList, frontmostOpenWindow, bringToFront, handleOpenWindow],
   );
 
   return (
@@ -78,7 +89,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
       >
         {isMobile ? (
           <div className='flex flex-col flex-wrap items-start content-start gap-2 p-2 h-full'>
-            {APP_LIST.map((app) => (
+            {appList.map((app) => (
               <DesktopIcon
                 key={app.id}
                 id={app.id}
@@ -96,7 +107,7 @@ export function RetroOS({ children }: { children: ReactNode }) {
             ))}
           </div>
         ) : (
-          APP_LIST.map((app) => (
+          appList.map((app) => (
             <DesktopIcon
               key={app.id}
               id={app.id}

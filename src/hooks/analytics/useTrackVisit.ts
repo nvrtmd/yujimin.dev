@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname } from '@/i18n/navigation';
 import { trackVisit } from './trackVisit';
 
 export function useTrackVisit(): void {

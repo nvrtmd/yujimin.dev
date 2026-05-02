@@ -1,40 +1,39 @@
 'use client';
 
+import { useLocale, useTranslations } from 'next-intl';
 import { useAnalytics } from '@/hooks/analytics/useAnalytics';
 import { getCountryName } from '@/libs/getCountryName';
+import { getTimeAgoParts } from '@/libs/getTimeAgo';
 import type { Analytics } from '@/models';
 
-const ERROR_MESSAGE_DEFAULT = 'Failed to load analytics.';
-const LOADING_MESSAGE = 'Loading analytics...';
-const TITLE = '📊 Site Analytics';
-
 type MetricKey = keyof Analytics;
+type Translations = ReturnType<typeof useTranslations<'analytics'>>;
 
-interface MetricDisplay {
-  label: string;
-  key: MetricKey;
-  formatter?: (value: string | number) => string | number;
+function formatLastVisitor(value: string, t: Translations): string {
+  const parts = getTimeAgoParts(value);
+  if (parts === '') return '';
+  if (parts.kind === 'invalid') return parts.value;
+  if (parts.unit === 'justNow') return t('relative.justNow');
+  return t(`relative.${parts.unit}`, { count: parts.count ?? 0 });
 }
 
-const METRICS_DISPLAY: MetricDisplay[] = [
-  { label: "Today's Views:", key: 'todaysViews' },
-  { label: 'Total Views:', key: 'totalViews' },
-  { label: 'Total Countries:', key: 'totalCountries' },
-  {
-    label: 'Top Country:',
-    key: 'topCountry',
-    formatter: (value) => getCountryName(String(value)),
-  },
-  { label: 'Last Visitor:', key: 'lastVisitor' },
-];
-
 export function AnalyticsApp() {
+  const t = useTranslations('analytics');
+  const locale = useLocale();
   const { metrics, isLoading, error } = useAnalytics();
+
+  const metricLabels: Record<MetricKey, string> = {
+    todaysViews: t('metrics.todaysViews'),
+    totalViews: t('metrics.totalViews'),
+    totalCountries: t('metrics.totalCountries'),
+    topCountry: t('metrics.topCountry'),
+    lastVisitor: t('metrics.lastVisitor'),
+  };
 
   if (isLoading) {
     return (
       <div className='flex items-center justify-center h-full'>
-        {LOADING_MESSAGE}
+        {t('loading')}
       </div>
     );
   }
@@ -42,22 +41,29 @@ export function AnalyticsApp() {
   if (error || !metrics) {
     return (
       <div className='p-4 text-sm text-red-500'>
-        {error || ERROR_MESSAGE_DEFAULT}
+        {error || t('error')}
       </div>
     );
   }
 
   return (
     <div className='flex flex-col h-full bg-[var(--color-window-bg)] p-4 gap-2'>
-      <h2 className='text-xl font-bold underline text-center'>{TITLE}</h2>
+      <h2 className='text-xl font-bold underline text-center'>{t('title')}</h2>
       <div className='p-2 flex-grow text-center'>
-        {METRICS_DISPLAY.map(({ label, key, formatter }) => {
+        {(Object.keys(metricLabels) as MetricKey[]).map((key) => {
           const value = metrics[key];
-          const displayValue = formatter ? formatter(value) : value;
+          let displayValue: string | number;
+          if (key === 'topCountry') {
+            displayValue = getCountryName(String(value), locale);
+          } else if (key === 'lastVisitor') {
+            displayValue = formatLastVisitor(String(value), t);
+          } else {
+            displayValue = value;
+          }
 
           return (
             <p key={key}>
-              <strong>{label}</strong> {displayValue}
+              <strong>{metricLabels[key]}</strong> {displayValue}
             </p>
           );
         })}

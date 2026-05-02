@@ -32,6 +32,15 @@ describe('getTimeAgo', () => {
   });
 
   it.each([
+    ['--', '--'],
+    ['invalid-date', 'invalid-date'],
+  ])('[invalid-input] should return "%s" unchanged for invalid input', (input, expected) => {
+    const result = getTimeAgo(input, 'ko');
+
+    expect(result).toBe(expected);
+  });
+
+  it.each([
     // Seconds boundary
     [0, 'just now', 'seconds: start'],
     [59 * SECOND, 'just now', 'seconds: end boundary'],
@@ -48,10 +57,17 @@ describe('getTimeAgo', () => {
     [120 * MINUTE, '2 hours ago', 'hours: plural start'],
     [23 * HOUR + 59 * MINUTE, '23 hours ago', 'hours: max'],
 
-    // Days boundary
+    // Days boundary (1–6 days)
     [24 * HOUR, '1 day ago', 'days: singular start'],
     [47 * HOUR, '1 day ago', 'days: singular end'],
     [48 * HOUR, '2 days ago', 'days: plural start'],
+    [6 * DAY + 23 * HOUR, '6 days ago', 'days: max'],
+
+    // Weeks boundary (1–3 weeks)
+    [7 * DAY, '1 week ago', 'weeks: singular start'],
+    [13 * DAY, '1 week ago', 'weeks: singular end'],
+    [14 * DAY, '2 weeks ago', 'weeks: plural start'],
+    [27 * DAY, '3 weeks ago', 'weeks: max'],
 
     // Months & Years
     [30 * DAY, '1 month ago', 'months: singular'],
@@ -78,5 +94,22 @@ describe('getTimeAgo', () => {
 
     // Assert
     expect(result).toBe('1 hour ago');
+  });
+
+  it.each([
+    [0, '방금 전'],
+    [60 * SECOND, '1분 전'],
+    [120 * SECOND, '2분 전'],
+    [60 * MINUTE, '1시간 전'],
+    [24 * HOUR, '1일 전'],
+    [7 * DAY, '1주 전'],
+    [30 * DAY, '1개월 전'],
+    [360 * DAY, '1년 전'],
+  ])('[ko-locale] %dms ago → "%s"', (ms, expected) => {
+    const dateString = toDateString(ms);
+
+    const result = getTimeAgo(dateString, 'ko');
+
+    expect(result).toBe(expected);
   });
 });

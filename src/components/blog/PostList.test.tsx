@@ -10,10 +10,12 @@ import { PostList } from './PostList';
 import type { Post } from '@/models';
 import type { SortConfig } from './BlogApp';
 
-// Mock next/navigation
 const mockPush = vi.fn();
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({ push: mockPush }),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 // Mock next/image

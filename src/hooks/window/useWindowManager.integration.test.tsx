@@ -15,13 +15,15 @@ const mockPush = vi.fn((path: string) => {
 });
 const mockReplace = vi.fn();
 
-vi.mock('next/navigation', () => ({
+vi.mock('@/i18n/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
     replace: mockReplace,
   }),
   usePathname: () => currentPathname,
-  useSearchParams: () => new URLSearchParams(),
+  redirect: vi.fn(),
+  permanentRedirect: vi.fn(),
+  Link: ({ children }: { children: React.ReactNode }) => children,
 }));
 
 // =============================================================================
@@ -67,7 +69,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-1] should do nothing when blog is already frontmost', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     // Open Blog window
     openWindowViaNavigation(result, rerender, blogApp);
@@ -94,7 +96,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-2] should bring blog to front when it is behind another window', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     // Open Blog first
     openWindowViaNavigation(result, rerender, blogApp);
@@ -133,7 +135,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-3] should restore and bring blog to front when it is minimized', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     // Open Blog and Guestbook
     openWindowViaNavigation(result, rerender, blogApp);
@@ -170,7 +172,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-4] should open new blog window when it is not open', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     expect(result.current.windowList).toHaveLength(0);
 
@@ -191,7 +193,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[scenario-complex] should correctly handle blog activation with multiple windows', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     // Open Blog, About, Guestbook in sequence
     openWindowViaNavigation(result, rerender, blogApp);
@@ -232,7 +234,7 @@ describe('useWindowManager - App Activation Scenarios', () => {
 
   it('[edge-case] should bring maximized blog to front when it is in background', () => {
     // Arrange
-    const { result, rerender } = renderHook(() => useWindowManager());
+    const { result, rerender } = renderHook(() => useWindowManager(APP_LIST));
 
     // Open Blog
     openWindowViaNavigation(result, rerender, blogApp);

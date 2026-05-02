@@ -3,7 +3,7 @@ import type { Position, Size } from './common';
 export const APP_IDS = [
   'blog',
   'about-me',
-  'colophon',
+  'spec',
   'guestbook',
   'analytics',
   'resume',

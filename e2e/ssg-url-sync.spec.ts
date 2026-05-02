@@ -17,7 +17,7 @@ async function closeWindow(page: Page, appId: string): Promise<void> {
 
 test.describe('SSG URL Synchronization', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-blog')).toBeVisible();
   });
 
@@ -26,13 +26,13 @@ test.describe('SSG URL Synchronization', () => {
       page,
     }) => {
       // Arrange
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/en');
 
       // Act
       await openWindowViaIcon(page, 'blog');
 
       // Assert
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
       await expect(page.getByTestId('window-blog')).toBeVisible();
     });
 
@@ -43,7 +43,7 @@ test.describe('SSG URL Synchronization', () => {
       await openWindowViaIcon(page, 'about-me');
 
       // Assert
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/en');
       await expect(page.getByTestId('window-about-me')).toBeVisible();
     });
   });
@@ -54,13 +54,13 @@ test.describe('SSG URL Synchronization', () => {
     }) => {
       // Arrange
       await openWindowViaIcon(page, 'blog');
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
 
       // Act
       await closeWindow(page, 'blog');
 
       // Assert
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/en');
       await expect(page.getByTestId('window-blog')).not.toBeVisible();
     });
   });
@@ -71,35 +71,35 @@ test.describe('SSG URL Synchronization', () => {
     }) => {
       // Arrange
       await openWindowViaIcon(page, 'blog');
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
       await expect(page.getByTestId('window-blog')).toBeVisible();
 
       // Act
       await page.goBack();
 
       // Assert
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/en');
       await expect(page.getByTestId('window-blog')).toBeVisible();
     });
   });
 
   test.describe('Direct URL Navigation', () => {
-    test('[direct-url] should open blog window when navigating directly to /blog', async ({
+    test('[direct-url] should open blog window when navigating directly to /en/blog', async ({
       page,
     }) => {
       // Act
-      await page.goto('/blog');
+      await page.goto('/en/blog');
 
       // Assert
       await expect(page.getByTestId('window-blog')).toBeVisible();
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
     });
 
-    test('[direct-url-refresh] should maintain blog window when refreshing page at /blog', async ({
+    test('[direct-url-refresh] should maintain blog window when refreshing page at /en/blog', async ({
       page,
     }) => {
       // Arrange
-      await page.goto('/blog');
+      await page.goto('/en/blog');
       await expect(page.getByTestId('window-blog')).toBeVisible();
 
       // Act
@@ -107,7 +107,7 @@ test.describe('SSG URL Synchronization', () => {
 
       // Assert
       await expect(page.getByTestId('window-blog')).toBeVisible();
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
     });
   });
 
@@ -117,15 +117,15 @@ test.describe('SSG URL Synchronization', () => {
     }) => {
       // Arrange
       await openWindowViaIcon(page, 'blog');
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
       await expect(page.getByTestId('window-blog')).toBeVisible();
 
       // Act
-      await page.goto('/blog?category=Web+Dev');
+      await page.goto('/en/blog?category=Web+Dev');
 
       // Assert
       await expect(page.getByTestId('window-blog')).toBeVisible();
-      await expect(page).toHaveURL(/\/blog\?category=Web\+Dev/);
+      await expect(page).toHaveURL(/\/en\/blog\?category=Web\+Dev/);
     });
   });
 
@@ -135,26 +135,26 @@ test.describe('SSG URL Synchronization', () => {
     }) => {
       // Arrange - Open SSG window
       await openWindowViaIcon(page, 'blog');
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
 
       // Act - Open CSR window
       await openWindowViaIcon(page, 'about-me');
 
       // Assert - URL should remain at /blog
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
 
       // Act - Close CSR window
       await page.getByTestId('window-close-about-me').click();
       await expect(page.getByTestId('window-about-me')).not.toBeVisible();
 
       // Assert - URL still at /blog
-      await expect(page).toHaveURL('/blog');
+      await expect(page).toHaveURL('/en/blog');
 
       // Act - Close SSG window
       await closeWindow(page, 'blog');
 
       // Assert - URL returns to /
-      await expect(page).toHaveURL('/');
+      await expect(page).toHaveURL('/en');
     });
   });
 });

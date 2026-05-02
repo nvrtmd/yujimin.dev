@@ -1,23 +1,20 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { GuestbookForm } from './GuestbookForm';
 import { GuestbookList } from './GuestbookList';
 import { useGuestbook } from '@/hooks/guestbook/useGuestbook';
 
-const TEXT = {
-  TITLE: 'Guestbook',
-  SUBTITLE: 'Leave a message!',
-} as const;
-
 export function GuestbookApp() {
+  const t = useTranslations('guestbook');
   const { entries, isLoading, hasNextPage, fetchEntries, refreshEntries } =
     useGuestbook();
 
   return (
     <div className='flex flex-col h-full bg-[var(--color-window-bg)] p-4 gap-4 overflow-y-auto md:overflow-hidden'>
       <header className='text-center flex-shrink-0'>
-        <h2 className='text-2xl font-bold'>{TEXT.TITLE}</h2>
-        <p className='text-md'>{TEXT.SUBTITLE}</p>
+        <h2 className='text-2xl font-bold'>{t('title')}</h2>
+        <p className='text-md'>{t('subtitle')}</p>
       </header>
 
       <div className='flex flex-col md:flex-row w-full gap-4 flex-grow md:min-h-0 md:overflow-hidden'>

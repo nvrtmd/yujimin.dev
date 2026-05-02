@@ -5,7 +5,7 @@ const MOBILE_VIEWPORT = { width: 375, height: 667 };
 
 test.describe('Mobile Responsiveness - useMobile Hook', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/en');
     await expect(page.getByTestId('desktop-icon-about-me')).toBeVisible({
       timeout: 500,
     });

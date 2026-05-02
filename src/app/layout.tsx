@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Roboto } from 'next/font/google';
+import { getLocale } from 'next-intl/server';
 import './globals.css';
-
-import { RetroOS } from '@/components/layout';
 
 const THEME_COLOR_DESKTOP_BG = 'var(--color-desktop)';
 
@@ -83,19 +82,19 @@ export const viewport: Viewport = {
   themeColor: THEME_COLOR_DESKTOP_BG,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
+
   return (
     <html
-      lang='en'
+      lang={locale}
       className={`${dunggeunmo.variable} ${roboto.variable} h-full`}
     >
-      <body className={`${dunggeunmo.className} h-full overflow-hidden`}>
-        <RetroOS>{children}</RetroOS>
-      </body>
+      <body className={`${dunggeunmo.className} h-full overflow-hidden`}>{children}</body>
     </html>
   );
 }

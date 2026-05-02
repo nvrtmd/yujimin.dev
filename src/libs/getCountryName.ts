@@ -15,11 +15,15 @@ export function getCountryName(
   countryCode: string,
   locale: string = 'en',
 ): string {
-  if (
-    countryCode === '--' ||
-    countryCode === 'etc' ||
-    countryCode.length !== 2
-  ) {
+  if (countryCode === '--') {
+    return countryCode;
+  }
+
+  if (countryCode === 'etc') {
+    return locale.startsWith('ko') ? '기타' : countryCode;
+  }
+
+  if (countryCode.length !== 2) {
     return countryCode;
   }
 
