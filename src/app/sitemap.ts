@@ -4,7 +4,7 @@ import { getPostList } from '@/libs';
 const BASE_URL = 'https://yujimin.dev';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const posts = getPostList();
+  const posts = getPostList('en');
 
   const blogPosts: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${BASE_URL}/blog/${post.slug}`,

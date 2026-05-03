@@ -7,9 +7,9 @@ import remarkBreaks from 'remark-breaks';
 export default defineConfig({
   root: 'src/posts',
   collections: {
-    blogPosts: {
-      name: 'Blog',
-      pattern: '**/*.mdx',
+    enBlogPosts: {
+      name: 'EnBlog',
+      pattern: 'en/**/*.mdx',
       schema: s
         .object({
           slug: s.path(),
@@ -23,7 +23,32 @@ export default defineConfig({
         })
         .transform((data) => ({
           ...data,
-          slug: data.slug.replace(/^.*[\\\/]/, '').replace(/\.mdx$/, ''),
+          slug: data.slug
+            .replace(/^.*[\\\/]/, '')
+            .replace(/^\d{4}-\d{2}-\d{2}-/, '')
+            .replace(/\.mdx$/, ''),
+        })),
+    },
+    koBlogPosts: {
+      name: 'KoBlog',
+      pattern: 'ko/**/*.mdx',
+      schema: s
+        .object({
+          slug: s.path(),
+          title: s.string(),
+          date: s.string(),
+          summary: s.string(),
+          category: s.string(),
+          thumbnail: s.string().optional(),
+          ogImage: s.string().optional(),
+          body: s.markdown(),
+        })
+        .transform((data) => ({
+          ...data,
+          slug: data.slug
+            .replace(/^.*[\\\/]/, '')
+            .replace(/^\d{4}-\d{2}-\d{2}-/, '')
+            .replace(/\.mdx$/, ''),
         })),
     },
   },

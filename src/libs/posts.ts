@@ -1,15 +1,25 @@
-import { blogPosts } from '#site/content';
+import { enBlogPosts, koBlogPosts } from '#site/content';
 
-export function getPostList() {
-  return [...blogPosts]
+function getLocalizedPosts(locale: string) {
+  if (locale === 'ko') {
+    const koMap = new Map(koBlogPosts.map((p) => [p.slug, p]));
+    return enBlogPosts.map((p) => koMap.get(p.slug) ?? p);
+  }
+  return enBlogPosts;
+}
+
+export function getPostList(locale: string) {
+  return getLocalizedPosts(locale)
     .map(({ body: _body, ...post }) => post)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export function getPostBySlug(slug: string) {
-  return blogPosts.find((p) => p.slug === slug);
+export function getPostBySlug(slug: string, locale: string) {
+  return getLocalizedPosts(locale).find((p) => p.slug === slug);
 }
 
-export function getAllCategories() {
-  return Array.from(new Set(blogPosts.map((post) => post.category))) as string[];
+export function getAllCategories(locale: string) {
+  return Array.from(
+    new Set(getLocalizedPosts(locale).map((p) => p.category)),
+  ) as string[];
 }

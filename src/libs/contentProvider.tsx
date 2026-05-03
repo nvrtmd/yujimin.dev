@@ -19,10 +19,15 @@ const DynamicBlogContent = dynamic(() =>
   Promise.all([
     import('@/components/blog/BlogApp'),
     import('@/libs/posts'),
-  ]).then(([{ BlogApp }, { getPostList, getAllCategories }]) => ({
+    import('next-intl'),
+  ]).then(([{ BlogApp }, { getPostList, getAllCategories }, { useLocale }]) => ({
     default: function BlogWindowContent() {
+      const locale = useLocale();
       return (
-        <BlogApp posts={getPostList()} initialCategories={getAllCategories()} />
+        <BlogApp
+          posts={getPostList(locale)}
+          initialCategories={getAllCategories(locale)}
+        />
       );
     },
   })),

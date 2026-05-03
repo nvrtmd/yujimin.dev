@@ -30,7 +30,7 @@ export const AddressBar = memo(
   ({ windowAppId, showNavigationButtons, blogNavigation }: AddressBarProps) => {
     const pathname = usePathname();
 
-    const displayPath = pathname.startsWith(`/${windowAppId}`)
+    const displayPath = pathname.includes(`/${windowAppId}`)
       ? pathname
       : `/${windowAppId}`;
 
@@ -45,7 +45,7 @@ export const AddressBar = memo(
     return (
       <div className='border border-[var(--color-border-medium)] font-sans text-sm py-0.5 px-1 flex items-center mb-1 shrink-0 bg-[var(--color-window-bg)]'>
         {showNavigationButtons && (
-          <div className='flex shrink-0'>
+          <div className='flex shrink-0 select-none'>
             <Button
               onClick={blogNavigation.goBack}
               type='button'
@@ -77,7 +77,7 @@ export const AddressBar = memo(
           </div>
         )}
         <div className='bg-white shadow-inset-deep border-none p-1 flex items-center w-full min-w-0 ml-1'>
-          <div className='w-full whitespace-nowrap overflow-hidden text-ellipsis text-xs sm:text-sm select-none'>
+          <div className='w-full whitespace-nowrap overflow-x-auto text-xs sm:text-sm select-text cursor-text [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'>
             {currentUrl}
           </div>
         </div>

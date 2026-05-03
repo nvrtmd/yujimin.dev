@@ -14,7 +14,7 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const posts = getPostList();
+  const posts = getPostList('en');
 
   return posts.map((post) => ({
     slug: post.slug,
@@ -27,7 +27,7 @@ export default async function PostPage({ params }: Props) {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'blog.post' });
 
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, locale);
 
   if (!post) {
     notFound();

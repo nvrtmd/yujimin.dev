@@ -30,8 +30,8 @@ export default async function BlogPage({ params }: Props) {
 
   setRequestLocale(locale);
 
-  const posts = getPostList();
-  const categories = getAllCategories();
+  const posts = getPostList(locale);
+  const categories = getAllCategories(locale);
 
   return <BlogApp posts={posts} initialCategories={categories} />;
 }
