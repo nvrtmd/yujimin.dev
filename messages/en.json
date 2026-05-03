@@ -184,6 +184,15 @@
     "errorFallback": "Failed to load",
     "errorUnknown": "Unknown error"
   },
+  "menuBar": {
+    "file": "File",
+    "edit": "Edit",
+    "view": "View",
+    "go": "Go",
+    "favorite": "Favorite",
+    "tools": "Tools",
+    "help": "Help"
+  },
   "common": {
     "copy": "Copy",
     "copied": "Copied",

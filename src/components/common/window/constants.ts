@@ -1,15 +1,5 @@
 export const MOBILE_Z_INDEX_OFFSET = 9000;
 
-export const MENU_ITEMS = [
-  'File',
-  'Edit',
-  'View',
-  'Go',
-  'Favorite',
-  'Tools',
-  'Help',
-] as const;
-
 export const RESIZE_DIRECTIONS = [
   {
     direction: 'nw',
