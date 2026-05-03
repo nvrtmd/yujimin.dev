@@ -3,7 +3,7 @@ import { getPostList, getPostBySlug, getAllCategories } from './posts';
 describe('getPostList', () => {
   it('[return] should return posts without body, sorted by date descending', () => {
     // Arrange & Act
-    const posts = getPostList();
+    const posts = getPostList('en');
 
     // Assert - First post structure and value
     expect(posts).toHaveLength(3);
@@ -27,7 +27,7 @@ describe('getPostList', () => {
 describe('getPostBySlug', () => {
   it('[found] should return post with all fields including body', () => {
     // Arrange & Act
-    const post = getPostBySlug('test-post-2');
+    const post = getPostBySlug('test-post-2', 'en');
 
     // Assert
     expect(post).toMatchObject({
@@ -43,14 +43,14 @@ describe('getPostBySlug', () => {
 
   it('[not-found] should return undefined for non-existent slug', () => {
     // Arrange & Act & Assert
-    expect(getPostBySlug('non-existent-slug')).toBeUndefined();
+    expect(getPostBySlug('non-existent-slug', 'en')).toBeUndefined();
   });
 });
 
 describe('getAllCategories', () => {
   it('[return] should return unique categories from all posts', () => {
     // Arrange & Act
-    const categories = getAllCategories();
+    const categories = getAllCategories('en');
 
     // Assert
     expect(categories).toHaveLength(2);
