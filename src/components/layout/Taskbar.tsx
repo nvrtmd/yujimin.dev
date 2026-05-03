@@ -76,7 +76,7 @@ export function Taskbar({
               alt={t('start')}
               width={20}
               height={20}
-              className='mr-1'
+              className='mr-2'
               style={{ height: 'auto' }}
             />
             <span className='font-bold'>{t('start')}</span>
