@@ -1,0 +1,397 @@
+---
+title: '유지보수 업무의 기쁨과 슬픔: 디자인 시스템의 오래된 의존성 마이그레이션하기'
+date: '2025-09-14'
+summary: 'React 19, Storybook 9, MUI 7을 지원하기 위해 디자인 시스템 라이브러리를 단계적으로 업그레이드한 과정과, 그 과정에서 발생한 모든 디버깅 세션.'
+category: 'Development'
+thumbnail: '/images/thumbnails/filled_file_img.png'
+---
+
+## 1. 개요
+
+우리 팀은 회사의 이름을 걸고(?) 디자인 시스템 라이브러리를 운영하고 있다. 개발할 때 디자인 시스템을 활용하니 같은 디자인과 스타일을 가진 컴포넌트를 프로젝트 전반에, 그리고 각기 다른 프로젝트 간에 일관되게 이용할 수 있어서 꽤 편리했다. 최근 이 디자인 시스템이 전사의 모든 팀에 점진적으로 확산될 계획이었기 때문에 우리 팀은 그것을 위한 준비를 했어야 했다. 이번 글은 우리 팀이 운영하는 디자인 시스템 라이브러리를 대상으로 React 19, Storybook 9, MUI 7에 순차적으로 대응한 기록이다.
+
+목적은 단순한 버전 업그레이드가 아닌, 소비자 앱에서 추가 플래그 없이 설치/빌드/렌더가 일관되게 성공하는 것과 그것을 지원하는 과정에서 UI 상의 변화가 없어야 하는 것이었다.
+
+업그레이드 및 마이그레이션은 다음의 순서로 진행하였다:
+
+1. **peerDependencies 확장**으로 React 19 사용자 지원
+
+2. **Storybook 7 → 9**로 개발 환경 정합성 확보
+
+3. **devDependencies의 React 19 고정**
+
+4. **MUI 5 → 6 → 7** 단계적 마이그레이션과 API 변화 적용
+
+## 2. 목표
+
+- 소비자 앱에서 `-legacy-peer-deps` 없이 설치 가능
+
+- Storybook에서 React 19 기반으로 정상 렌더 및 Chromatic 상의 변화 확인 - 변화가 있을 시 팀원 모두의 확인 이후 approve
+
+- MUI 7로 업그레이드 후 디자인 토큰·컴포넌트 API·레이아웃이 UI 상 변동 없이 동작
+
+## **3. React v19 지원: peerDependencies 확장**
+
+### 배경
+
+소비자 앱이 React 19를 사용하면, 기존 디자인 시스템 패키지의 `peerDependencies`가 `^18`까지만 허용하여 설치 단계에서 `ERESOLVE`가 발생했다.
+
+![ERESOLVE 에러](/images/posts/design-system-legacy-dependency-migration/eresolve-error.png)
+
+### 목표
+
+> 소비자 앱에서 `--legacy-peer-deps` 없이 설치가 가능해야 한다.
+
+### 작업
+
+- `design-system`의 `package.json`에서 peer 범위를 확장했다.
+
+```bash
+// Before
+"peerDependencies": {
+  "@mui/material": "^5.0.0",
+  "@types/react": "^17.0.0 || ^18.0.0",
+  "react": "^17.0.0 || ^18.0.0",
+  "react-dom": "^17.0.0 || ^18.0.0"  
+ }
+
+// After
+"peerDependencies": {
+  "@mui/material": "^5.0.0",
+  "@types/react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+  "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
+  "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"  
+ }
+```
+
+### 검증
+
+React v19로 만든 테스트용 소비자 앱에서 디자인 시스템 컴포넌트가 잘 import 되는 지, 렌더링 되는 지 확인하였다. 또한 디자인 시스템을 설치할 때 `--legacy-peer-deps`와 같은 추가 플래그가 필요 없을을 확인하였다.
+
+## **4. Storybook v9로 개발 환경 정합성 확보**
+
+### 배경
+
+디자인 시스템 패키지의 devDependencies를 React v19로 업그레이드하는 과정에서 현재 디자인 시스템에서 사용하는 Storybook v7에서 React v19를 지원하지 않아 Objects are not valid 에러가 발생하여서 Storybook 렌더링이 불가능하였다.
+
+![Objects are not valid as React child 에러](/images/posts/design-system-legacy-dependency-migration/objects-not-valid-error.png)
+
+### 목표
+
+> React v19를 지원하는 [v8.5.0](https://github.com/storybookjs/storybook/releases/tag/v8.5.0) 이상으로 Storybook을 업그레이드한다.
+
+### Storybook v7 → v8
+
+- [Migration Docs](https://storybook.js.org/docs/releases/migration-guide-from-older-version)
+
+- 이슈 디버깅
+
+  - `preview.js` JSX 사용 시 `React is not defined` 에러가 발생하였다.
+
+    ```bash
+      React is not defined
+      The component failed to render properly, likely due to a configuration issue in Storybook. Here are some common causes and how you can address them:
+
+      Missing Context/Providers: You can use decorators to supply specific contexts or providers, which are sometimes necessary for components to render correctly. For detailed instructions on using decorators, please visit the Decorators documentation.
+      Misconfigured Webpack or Vite: Verify that Storybook picks up all necessary settings for loaders, plugins, and other relevant parameters. You can find step-by-step guides for configuring Webpack or Vite with Storybook.
+      Missing Environment Variables: Your Storybook may require specific environment variables to function as intended. You can set up custom environment variables as outlined in the Environment Variables documentation.
+    ```
+
+    ![React is not defined 에러](/images/posts/design-system-legacy-dependency-migration/react-is-not-defined-error.png)
+
+    - 원인: `preview.js`에서 JSX를 썼을 때, 별도의 Babel 설정을 해주지 않으면 JSX가 `React.createElement()`로 변환되는데, 해당 파일에 React가 없으므로 `React is not defined` 에러가 발생한 것으로 보인다.
+
+    - 해결 방안 (택 1)
+
+      1. 에러가 발생하는 `.storybook/preview.js` 파일에 `import React from "react";`를 추가한다.
+
+      2. 또는, JS 파일에서도 `import React` 없이 JSX가 동작하도록 하기 위해 Storybook의 Babel 설정(`.babelrc.json`)에 `@babel/preset-react`에 `{ runtime: 'automatic' }`를 추가한다.
+
+         1. 현재 디자인 시스템에서 사용 중인 Babel의 버전이 v7이며, v8부터 `{ runtime: 'automatic' }`이 default 옵션이다.
+
+         2. `{ runtime: 'classic' }` (default): JSX를 `React.createElement()`로 변환하며, 이 때, React import가 필요하다⚠️
+
+         3. `{ runtime: 'automatic' }`: JSX를 `_jsx()`로 변환하여 React import가 필요하지 않다✅
+
+            ```tsx
+             import { jsx as _jsx } from "react/jsx-runtime";
+
+             _jsx(Button, { children: "Hello" });
+            ```
+
+    - 참고 자료
+
+      1. [React 공식 블로그](https://legacy.reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html): "With the new transform, you can use JSX without importing React into your file."
+
+      2. [Babel preset-react 문서](https://babeljs.io/docs/babel-preset-react?utm_source=chatgpt.com#runtime): "`automatic` auto imports the functions that JSX transpiles to. `classic` does not automatically import anything."
+
+      3. [Babel plugin-transform-react-jsx 문서](https://babeljs.io/docs/babel-plugin-transform-react-jsx#react-automatic-runtime)
+
+  - `Could not resolve "@storybook/addons" Error`가 발생하였다.
+
+    ```bash
+      info => Starting manager..
+      unable to find package.json for design-system-icons
+      ✘ [ERROR] Could not resolve "storybook/addons"
+          .storybook/manager.js:1:23:
+            1 │ import { addons } from "storybook/addons";
+              ╵                        ~~~~~~~~~~~~~~~~~~
+        The path "./addons" is not exported by package "storybook":
+          ../../node_modules/storybook/package.json:48:13:
+            48 │   "exports": {
+               ╵              ^
+        You can mark the path "storybook/addons" as external to exclude it from the bundle, which will remove this error and leave the unresolved path in the bundle.
+      Error: Build failed with 1 error:
+      .storybook/manager.js:1:23: ERROR: Could not resolve "storybook/addons"
+    ```
+
+    - 원인: Storybook v8부터 storybook/addons 패키지가 둘로 쪼개져 `storybook/manager-api`(매니저 UI용) / `storybook/preview-api`(프리뷰용)로 이동하였다.
+
+    - 해결 방안: `storybook/addons`를 `storybook/manager-api`로 대체한다.
+
+    - 참고 자료: [https://github.com/storybookjs/storybook/issues/26252#issue-2160879066](https://github.com/storybookjs/storybook/issues/26252#issue-2160879066)
+
+### Storybook v8 → v9
+
+- [Migration Docs](https://storybook.js.org/docs/releases/migration-guide)
+
+다행히 Storybook을 v8에서 v9로 업그레이드할 때에는 별 다른 이슈 없이 잘 업그레이드 되었다.
+
+## **5. devDependencies의 React v19 고정과 타입 충돌 해소**
+
+### 배경
+
+peerDependencies에서 React 버전을 v19까지 확장하고 테스트용 소비자 앱에서 컴포넌트가 문제 없이 렌더링 되는 것은 확인을 완료하였다. 그러나 (Storybook에 React v19를 적용하여) Chromatic을 통해 React v19 환경에서도 컴포넌트들이 UI 상 변화 없이 동작한다는 것까지 확인해야 우리의 Design System이 React v19 환경을 지원한다고 보장할 수 있다고 생각하였다.
+
+### 목표
+
+React v19 환경에서 컴포넌트들이 UI 상 변화 없이 동작한다는 것을 보장한다.
+
+### React v18 → v19
+
+- [Migration Docs](https://storybook.js.org/docs/releases/migration-guide-from-older-version)
+
+- 이슈 디버깅
+
+  - `'SvgIcon' cannot be used as a JSX component`: React 18/19 타입 혼재로 인해 SvgIcon을 사용하는 컴포넌트에서 TypeScript Error가 발생하였다.
+
+    ```bash
+      'SvgIcon'은(는) JSX 구성 요소로 사용할 수 없습니다.
+        해당 'OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string; }' 형식은 올바른 JSX 요소 형식이 아닙니다.
+          'OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string; }' 형식은 '(props: any) => ReactNode' 형식에 할당할 수 없습니다.
+            'Element | null' 형식은 'ReactNode' 형식에 할당할 수 없습니다.
+              'Element' 형식은 'ReactNode' 형식에 할당할 수 없습니다.
+                'children' 속성이 'ReactElement<any, any>' 형식에 없지만 'ReactPortal' 형식에서 필수입니다.ts(2786)
+    ```
+
+    - 원인
+
+      - `@types/react` v18 이하에서 JSX 타입은 global JSX 네임스페이스에 존재한다. (`JSX.Element`): [Link](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/react/index.d.ts)
+
+        ```bash
+          declare global {
+              /**
+               * @deprecated Use `React.JSX` instead of the global `JSX` namespace.
+               */
+              namespace JSX {
+                  type ElementType = string | React.JSXElementConstructor<any>;
+                  interface Element extends React.ReactElement<any, any> { }
+                  interface ElementClass extends React.Component<any> {
+                      render(): React.ReactNode;
+                  }
+          // ...
+        ```
+
+      - `@types/react` v19부터 JSX 타입이 React JSX 네임스페이스에 존재한다: [Link](https://react.dev/blog/2024/04/25/react-19-upgrade-guide?utm_source=chatgpt.com#the-jsx-namespace-in-typescript)
+
+        ```bash
+          declare namespace React {
+              namespace JSX {
+                  type ElementType = string | React.JSXElementConstructor<any>;
+                  interface Element extends React.ReactElement<any, any> {}
+                  interface ElementClass extends React.Component<any> {
+                      render(): React.ReactNode;
+                  }
+          // ...
+        ```
+
+      - 현재 디자인 시스템의 의존성 트리를 확인해보면 `@mui/material@5.18.0`이 `@types/react@18.2.14`에 의존하고 있다.
+
+        ```bash
+          npm ls @types/react -ws
+
+          design-system@0.0.0 /Users/yuza/Desktop/design-system
+          ├─┬ @design-system-icons@2.1.0 -> ./packages/design-system-icons
+          │ ├─┬ @mui/material@5.18.0
+          │ │ ├─┬ @mui/system@5.18.0
+          │ │ │ ├─┬ @mui/private-theming@5.17.1
+          │ │ │ │ └── @types/react@18.2.14 deduped
+          │ │ │ └── @types/react@18.2.14 deduped
+          │ │ ├─┬ @mui/types@7.2.24
+          │ │ │ └── @types/react@18.2.14 deduped
+          // ...
+        ```
+
+      - 이렇게 하나의 패키지가 의존하고 있는 라이브러리들이 각기 다른 버전의 `@types/react`를 사용하는 경우 `JSX.Element`를 사용할 때 호환성 문제가 발생한다: [Link](https://stackoverflow.com/a/72714740)
+
+      - 즉, `@types/react@19.0.0`을 설치했음에도 Design System에서 의존하고 있는 다른 패키지가 여전히 `@types/react@18`을 의존성 트리에 끌어오기 때문에 프로젝트 내에 v18과 v19 타입 정의가 공존하게 된다. 이로 인해 JSX.Element 등 JSX 관련 타입에서 호환성 문제가 발생하는 것이다.
+
+    - 원인이 되는 패키지 파악
+
+      1. `package-lock.json` 파일에 @types/react 검색하여
+
+      2. 디자인 시스템 내부에서 과거 사용하였던, 현재는 제거된 테스트용 소비자 앱의 dependencies에 `@types/react@18.2.14`가 미처 제거되지 못한 채 포함되어 있음을 확인하였다.
+
+    - 해결 방안: 잔존하던 테스트용 소비자 앱 관련 내용을 `package-lock.json` 파일에서 제거한 뒤, 루트에서 다시 `npm install`을 실행하니 해당 문제가 사라졌다.
+
+### 검증
+
+모든 @types/react의 버전이 19로 고정된 것을 확인하였고, `'SvgIcon' cannot be used as a JSX component` 에러가 발생하였던 컴포넌트에서도 타입을 정상적으로 인식하여 문제가 해결되었음을 확인하였다.
+
+![npm ls @types/react 결과](/images/posts/design-system-legacy-dependency-migration/npm-ls-types-react.png)
+
+## **6. MUI v7로 UI 컴포넌트 라이브러리 최신화**
+
+### 배경
+
+현재 디자인 시스템에서 사용하는 MUI의 버전은 v5인데, MUI v5는 2021년 9월에 릴리즈된 오래된 패키지이다.
+
+### 목표
+
+- MUI의 버전을 최신 버전인 v7까지 업그레이드 하여 최신 API를 반영한다.
+
+### MUI v5 → v6
+
+- [Migration Docs](https://mui.com/material-ui/migration/upgrade-to-v6)
+
+- [breaking changes](https://mui.com/material-ui/migration/upgrade-to-v6/#breaking-changes) 적용
+
+  - `Typography`의 color prop을 `sx` 안에 편입하였다: [Link](https://mui.com/material-ui/migration/upgrade-to-v6/#typography)
+
+    ```tsx
+      // Before
+      <Typography
+        variant="body1_16_semibold"
+        color={(sxTheme) => sxTheme.text_normal}
+      >
+        TEST
+      </Typography>
+
+      // After
+      <Typography
+        variant="body1_16_semibold"
+        sx={{color: (sxTheme) => sxTheme.text_normal}}
+      >
+        TEST
+      </Typography>
+    ```
+
+  - `styled(Box)`를 `styled('div')`로 대체하였다: [Link](https://mui.com/material-ui/migration/upgrade-to-v6/#box)
+
+    ```tsx
+      // Before
+      export const Container = styled(Box)(({ theme }) => ({
+        // ...
+      }));
+
+      // After
+      export const Container = styled("div")(({ theme }) => ({
+        // ...
+      }));
+    ```
+
+  - deprecated된 system prop을 sx에 편입하였다: [Link](https://mui.com/material-ui/migration/migrating-from-deprecated-apis/#system-props)
+
+    ```tsx
+      // Before
+      <Box
+        className="light1"
+        bgcolor={theme.core.bg_01}
+        color={theme.text_normal}
+        sx={{ p: 2 }}
+      >
+        // ...
+      </Box>
+
+      // After
+      <Box
+        className="light1"
+        sx={{
+          bgcolor: theme.bg_01,
+          color: theme.text_normal,
+          p: 2
+        }}>
+        // ...
+      </Box>
+    ```
+
+### MUI v6 → v7
+
+- [Migration Docs](https://mui.com/material-ui/migration/upgrade-to-v7)
+
+- [breaking changes](https://mui.com/material-ui/migration/upgrade-to-v7) 적용
+
+  - 1 level 초과의 깊은 import는 사용이 불가하므로 수정하였다: [Link](https://mui.com/material-ui/migration/upgrade-to-v7/#package-layout-updated)
+
+    ```tsx
+      // Before
+      import type { Typography } from "@mui/material/styles/createTypography";
+
+      type sizeStyleParams = Pick<ToggleButtonProps, "selected"> & { typography: Typography };
+
+      // After
+      import type { TypographyVariants } from "@mui/material/styles";
+
+      type sizeStyleParams = Pick<ToggleButtonProps, "selected"> & { typography: TypographyVariants };
+    ```
+
+  - legacy Grid를 Grid2로 대체하고 deprecated 된 속성을 제거하였다. 또한 size props를 업데이트하였다: [Link1](https://mui.com/material-ui/migration/upgrade-to-v7/#grid-and-grid2-renamed), [Link2](https://mui.com/material-ui/migration/upgrade-to-grid-v2/#2-remove-legacy-props), [Link3](https://mui.com/material-ui/migration/upgrade-to-grid-v2/#3-update-the-size-props)
+
+    ```tsx
+      // Before
+      <Grid
+        item
+        xs={4}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+      // ...
+      </Grid>
+
+      // After
+      <Grid
+        size={4}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+      // ...
+      </Grid>
+    ```
+
+- 이슈 디버깅
+
+  - GitHub Actions에서 디자인 시스템 빌드 중에 heap memory OOM 문제가 발생하였다.
+
+    ```bash
+      FATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory
+    ```
+
+    - 원인: 현재까지 파악한 바로는 코드 내에서 MUI의 `createTheme`을 사용했을 때 메모리가 치솟는 현상이 관측되었다.
+
+    - 해결 방안: 그 이후의 디버깅은 `createTheme`이 import 하는 파일들을 전수 조사하여야 하므로 쉽지 않을 것으로 예상되어, 일단 루트 폴더 하에 `.npmrc` 파일 생성 후 아래와 같이 메모리 옵션을 추가하는 방법으로 우회하여 해결하였다.
+
+      ```bash
+        node-options=--max-old-space-size=4096
+      ```
+
+    - 추가적으로, 문제 상황을 직접 재현한 뒤 해당 코드베이스를 [public repository](https://github.com/nvrtmd/mui-v7-memory-issue-repro)에 업로드하고 해당 링크를 포함하 MUI 측에 [issue](https://github.com/mui/material-ui/issues/46908) reporting까지 완료하였다.
+
+## 마무리
+
+이번 업그레이드 작업을 진행하면서 가장 크게 느낀 점은, 새로운 기능을 처음부터 개발하는 것과는 달리 유지 보수 작업이 훨씬 더 지난하고 어렵다는 사실이었다. 라이브러리를 개발할 때는 비교적 즐겁고 수월하게 진행할 수 있었지만, 막상 버전 업그레이드와 같은 유지 보수 단계에 들어서니 예상치 못한 문제들이 끊임없이 발생했고, 그 원인을 추적하고 해결하기 위해 수많은 디버깅 과정을 거쳐야 했다. 단순히 코드를 수정하는 것이 아니라, 의존성 트리와 타입 체계, 빌드 환경까지 하나하나 살펴야 했기 때문에 많은 시간과 노력이 요구되었다.
+
+그럼에도 불구하고 내가 이러한 과정에 자진해서 참여한 이유는, 내가 속한 팀만이 아닌 전사의 여러 팀들이 우리가 열심히 만든 디자인 시스템을 사용한다는 사실은 개발자로서 가슴 뛰는 일이었고, 내가 담당한 유지 보수 작업 하나하나가 곧 다른 팀들의 개발 경험과 사용자 경험으로 이어진다고 생각하니 힘이 났다. 그래서 더 책임감을 갖고 문제의 원인을 집요하게 파고들었고, 문제를 하나씩 해결해 나가는 과정에서 큰 즐거움과 뿌듯함을 느낄 수 있었다. 이 경험을 통해 유지 보수는 단순히 귀찮은 일이 아니라, 프로덕트를 신뢰할 수 있도록 만드는 가장 중요한 과정임을 몸소 깨달을 수 있었다. 앞으로도 이렇게 다소 지루할 수도, 복잡하고 어려울 수도 있는 유지보수 작업도 피하지 않고 적극적으로 참여하고자 한다.
