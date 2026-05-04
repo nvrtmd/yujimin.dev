@@ -19,7 +19,7 @@
   "blog": {
     "metadata": {
       "title": "블로그",
-      "description": "민유지의 기술 블로그 글"
+      "description": "소프트웨어 엔지니어 민유지의 블로그입니다."
     },
     "toggleSidebar": "사이드바 전환",
     "categories": "카테고리",
@@ -41,7 +41,7 @@
   "guestbook": {
     "metadata": {
       "title": "방명록",
-      "description": "민유지의 방명록에 메시지를 남겨보세요"
+      "description": "방명록에 메시지를 남겨주세요."
     },
     "title": "방명록",
     "subtitle": "메시지를 남겨주세요!",
@@ -55,9 +55,9 @@
       "websitePlaceholder": "https://example.com",
       "submit": "등록",
       "submitting": "등록 중...",
-      "successMessage": "메시지가 성공적으로 등록되었습니다!",
-      "errorFallback": "등록에 실패했습니다.",
-      "errorNetwork": "예상치 못한 네트워크 오류가 발생했습니다."
+      "successMessage": "메시지가 등록되었습니다.",
+      "errorFallback": "메시지 등록에 실패했습니다.",
+      "errorNetwork": "네트워크 오류가 발생했습니다."
     },
     "list": {
       "loading": "-- 불러오는 중... --",
@@ -68,7 +68,7 @@
   "analytics": {
     "metadata": {
       "title": "분석",
-      "description": "yujimin.dev 사이트 분석"
+      "description": "yujimin.dev의 방문 통계와 분석입니다."
     },
     "title": "사이트 분석",
     "loading": "분석 데이터를 불러오는 중...",
@@ -78,7 +78,7 @@
       "totalViews": "전체 조회수:",
       "totalCountries": "국가 수:",
       "topCountry": "가장 많은 방문 국가:",
-      "lastVisitor": "최근 방문:"
+      "lastVisitor": "가장 최근 방문:"
     },
     "relative": {
       "justNow": "방금 전",
@@ -97,12 +97,12 @@
   "about": {
     "metadata": {
       "title": "소개",
-      "description": "민유지 소개 — React, Next.js, TypeScript를 다루는 프론트엔드 개발자"
+      "description": "Hello, World! 소프트웨어 엔지니어 민유지입니다."
     },
     "heading": "소개",
     "greeting": "\"Hello, World!\"",
-    "bio1": "프론트엔드 개발에 집중하고 있는 소프트웨어 개발자 민유지입니다.",
-    "bio2": "블로그를 통해 경험을 나누고, 무언가를 만드는 걸 즐기는 분들과 연결되고 싶습니다.",
+    "bio1": "직접 만들고, 다듬고, 사용하는 것을 즐기는 소프트웨어 엔지니어 민유지입니다.",
+    "bio2": "이곳에서 제 경험을 나누고, 비슷한 관심사를 가진 분들과 연결되고 싶습니다.",
     "linksHeading": "링크",
     "profileAlt": "프로필 사진",
     "emailAlt": "이메일",
@@ -112,41 +112,41 @@
   "spec": {
     "metadata": {
       "title": "스펙",
-      "description": "yujimin.dev 제작기 — 기술 스택, 도구, 그리고 디자인 결정들"
+      "description": "yujimin.dev를 어떻게 설계하고 만들었는지 소개합니다."
     },
     "heading": "스펙",
-    "intro": "yujimin.dev에 오신 걸 환영합니다. 드래그 가능한 창들로 이루어진 레트로 가상 데스크톱입니다. 클래식한 인터페이스에 현대 기술을 살짝 얹어봤습니다.",
+    "intro": "yujimin.dev에 오신 것을 환영합니다. 레트로 데스크톱 컨셉트의 개인 사이트입니다.",
     "computerAlt": "컴퓨터",
-    "repositoryHeading": "GitHub 저장소",
-    "repositoryAlt": "GitHub",
+    "repositoryHeading": "소스 코드",
+    "repositoryAlt": "깃허브",
     "whatsInsideHeading": "주요 기능",
     "builtWithHeading": "사용 기술",
     "features": {
       "windows": {
-        "title": "드래그 가능한 창",
-        "description": "실제 데스크톱처럼 창을 드래그하고, 크기 조절, 최소화, 최대화가 가능합니다."
+        "title": "브라우저 창 형태의 앱",
+        "description": "브라우저 창 형태의 앱을 드래그하고, 크기 조절, 최소화, 최대화가 가능합니다."
       },
       "blog": {
         "title": "블로그",
-        "description": "폴더 탐색 방식에 리스트·갤러리 뷰, 문법 강조 코드 블록을 갖추고 있습니다."
+        "description": "기술 블로그입니다."
       },
       "guestbook": {
         "title": "방명록",
-        "description": "메시지를 남기거나 다른 분들이 남긴 글을 구경할 수 있습니다."
+        "description": "메시지를 남기거나 다른 분들이 남긴 방명록을 구경할 수 있습니다."
       },
       "resume": {
         "title": "이력서",
-        "description": "Google Docs에서 실시간으로 불러와 캐시하는 이력서입니다."
+        "description": "Google Docs의 이력서 내용을 불러오고 캐시해 빠르게 보여줍니다."
       },
       "analytics": {
         "title": "분석",
-        "description": "페이지 조회수, 방문 국가 등 실시간 방문 통계를 볼 수 있습니다."
+        "description": "페이지 조회수와 방문 국가 같은 실시간 방문 통계를 볼 수 있습니다."
       }
     },
     "tech": {
       "framework": {
         "label": "프레임워크",
-        "value": "Next.js 15 (React 19)"
+        "value": "Next.js 16 (React 19)"
       },
       "styling": {
         "label": "스타일링",
@@ -169,7 +169,7 @@
   "resume": {
     "metadata": {
       "title": "이력서",
-      "description": "React, Next.js, TypeScript 경험을 가진 소프트웨어 엔지니어 민유지의 이력서"
+      "description": "소프트웨어 엔지니어 민유지의 이력서 페이지입니다."
     },
     "downloadPdf": "PDF 다운로드",
     "sections": {

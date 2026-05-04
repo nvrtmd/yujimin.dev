@@ -1,8 +1,8 @@
 {
   "apps": {
     "blog": "Blog",
-    "about-me": "About Me",
-    "spec": "Spec",
+    "about-me": "About",
+    "spec": "Specs",
     "guestbook": "Guestbook",
     "analytics": "Analytics",
     "resume": "Resume"
@@ -19,12 +19,12 @@
   "blog": {
     "metadata": {
       "title": "Blog",
-      "description": "Technical blog posts by Yuji Min"
+      "description": "Notes on software engineering by Yuji Min."
     },
-    "toggleSidebar": "Toggle Sidebar",
+    "toggleSidebar": "Toggle sidebar",
     "categories": "Categories",
     "rootLabel": "Blog",
-    "objects": "{count} object(s)",
+    "objects": "{count} item(s)",
     "empty": "No posts to display.",
     "loadingMore": "Loading more...",
     "columns": {
@@ -34,14 +34,14 @@
       "category": "Category"
     },
     "post": {
-      "authorPrefix": "by",
-      "endOfDocument": "*** End of Document ***"
+      "authorPrefix": "By",
+      "endOfDocument": "*** End of document ***"
     }
   },
   "guestbook": {
     "metadata": {
       "title": "Guestbook",
-      "description": "Leave a message on Yuji Min's guestbook"
+      "description": "Leave a message in the guestbook."
     },
     "title": "Guestbook",
     "subtitle": "Leave a message!",
@@ -51,13 +51,13 @@
       "websiteLabel": "Website",
       "messageLabel": "Message",
       "nicknamePlaceholder": "yuza",
-      "locationPlaceholder": "Seoul, Korea",
+      "locationPlaceholder": "Seoul, South Korea",
       "websitePlaceholder": "https://example.com",
       "submit": "Submit",
       "submitting": "Submitting...",
-      "successMessage": "Message added successfully!",
-      "errorFallback": "Failed to submit.",
-      "errorNetwork": "An unexpected network error occurred."
+      "successMessage": "Your message has been posted.",
+      "errorFallback": "Failed to post your message.",
+      "errorNetwork": "A network error occurred."
     },
     "list": {
       "loading": "-- Loading... --",
@@ -68,26 +68,26 @@
   "analytics": {
     "metadata": {
       "title": "Analytics",
-      "description": "Site analytics for yujimin.dev"
+      "description": "Traffic and visitor analytics for yujimin.dev."
     },
     "title": "Site Analytics",
-    "loading": "Loading analytics...",
-    "error": "Failed to load analytics.",
+    "loading": "Loading analytics data...",
+    "error": "Failed to load analytics data.",
     "metrics": {
       "todaysViews": "Today's Views:",
       "totalViews": "Total Views:",
-      "totalCountries": "Total Countries:",
-      "topCountry": "Top Country:",
-      "lastVisitor": "Last Visitor:"
+      "totalCountries": "Countries:",
+      "topCountry": "Most Visited Country:",
+      "lastVisitor": "Latest Visit:"
     },
     "relative": {
-      "justNow": "just now",
-      "minute": "{count, plural, one {# minute ago} other {# minutes ago}}",
-      "hour": "{count, plural, one {# hour ago} other {# hours ago}}",
-      "day": "{count, plural, one {# day ago} other {# days ago}}",
-      "week": "{count, plural, one {# week ago} other {# weeks ago}}",
-      "month": "{count, plural, one {# month ago} other {# months ago}}",
-      "year": "{count, plural, one {# year ago} other {# years ago}}"
+      "justNow": "Just now",
+      "minute": "{count} min(s) ago",
+      "hour": "{count} hr(s) ago",
+      "day": "{count} day(s) ago",
+      "week": "{count} week(s) ago",
+      "month": "{count} month(s) ago",
+      "year": "{count} year(s) ago"
     }
   },
   "mdx": {
@@ -96,57 +96,57 @@
   },
   "about": {
     "metadata": {
-      "title": "About Me",
-      "description": "About Yuji Min - Frontend Developer specializing in React, Next.js, and TypeScript"
+      "title": "About",
+      "description": "Hello, World! I'm Yuji Min, a software engineer who enjoys building, improving, and living with the things I make."
     },
-    "heading": "About Me",
+    "heading": "About",
     "greeting": "\"Hello, World!\"",
-    "bio1": "I'm Yuji Min, a software developer currently focusing on frontend development at work.",
-    "bio2": "Through this blog, I hope to share my experiences and connect with others who love building things that make a difference.",
+    "bio1": "I'm Yuji Min, a software engineer who enjoys building, fixing, and using the things I make.",
+    "bio2": "This site is where I share my experiences and connect with like-minded people.",
     "linksHeading": "Links",
-    "profileAlt": "Profile Picture",
+    "profileAlt": "Profile photo",
     "emailAlt": "Email",
     "githubAlt": "GitHub",
     "linkedinAlt": "LinkedIn"
   },
   "spec": {
     "metadata": {
-      "title": "Spec",
-      "description": "How yujimin.dev was built - tech stack, tools, and design decisions"
+      "title": "Specs",
+      "description": "How yujimin.dev is designed and built."
     },
-    "heading": "Spec",
-    "intro": "Welcome to yujimin.dev. Step into a retro virtual desktop where my work lives in draggable windows - a playful mix of classic interface and modern tech.",
+    "heading": "Specs",
+    "intro": "Welcome to yujimin.dev, a retro desktop-inspired personal site created by software engineer Yuji Min.",
     "computerAlt": "Computer",
-    "repositoryHeading": "GitHub Repository",
+    "repositoryHeading": "Source Code",
     "repositoryAlt": "GitHub",
-    "whatsInsideHeading": "What's Inside",
+    "whatsInsideHeading": "Key Features",
     "builtWithHeading": "Built With",
     "features": {
       "windows": {
-        "title": "Draggable Windows",
-        "description": "Drag, resize, minimize, and maximize - just like a real desktop."
+        "title": "Windowed Apps",
+        "description": "Apps that look like browser windows can be dragged, resized, minimized, and maximized."
       },
       "blog": {
         "title": "Blog",
-        "description": "Folder-style navigation with list/gallery views and syntax-highlighted code."
+        "description": "A technical blog."
       },
       "guestbook": {
         "title": "Guestbook",
-        "description": "Leave a message and browse what others have written."
+        "description": "Leave a message or browse messages left by others."
       },
       "resume": {
         "title": "Resume",
-        "description": "Live resume fetched from Google Docs, cached for instant loading."
+        "description": "A resume that fetches content from Google Docs and keeps it cached for fast delivery."
       },
       "analytics": {
         "title": "Analytics",
-        "description": "Real-time site stats including page views and visitor countries."
+        "description": "View live visitor stats, including page views and where visitors are coming from."
       }
     },
     "tech": {
       "framework": {
         "label": "Framework",
-        "value": "Next.js 15 (React 19)"
+        "value": "Next.js 16 (React 19)"
       },
       "styling": {
         "label": "Styling",
@@ -154,7 +154,7 @@
       },
       "content": {
         "label": "Content",
-        "value": "MDX via Velite"
+        "value": "Velite-based MDX"
       },
       "database": {
         "label": "Database",
@@ -169,27 +169,27 @@
   "resume": {
     "metadata": {
       "title": "Resume",
-      "description": "Resume of Yuji Min - Software Engineer with experience in React, Next.js, and TypeScript"
+      "description": "The resume of software engineer Yuji Min."
     },
     "downloadPdf": "Download PDF",
     "sections": {
-      "skills": "Technical Skills",
+      "skills": "Tech Stack",
       "experience": "Experience",
       "openSource": "Open Source",
       "leadership": "Leadership & Community",
       "education": "Education"
     },
-    "errorHeader": "Error loading resume",
-    "noData": "No experience data.",
+    "errorHeader": "An error occurred while loading the resume",
+    "noData": "No experience data found.",
     "errorFallback": "Failed to load",
-    "errorUnknown": "Unknown error"
+    "errorUnknown": "Unknown Error"
   },
   "menuBar": {
     "file": "File",
     "edit": "Edit",
     "view": "View",
     "go": "Go",
-    "favorite": "Favorite",
+    "favorite": "Favorites",
     "tools": "Tools",
     "help": "Help"
   },
