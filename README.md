@@ -1,8 +1,12 @@
-# yujimin.dev
+# [yujimin.dev](https://yujimin.dev)
 
 > A retro desktop-inspired personal site by Yuji Min
 
-**Live Site:** [yujimin.dev](https://yujimin.dev)
+<img width="1280" height="720" alt="thumbnail" src="https://github.com/user-attachments/assets/958bf3a8-8588-48a3-bd7e-e06f6c347297" />
+
+<br />
+
+> **🌐 Live Site:** [https://yujimin.dev](https://yujimin.dev)
 
 ## Overview
 
